@@ -1,0 +1,94 @@
+﻿@model IEnumerable<stitalizator01.Models.Program>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ChannelCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProgTitle)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TvDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TimeStart)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TimeEnd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProgDescr)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ShareStiPlus)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ShareStiMob)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ShareSti)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ShareMos18)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ShareRus18)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ChannelCode)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ProgTitle)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TvDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TimeStart)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TimeEnd)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ProgDescr)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ShareStiPlus)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ShareStiMob)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ShareSti)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ShareMos18)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ShareRus18)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ProgramID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ProgramID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ProgramID })
+        </td>
+    </tr>
+}
+
+</table>

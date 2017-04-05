@@ -1,0 +1,106 @@
+﻿@model IEnumerable<stitalizator01.Models.Bet>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Program.ProgTitle)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PeriodID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ScoreOLS)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ScoreClassic)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AttemptNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TimeStamp)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsHorse)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BetRus18)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BetMos18)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BetSTImob)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BetSTI)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BetSTIplus)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UserID)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Program.ProgTitle)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PeriodID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ScoreOLS)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ScoreClassic)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AttemptNo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TimeStamp)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IsHorse)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BetRus18)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BetMos18)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BetSTImob)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BetSTI)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BetSTIplus)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UserID)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.BetID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.BetID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.BetID })
+        </td>
+    </tr>
+}
+
+</table>

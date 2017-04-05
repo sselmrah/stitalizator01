@@ -1,0 +1,129 @@
+﻿@model stitalizator01.Models.Bet
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Bet</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Program.ProgTitle)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Program.ProgTitle)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PeriodID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PeriodID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ScoreOLS)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ScoreOLS)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ScoreClassic)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ScoreClassic)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AttemptNo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AttemptNo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TimeStamp)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TimeStamp)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsHorse)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsHorse)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BetRus18)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BetRus18)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BetMos18)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BetMos18)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BetSTImob)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BetSTImob)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BetSTI)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BetSTI)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BetSTIplus)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BetSTIplus)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UserID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UserID)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>
