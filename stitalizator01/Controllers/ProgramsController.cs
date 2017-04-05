@@ -19,7 +19,11 @@ namespace stitalizator01.Controllers
         // GET: Programs
         public ActionResult Index()
         {
-            getScheduleByDateChannel();
+
+            XmlDocument xmlDoc = getScheduleByDateChannel();
+            
+
+
             return View(db.Programs.ToList());
         }
 
@@ -119,12 +123,13 @@ namespace stitalizator01.Controllers
         }
 
 
-        public List<Tuple<string,string,string,string,string,DateTime>> getScheduleByDateChannel (string dateStr = "05.04.2017", string chCodeStr = "10")
+        public XmlDocument getScheduleByDateChannel(string dateStr = "05.04.2017", string chCodeStr = "1TV")
         {
             List<string> sched = new List<string>();
-            List<Tuple<string, string, string, string, string, DateTime>> schedParsed = new List<Tuple<string, string, string, string, string, DateTime>>();
+            string targetUrl = "";
+            List<Tuple<string, DateTime, string, string, string, DateTime>> schedParsed = new List<Tuple<string, DateTime, string, string, string, DateTime>>();
             string url = "http://xmltv.s-tv.ru/xchenel.php?xmltv=1&pass=jJoM88wN54&show=2&login=tv4181";
-            WebClient client = new WebClient();            
+            stitalizator01.CookieAwareWebClient client = new stitalizator01.CookieAwareWebClient();            
 
             string xmlString = client.DownloadString(url);            
             string[] delim = {"<File>"};
@@ -136,23 +141,42 @@ namespace stitalizator01.Controllers
             string channelID = "";
             string variant = "";
             DateTime dateTime;
+            DateTime efirWeekDT;
             
             foreach(string s in sched)
             {
                 if (s.IndexOf("<Name>")>=0)
                 {
                     name = s.Substring(s.IndexOf("<Name>") + 6, s.IndexOf("</Name>") - s.IndexOf("<Name>") - 6);
-                    efirWeek = s.Substring(s.IndexOf("<EfirWeek>") + 10, s.IndexOf("</EfirWeek>") - s.IndexOf("<EfirWeek>") - 10);                    
+                    efirWeek = s.Substring(s.IndexOf("<EfirWeek>") + 10, s.IndexOf("</EfirWeek>") - s.IndexOf("<EfirWeek>") - 10);
+                    efirWeekDT = DateTime.Parse(efirWeek);
                     channel = s.Substring(s.IndexOf("<Channel>") + 9, s.IndexOf("</Channel>") - s.IndexOf("<Channel>") - 9);
                     channelID = s.Substring(s.IndexOf("<ChannelID>") + 11, s.IndexOf("</ChannelID>") - s.IndexOf("<ChannelID>") - 11);
                     variant = s.Substring(s.IndexOf("<Variant>") + 9, s.IndexOf("</Variant>") - s.IndexOf("<Variant>") - 9);
                     dateTime = DateTime.Parse(s.Substring(s.IndexOf("<DateTime>") + 10, s.IndexOf("</DateTime>") - s.IndexOf("<DateTime>") - 10));                    
-                    Tuple<string, string, string, string, string, DateTime> curTuple = new Tuple<string, string, string, string, string, DateTime>(name,efirWeek,channel,channelID,variant,dateTime);
+                    Tuple<string, DateTime, string, string, string, DateTime> curTuple = new Tuple<string, DateTime, string, string, string, DateTime>(name,efirWeekDT,channel,channelID,variant,dateTime);
                     schedParsed.Add(curTuple);
                 }
             }
+            DateTime curDate = DateTime.Parse(dateStr);
+            foreach(Tuple<string,DateTime,string,string,string,DateTime> t in schedParsed)
+            {
+                if (chCodeStr==t.Item4 & (t.Item2<=curDate & curDate<=t.Item2+TimeSpan.FromDays(6)) & t.Item5=="R")
+                {
+                    targetUrl = t.Item1;
+                    break;
+                }
+            }
+            XmlDocument xmlDoc = new XmlDocument();
+            string xmlUrl = targetUrl;
+            string xmlStr;
+            
+            xmlStr = client.DownloadString(xmlUrl);
+            
+            xmlDoc.LoadXml(xmlStr);
+            //xmlDoc.LoadXml(targetUrl);
 
-            return schedParsed;
+            return xmlDoc;
         }
 
         protected override void Dispose(bool disposing)
