@@ -12,6 +12,7 @@ namespace stitalizator01
 {
     public class MvcApplication : System.Web.HttpApplication
     {
+
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
@@ -20,7 +21,9 @@ namespace stitalizator01
             //initializeBetsDB(new ApplicationDbContext());
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-            BundleConfig.RegisterBundles(BundleTable.Bundles); 
+            BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+
         }
 
         private void initializeBetsDB(ApplicationDbContext context)

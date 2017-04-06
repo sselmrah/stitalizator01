@@ -1,5 +1,7 @@
-﻿using Microsoft.Owin;
+﻿
+using Microsoft.Owin;
 using Owin;
+
 
 [assembly: OwinStartupAttribute(typeof(stitalizator01.Startup))]
 namespace stitalizator01
@@ -9,6 +11,7 @@ namespace stitalizator01
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
+
         }
     }
 }

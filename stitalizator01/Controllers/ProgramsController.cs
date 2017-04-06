@@ -9,21 +9,21 @@ using System.Web.Mvc;
 using stitalizator01.Models;
 using System.IO;
 using System.Xml;
+using System.Xml.Xsl;
+using System.Xml.XPath;
+using System.Text;
 
 namespace stitalizator01.Controllers
 {
     public class ProgramsController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
-
+        private ApplicationDbContext db = new ApplicationDbContext();                           
+            
         // GET: Programs
         public ActionResult Index()
         {
-
-            XmlDocument xmlDoc = getScheduleByDateChannel();
-            
-
-
+            updateSchedule();
+            //getScheduleByDateChannel();
             return View(db.Programs.ToList());
         }
 
@@ -95,6 +95,7 @@ namespace stitalizator01.Controllers
             }
             return View(program);
         }
+        
 
         // GET: Programs/Delete/5
         public ActionResult Delete(int? id)
@@ -123,10 +124,56 @@ namespace stitalizator01.Controllers
         }
 
 
-        public XmlDocument getScheduleByDateChannel(string dateStr = "05.04.2017", string chCodeStr = "1TV")
+        public void updateSchedule(string dateStr="05.04.2017", string chCodeStr = "1TV")
         {
+            DateTime curDate = DateTime.Parse(dateStr);
+            List<string> chList = new List<string>();     
+            //Channels dictionary
+            chList.Add("1TV");
+            chList.Add("RTR");
+            chList.Add("NTV");
+            chList.Add("STS");
+            chList.Add("TNT");
+            chList.Add("MatchTV");
+            chList.Add("DOMASHNIY");
+            chList.Add("RenTV");
+            chList.Add("TVC");
+
+            if (getScheduleByDateChannel(dateStr))
+            {
+                var progs = db.Programs.Where(o => o.TvDate == curDate);
+                if (progs.Count()>0)
+                {
+                    db.Programs.RemoveRange(progs);
+                }
+                getScheduleByDateChannel(dateStr, chCodeStr);
+                //string[] lines;
+                var list = new List<string>();
+                var fileStream = new FileStream(@Path.Combine(HttpContext.ApplicationInstance.Server.MapPath("~/App_Data"), "Temp", "result.txt"), FileMode.Open, FileAccess.Read);
+                using (var streamReader = new StreamReader(fileStream,Encoding.UTF8))
+                {
+                    string line;
+                    while ((line = streamReader.ReadLine()) != null)
+                    {
+                        list.Add(line);
+                    }
+                }
+                foreach (string l in list)
+                {
+
+                }
+                //lines = list.ToArray();
+            }
+
+
+        }
+
+
+        public bool getScheduleByDateChannel(string dateStr = "05.04.2017", string chCodeStr = "1TV")
+        {
+            bool result = false;
             List<string> sched = new List<string>();
-            string targetUrl = "";
+            string targetUrl = "";            
             List<Tuple<string, DateTime, string, string, string, DateTime>> schedParsed = new List<Tuple<string, DateTime, string, string, string, DateTime>>();
             string url = "http://xmltv.s-tv.ru/xchenel.php?xmltv=1&pass=jJoM88wN54&show=2&login=tv4181";
             stitalizator01.CookieAwareWebClient client = new stitalizator01.CookieAwareWebClient();            
@@ -164,19 +211,38 @@ namespace stitalizator01.Controllers
                 if (chCodeStr==t.Item4 & (t.Item2<=curDate & curDate<=t.Item2+TimeSpan.FromDays(6)) & t.Item5=="R")
                 {
                     targetUrl = t.Item1;
+                    XmlDocument xmlDoc = new XmlDocument();
+                    string xmlUrl = targetUrl;
+                    string xmlStr;
+                    xmlStr = client.DownloadString(xmlUrl);
+                    xmlDoc.LoadXml(xmlStr);                    
+                    parseXMLdoc(xmlDoc);
+                    result = true;
                     break;
                 }
-            }
-            XmlDocument xmlDoc = new XmlDocument();
-            string xmlUrl = targetUrl;
-            string xmlStr;
-            
-            xmlStr = client.DownloadString(xmlUrl);
-            
-            xmlDoc.LoadXml(xmlStr);
-            //xmlDoc.LoadXml(targetUrl);
+            }           
+            return result;
+        }
 
-            return xmlDoc;
+        public void parseXMLdoc(XmlDocument xmlDoc)
+        {            
+            xmlDoc.Save(Path.Combine(HttpContext.ApplicationInstance.Server.MapPath("~/App_Data"),"Temp", "tempDoc.xml"));
+            var myXslTrans = new XslCompiledTransform();
+            myXslTrans.Load(Path.Combine(HttpContext.ApplicationInstance.Server.MapPath("~/Content"), "tvXml2txt.xslt"));
+            XmlWriterSettings xws = myXslTrans.OutputSettings.Clone();
+            xws.Encoding = Encoding.UTF8;
+
+            using (XmlWriter xw = XmlWriter.Create(Path.Combine(HttpContext.ApplicationInstance.Server.MapPath("~/App_Data"), "Temp","result.txt"), xws))
+            {
+                myXslTrans.Transform(Path.Combine(HttpContext.ApplicationInstance.Server.MapPath("~/App_Data"), "Temp", "tempDoc.xml"), xw);
+                var x = myXslTrans.OutputSettings.Encoding;
+            }
+
+            /*
+            myXslTrans.Load(Path.Combine(HttpContext.ApplicationInstance.Server.MapPath("~/Content"), "tvXml2txt.xslt"));
+            var x = myXslTrans.OutputSettings.Encoding;
+            myXslTrans.Transform(Path.Combine(HttpContext.ApplicationInstance.Server.MapPath("~/App_Data"),"Temp", "tempDoc.xml"), Path.Combine(HttpContext.ApplicationInstance.Server.MapPath("~/App_Data"), "Temp","result.txt"));                   
+             */
         }
 
         protected override void Dispose(bool disposing)
