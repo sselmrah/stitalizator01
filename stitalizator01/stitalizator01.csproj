@@ -184,6 +184,7 @@
     <Compile Include="Models\ProgInitializer.cs" />
     <Compile Include="Models\Program.cs" />
     <Compile Include="Models\StitalizatorContext.cs" />
+    <Compile Include="MyStartupClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>

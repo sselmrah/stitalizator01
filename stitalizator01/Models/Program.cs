@@ -50,22 +50,23 @@ namespace stitalizator01.Models
             get { return _progTitle; }
             set { _progTitle = value; }
         }
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd.MM.yyyy}")]        
         [DisplayName("Дата")]
         public DateTime TvDate
         {
             get { return _tvDate; }
             set { _tvDate = value; }
         }
-        //[DisplayFormat(DataFormatString = "{HH:mm}", ApplyFormatInEditMode = true)]
-        //[DataType(DataType.Time)]
+
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:hh:mm}")]        
         [DisplayName("Время начала")]
         public DateTime TimeStart
         {
             get { return _timeStart; }
             set { _timeStart = value; }
         }
-        //[DisplayFormat(DataFormatString = "{HH:mm}", ApplyFormatInEditMode = true)]
-        //[DataType(DataType.Time)]
+
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:hh:mm}")]        
         [DisplayName("Время окончания")]
         public DateTime? TimeEnd
         {

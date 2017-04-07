@@ -158,10 +158,39 @@ namespace stitalizator01.Controllers
                         list.Add(line);
                     }
                 }
+                DateTime dt = DateTime.Parse("01/01/2017");
+                List<Program> progList = new List<Program>();
                 foreach (string l in list)
-                {
-
+                {                    
+                    if (l.Length > 5)
+                    {
+                        if (l.IndexOf('\t') >=0)
+                        {
+                            if (dt.Date == curDate.Date)
+                            {
+                                Program curProg = new Program();
+                                string[] curProgString = l.Split('\t');
+                                curProg.TimeStart = DateTime.Parse(dt.ToString("dd.MM.yyyy") + " " + curProgString[0].Trim());
+                                curProg.ProgTitle = curProgString[1].Trim();
+                                curProg.TvDate = dt.Date;
+                                //curProg.ChannelCode = 10;
+                                progList.Add(curProg);
+                            }
+                        }
+                        else
+                        {
+                            //Дата
+                            if (l.IndexOf(":") < 0)
+                            {
+                                dt = DateTime.Parse(l);
+                            }
+                        }
+                    }
                 }
+
+                db.Programs.AddRange(progList);
+                db.SaveChanges();
+                var x = 0;
                 //lines = list.ToArray();
             }
 
