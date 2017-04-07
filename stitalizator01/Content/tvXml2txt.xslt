@@ -39,19 +39,35 @@
     <xsl:value-of select="$newline"/>
   </xsl:template>
 
+    
   <xsl:template match="programme" mode="next">
     <xsl:value-of select="substring(@start, 9, 2)" />:<xsl:value-of select="substring(@start, 11, 2)" />
     <xsl:value-of select="$tab"/>
+    <xsl:value-of select="substring(@stop, 9, 2)" />:<xsl:value-of select="substring(@stop, 11, 2)" />
+    <xsl:value-of select="$tab"/>
     <xsl:value-of select="title" />
+    <xsl:value-of select="$tab"/>
+    <xsl:for-each select="category">
+      <xsl:value-of select="text()"/>
+      <xsl:if test="position() != last()">
+        <xsl:text>; </xsl:text>
+      </xsl:if>
+    </xsl:for-each>
     <xsl:value-of select="$newline"/>
   </xsl:template>
 
   <xsl:template match="programme[generate-id(.)=generate-id(key('TVDate',date)[last()])]" mode="next">
     <xsl:value-of select="substring(@start, 9, 2)" />:<xsl:value-of select="substring(@start, 11, 2)" />
     <xsl:value-of select="$tab"/>
+    <xsl:value-of select="substring(@stop, 9, 2)" />:<xsl:value-of select="substring(@stop, 11, 2)" />
+    <xsl:value-of select="$tab"/>
     <xsl:value-of select="title" />
+    <xsl:value-of select="$tab"/>
+    <xsl:value-of select="category"/>
+    <!--
     <xsl:value-of select="$newline"/>До <xsl:value-of select="substring(@stop, 9, 2)" />:<xsl:value-of select="substring(@stop, 11, 2)" />
     <xsl:value-of select="$newline"/>
+    -->
   </xsl:template>
 
 </xsl:stylesheet>

@@ -15,13 +15,16 @@ namespace stitalizator01.Models
         private DateTime _tvDate;
         private DateTime _timeStart;
         private DateTime? _timeEnd;
-        private int _channelCode;
+        private string _channelCode;
         private float? _shareSti;
         private float? _shareStiMob;
         private float? _shareStiPlus;
         private float? _shareMos18;
         private float? _shareRus18;
         private string _progDescr;
+        private string _progCat;
+
+        
 
 
 
@@ -39,7 +42,7 @@ namespace stitalizator01.Models
         }
 
         [DisplayName("Код канала")]
-        public int ChannelCode
+        public string ChannelCode
         {
             get { return _channelCode; }
             set { _channelCode = value; }
@@ -78,6 +81,12 @@ namespace stitalizator01.Models
         {
             get { return _progDescr; }
             set { _progDescr = value; }
+        }
+        [DisplayName("Категории")]
+        public string ProgCat
+        {
+            get { return _progCat; }
+            set { _progCat = value; }
         }
 
         public float? ShareStiPlus

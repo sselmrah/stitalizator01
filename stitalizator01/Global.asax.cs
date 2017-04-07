@@ -25,7 +25,7 @@ namespace stitalizator01
 
 
         }
-
+        /*
         private void initializeBetsDB(ApplicationDbContext context)
         {
             var programs = new List<Program>
@@ -38,5 +38,6 @@ namespace stitalizator01
             programs.ForEach(p => context.Programs.Add(p));
             context.SaveChanges();
         }
+         */
     }
 }

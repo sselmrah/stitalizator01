@@ -139,6 +139,28 @@ namespace stitalizator01.Controllers
             chList.Add("RenTV");
             chList.Add("TVC");
 
+            List<Tuple<string, string>> chDict = new List<Tuple<string, string>>();            
+            chDict.Add(new Tuple<string, string>("1TV", "Первый канал"));
+            chDict.Add(new Tuple<string, string>("RTR", "Россия-1"));            
+            chDict.Add(new Tuple<string, string>("NTV", "НТВ"));
+            chDict.Add(new Tuple<string, string>("STS", "СТС"));
+            chDict.Add(new Tuple<string, string>("TNT", "ТНТ"));
+            chDict.Add(new Tuple<string, string>("MatchTV", "Матч-ТВ"));
+            chDict.Add(new Tuple<string, string>("DOMASHNIY", "Домашний"));
+            chDict.Add(new Tuple<string, string>("RenTV", "Рен-ТВ"));
+            chDict.Add(new Tuple<string, string>("TVC", "ТВЦ"));
+            
+            string curChannelName = "";
+
+            foreach(Tuple<string,string> ch in chDict)
+            {
+                if (ch.Item1==chCodeStr)
+                {
+                    curChannelName = ch.Item2;
+                    break;
+                }
+            }
+
             if (getScheduleByDateChannel(dateStr))
             {
                 var progs = db.Programs.Where(o => o.TvDate == curDate);
@@ -171,9 +193,11 @@ namespace stitalizator01.Controllers
                                 Program curProg = new Program();
                                 string[] curProgString = l.Split('\t');
                                 curProg.TimeStart = DateTime.Parse(dt.ToString("dd.MM.yyyy") + " " + curProgString[0].Trim());
-                                curProg.ProgTitle = curProgString[1].Trim();
+                                curProg.TimeEnd = DateTime.Parse(dt.ToString("dd.MM.yyyy") + " " + curProgString[1].Trim());
+                                curProg.ProgTitle = curProgString[2].Trim();
+                                curProg.ProgCat = curProgString[3].Trim();
                                 curProg.TvDate = dt.Date;
-                                //curProg.ChannelCode = 10;
+                                curProg.ChannelCode = curChannelName;
                                 progList.Add(curProg);
                             }
                         }
