@@ -165,6 +165,7 @@
     <Compile Include="Controllers\ChannelsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\PeriodsController.cs" />
     <Compile Include="Controllers\ProgramsController.cs" />
     <Compile Include="CookieAwareWebClient.cs">
       <SubType>Component</SubType>
@@ -187,6 +188,10 @@
     <Compile Include="Migrations\201704071934552_ChannelsAdded.cs" />
     <Compile Include="Migrations\201704071934552_ChannelsAdded.Designer.cs">
       <DependentUpon>201704071934552_ChannelsAdded.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704111323458_progIsBetAdded.cs" />
+    <Compile Include="Migrations\201704111323458_progIsBetAdded.Designer.cs">
+      <DependentUpon>201704111323458_progIsBetAdded.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -276,6 +281,12 @@
     <Content Include="Views\Channels\Details.cshtml" />
     <Content Include="Views\Channels\Edit.cshtml" />
     <Content Include="Views\Channels\Index.cshtml" />
+    <Content Include="Views\Bets\MyBets.cshtml" />
+    <Content Include="Views\Periods\Create.cshtml" />
+    <Content Include="Views\Periods\Delete.cshtml" />
+    <Content Include="Views\Periods\Details.cshtml" />
+    <Content Include="Views\Periods\Edit.cshtml" />
+    <Content Include="Views\Periods\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Temp\" />
@@ -299,6 +310,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201704071934552_ChannelsAdded.resx">
       <DependentUpon>201704071934552_ChannelsAdded.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704111323458_progIsBetAdded.resx">
+      <DependentUpon>201704111323458_progIsBetAdded.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

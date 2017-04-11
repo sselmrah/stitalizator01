@@ -23,18 +23,16 @@ namespace stitalizator01.Models
         private float? _shareRus18;
         private string _progDescr;
         private string _progCat;
+        private bool _isBet;
 
-        
+        [DisplayName("Ставка")]
+        public bool IsBet
+        {
+            get { return _isBet; }
+            set { _isBet = value; }
+        }        
 
-
-
-
-
-
-
-
-
-        
+               
         public int ProgramID
         {
             get { return _programID; }

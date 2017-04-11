@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<h2>Ставки для @User.Identity.Name</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
@@ -16,42 +16,47 @@
             @Html.DisplayNameFor(model => model.Program.ProgTitle)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.PeriodID)
+            @Html.DisplayNameFor(model => model.Program.BetSTIplus)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ScoreOLS)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ScoreClassic)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.AttemptNo)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TimeStamp)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.IsHorse)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.BetRus18)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.BetMos18)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.BetSTImob)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.BetSTI)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.BetSTIplus)
-        </th>
-        @*<th>
-            @Html.DisplayNameFor(model => model.UserID)
-        </th>
-            *@
+@*
+    <th>
+        @Html.DisplayNameFor(model => model.PeriodID)
+    </th>
+    <th>
+        @Html.DisplayNameFor(model => model.ScoreOLS)
+    </th>
+    <th>
+        @Html.DisplayNameFor(model => model.ScoreClassic)
+    </th>
+    <th>
+        @Html.DisplayNameFor(model => model.AttemptNo)
+    </th>
+    <th>
+        @Html.DisplayNameFor(model => model.TimeStamp)
+    </th>
+    <th>
+        @Html.DisplayNameFor(model => model.IsHorse)
+    </th>
+    <th>
+        @Html.DisplayNameFor(model => model.BetRus18)
+    </th>
+    <th>
+        @Html.DisplayNameFor(model => model.BetMos18)
+    </th>
+    <th>
+        @Html.DisplayNameFor(model => model.BetSTImob)
+    </th>
+    <th>
+        @Html.DisplayNameFor(model => model.BetSTI)
+    </th>
+    <th>
+        @Html.DisplayNameFor(model => model.BetSTIplus)
+    </th>
+    *@
+    @*<th>
+        @Html.DisplayNameFor(model => model.UserID)
+    </th>
+*@
         <th></th>
     </tr>
 
@@ -60,6 +65,14 @@
         <td>
             @Html.DisplayFor(modelItem => item.Program.ProgTitle)
         </td>
+        <td>
+            @using (Html.BeginForm("MakeBet", "Bets", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.TextBoxFor(modelItem => item.BetSTIplus, new { onchange = "this.form.submit();" })
+            }
+        </td>
+        @*
         <td>
             @Html.DisplayFor(modelItem => item.PeriodID)
         </td>
@@ -93,6 +106,7 @@
         <td>
             @Html.DisplayFor(modelItem => item.BetSTIplus)
         </td>
+            *@
         @*
         <td>
             @Html.DisplayFor(modelItem => item.UserID)

@@ -13,6 +13,9 @@
 <table class="table">
     <tr>
         <th>
+            @Html.DisplayNameFor(model => model.IsBet)
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.ChannelCode)
         </th>
         <th>
@@ -55,6 +58,24 @@
 
 @foreach (var item in Model) {
     <tr>
+        <td>
+        @using (Html.BeginForm("UpdateBet", "Programs", new { id = item.ProgramID}))
+            {
+            @Html.AntiForgeryToken()
+            @Html.CheckBoxFor(modelItem => item.IsBet, new { onclick = "this.form.submit();" })
+            @* <input type="submit" value="Update" />*@
+        }
+            @*
+            <form method="post" action="Programs/UpdateBet">
+                @Html.AntiForgeryToken()
+                Html.CheckBoxFor(modelItem => item.IsBet, new { @Value = item.IsBet })
+                @Html.CheckBoxFor(modelItem => item.IsBet)
+                <input type="submit" value="Update" />
+            </form>
+    *@
+            @*Html.EditorFor(modelItem => item.IsBet)
+            @Html.CheckBoxFor(modelItem => item.IsBet, new { id=item.ProgramID, @class = "toggle", data_url = Url.Action("Edit", "Programs")})*@
+        </td>
         <td>
             @Html.DisplayFor(modelItem => item.ChannelCode)
         </td>
@@ -102,3 +123,28 @@
 }
 
 </table>
+
+
+@section scripts {
+    <script>
+        $(function () {
+            $('.toggle').change(function () {
+                var self = $(this);
+                var url = self.data('url');
+                var isBet = self.attr('IsBet');
+                var value = self.prop('checked');
+
+                $.ajax({
+                    url: url,
+                    data: { ProgramID: ProgramID,
+                        IsBet: IsBet
+                    },
+                    type: 'POST',
+                    success: function (response) {
+                        alert(response);
+                    }
+                });
+            });
+        });
+    </script>
+}

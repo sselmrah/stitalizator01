@@ -1,0 +1,52 @@
+﻿@model IEnumerable<stitalizator01.Models.Period>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.UserID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PeriodDescription)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EndDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BegDate)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.UserID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PeriodDescription)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EndDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BegDate)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.PeriodID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.PeriodID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.PeriodID })
+        </td>
+    </tr>
+}
+
+</table>

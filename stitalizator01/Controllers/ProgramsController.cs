@@ -24,27 +24,23 @@ namespace stitalizator01.Controllers
         {
             DateTime today = DateTime.Now.Date;
             List<Program> todayProgList = new List<Program>();
-            /*
-            todayProgList = db.Programs.Where(o => o.TvDate == today).ToList();
             
-            if (todayProgList.Count > 0)
-            {
-                return View(todayProgList);
+            List<Channel> fullChannelsList = db.Channels.ToList();
+            List<Channel> channelsList = new List<Channel>();
+            
+            foreach (Channel channel in channelsList)
+            {                
+                if (db.Programs.Where(o => o.TvDate == today.Date & o.ChannelCode == channel.ChannelTag).Count()==0)
+                {
+                    channelsList.Add(channel);
+                }
             }
-            else
+            if (channelsList.Count > 0)
             {
-                List<Channel> channelsList = db.Channels.ToList();
                 foreach (Channel channel in channelsList)
                 {
                     updateSchedule(today.ToString("dd.MM.yyyy"), channel.ChannelTag);
                 }
-              
-            }
-             */
-            List<Channel> channelsList = db.Channels.ToList();
-            foreach (Channel channel in channelsList)
-            {
-                updateSchedule(today.ToString("dd.MM.yyyy"), channel.ChannelTag);
             }
             todayProgList = db.Programs.Where(o => o.TvDate == today.Date).ToList();
 
@@ -112,7 +108,7 @@ namespace stitalizator01.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ProgramID,ChannelCode,ProgTitle,TvDate,TimeStart,TimeEnd,ProgDescr,ShareStiPlus,ShareStiMob,ShareSti,ShareMos18,ShareRus18")] Program program)
+        public ActionResult Edit([Bind(Include = "ProgramID,ChannelCode,ProgTitle,TvDate,TimeStart,TimeEnd,ProgDescr,ShareStiPlus,ShareStiMob,ShareSti,ShareMos18,ShareRus18,IsBet")] Program program)
         {
             if (ModelState.IsValid)
             {
@@ -123,6 +119,39 @@ namespace stitalizator01.Controllers
             return View(program);
         }
         
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdateBet(int id)
+        {
+            Program curProg = db.Programs.Find(id);
+            curProg.IsBet = !curProg.IsBet;
+            db.Entry(curProg).State = EntityState.Modified;
+
+
+            
+            if (curProg.IsBet)
+            {
+                Bet curBet = new Bet();
+                curBet.ProgramID = curProg.ProgramID;
+                curBet.Program = curProg;
+                curBet.TimeStamp = DateTime.Now;
+                foreach (ApplicationUser user in db.Users)
+                {
+                    curBet.ApplicationUser = user;
+                    db.Bets.Add(curBet);
+                    
+                }
+            }
+            else
+            {
+                var x = db.Bets.Where(o => o.ProgramID == curProg.ProgramID);
+                db.Bets.RemoveRange(x);
+                
+            }
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
 
         // GET: Programs/Delete/5
         public ActionResult Delete(int? id)

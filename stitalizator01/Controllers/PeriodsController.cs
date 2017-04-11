@@ -10,132 +10,107 @@ using stitalizator01.Models;
 
 namespace stitalizator01.Controllers
 {
-    public class BetsController : Controller
+    public class PeriodsController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();        
+        private ApplicationDbContext db = new ApplicationDbContext();
 
-
-        public ActionResult MyBets(string curDate = "today")
-        {
-            
-            var bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name).ToList();
-            return View(bets);
-        }
-
-        [HttpPost]
-        public ActionResult MakeBets(Bet model)
-        {
-            if (ModelState.IsValid)
-            {
-                
-            }
-
-            return RedirectToAction("MyBets");
-        }
-
-
-        // GET: Bets
+        // GET: Periods
         public ActionResult Index()
         {
-            var bets = db.Bets.Include(b => b.Program);
-            return View(bets.ToList());
+            return View(db.Periods.ToList());
         }
 
-        // GET: Bets/Details/5
+        // GET: Periods/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Bet bet = db.Bets.Find(id);
-            if (bet == null)
+            Period period = db.Periods.Find(id);
+            if (period == null)
             {
                 return HttpNotFound();
             }
-            return View(bet);
+            return View(period);
         }
 
-        // GET: Bets/Create
+        // GET: Periods/Create
         public ActionResult Create()
         {
-            ViewBag.ProgramID = new SelectList(db.Programs, "ProgramID", "ProgTitle");
             return View();
         }
 
-        // POST: Bets/Create
+        // POST: Periods/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "BetID,PeriodID,ScoreOLS,ScoreClassic,AttemptNo,TimeStamp,IsHorse,BetRus18,BetMos18,BetSTImob,BetSTI,BetSTIplus,UserID,ProgramID")] Bet bet)
+        public ActionResult Create([Bind(Include = "PeriodID,UserID,PeriodDescription,EndDate,BegDate")] Period period)
         {
             if (ModelState.IsValid)
             {
-                db.Bets.Add(bet);
+                db.Periods.Add(period);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ProgramID = new SelectList(db.Programs, "ProgramID", "ProgTitle", bet.ProgramID);
-            return View(bet);
+            return View(period);
         }
 
-        // GET: Bets/Edit/5
+        // GET: Periods/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Bet bet = db.Bets.Find(id);
-            if (bet == null)
+            Period period = db.Periods.Find(id);
+            if (period == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.ProgramID = new SelectList(db.Programs, "ProgramID", "ProgTitle", bet.ProgramID);
-            return View(bet);
+            return View(period);
         }
 
-        // POST: Bets/Edit/5
+        // POST: Periods/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "BetID,PeriodID,ScoreOLS,ScoreClassic,AttemptNo,TimeStamp,IsHorse,BetRus18,BetMos18,BetSTImob,BetSTI,BetSTIplus,UserID,ProgramID")] Bet bet)
+        public ActionResult Edit([Bind(Include = "PeriodID,UserID,PeriodDescription,EndDate,BegDate")] Period period)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(bet).State = EntityState.Modified;
+                db.Entry(period).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.ProgramID = new SelectList(db.Programs, "ProgramID", "ProgTitle", bet.ProgramID);
-            return View(bet);
+            return View(period);
         }
 
-        // GET: Bets/Delete/5
+        // GET: Periods/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Bet bet = db.Bets.Find(id);
-            if (bet == null)
+            Period period = db.Periods.Find(id);
+            if (period == null)
             {
                 return HttpNotFound();
             }
-            return View(bet);
+            return View(period);
         }
 
-        // POST: Bets/Delete/5
+        // POST: Periods/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Bet bet = db.Bets.Find(id);
-            db.Bets.Remove(bet);
+            Period period = db.Periods.Find(id);
+            db.Periods.Remove(period);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
