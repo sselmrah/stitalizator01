@@ -1,0 +1,43 @@
+﻿@model stitalizator01.Models.Channel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Channel</h4>
+	<hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ChannelCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ChannelCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ChannelTag)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ChannelTag)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ChannelName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ChannelName)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ChannelID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

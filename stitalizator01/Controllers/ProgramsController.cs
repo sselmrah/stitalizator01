@@ -22,9 +22,36 @@ namespace stitalizator01.Controllers
         // GET: Programs
         public ActionResult Index()
         {
-            updateSchedule();
+            DateTime today = DateTime.Now.Date;
+            List<Program> todayProgList = new List<Program>();
+            /*
+            todayProgList = db.Programs.Where(o => o.TvDate == today).ToList();
+            
+            if (todayProgList.Count > 0)
+            {
+                return View(todayProgList);
+            }
+            else
+            {
+                List<Channel> channelsList = db.Channels.ToList();
+                foreach (Channel channel in channelsList)
+                {
+                    updateSchedule(today.ToString("dd.MM.yyyy"), channel.ChannelTag);
+                }
+              
+            }
+             */
+            List<Channel> channelsList = db.Channels.ToList();
+            foreach (Channel channel in channelsList)
+            {
+                updateSchedule(today.ToString("dd.MM.yyyy"), channel.ChannelTag);
+            }
+            todayProgList = db.Programs.Where(o => o.TvDate == today.Date).ToList();
+
+            //updateSchedule();
             //getScheduleByDateChannel();
-            return View(db.Programs.ToList());
+            //return View(db.Programs.ToList());
+            return View(todayProgList);
         }
 
         // GET: Programs/Details/5
@@ -127,43 +154,46 @@ namespace stitalizator01.Controllers
         public void updateSchedule(string dateStr="05.04.2017", string chCodeStr = "1TV")
         {
             DateTime curDate = DateTime.Parse(dateStr);
-            List<string> chList = new List<string>();     
-            //Channels dictionary
-            chList.Add("1TV");
-            chList.Add("RTR");
-            chList.Add("NTV");
-            chList.Add("STS");
-            chList.Add("TNT");
-            chList.Add("MatchTV");
-            chList.Add("DOMASHNIY");
-            chList.Add("RenTV");
-            chList.Add("TVC");
-
-            List<Tuple<string, string>> chDict = new List<Tuple<string, string>>();            
-            chDict.Add(new Tuple<string, string>("1TV", "Первый канал"));
-            chDict.Add(new Tuple<string, string>("RTR", "Россия-1"));            
-            chDict.Add(new Tuple<string, string>("NTV", "НТВ"));
-            chDict.Add(new Tuple<string, string>("STS", "СТС"));
-            chDict.Add(new Tuple<string, string>("TNT", "ТНТ"));
-            chDict.Add(new Tuple<string, string>("MatchTV", "Матч-ТВ"));
-            chDict.Add(new Tuple<string, string>("DOMASHNIY", "Домашний"));
-            chDict.Add(new Tuple<string, string>("RenTV", "Рен-ТВ"));
-            chDict.Add(new Tuple<string, string>("TVC", "ТВЦ"));
-            
+            /*
+           List<string> chList = new List<string>();     
+           //Channels dictionary
+           chList.Add("1TV");
+           chList.Add("RTR");
+           chList.Add("NTV");
+           chList.Add("STS");
+           chList.Add("TNT");
+           chList.Add("MatchTV");
+           chList.Add("DOMASHNIY");
+           chList.Add("RenTV");
+           chList.Add("TVC");
+           
+           List<Tuple<string, string>> chDict = new List<Tuple<string, string>>();            
+           chDict.Add(new Tuple<string, string>("1TV", "Первый канал"));
+           chDict.Add(new Tuple<string, string>("RTR", "Россия-1"));            
+           chDict.Add(new Tuple<string, string>("NTV", "НТВ"));
+           chDict.Add(new Tuple<string, string>("STS", "СТС"));
+           chDict.Add(new Tuple<string, string>("TNT", "ТНТ"));
+           chDict.Add(new Tuple<string, string>("MatchTV", "Матч-ТВ"));
+           chDict.Add(new Tuple<string, string>("DOMASHNIY", "Домашний"));
+           chDict.Add(new Tuple<string, string>("RenTV", "Рен-ТВ"));
+           chDict.Add(new Tuple<string, string>("TVC", "ТВЦ"));
+           */
             string curChannelName = "";
 
-            foreach(Tuple<string,string> ch in chDict)
+            //foreach(Tuple<string,string> ch in chDict)
+            List<Channel> chList = db.Channels.ToList();
+            foreach (Channel channel in chList)
             {
-                if (ch.Item1==chCodeStr)
+                if (channel.ChannelTag==chCodeStr)
                 {
-                    curChannelName = ch.Item2;
+                    curChannelName = channel.ChannelName;
                     break;
                 }
             }
 
             if (getScheduleByDateChannel(dateStr))
             {
-                var progs = db.Programs.Where(o => o.TvDate == curDate);
+                var progs = db.Programs.Where(o => o.TvDate == curDate & o.ChannelCode == chCodeStr);
                 if (progs.Count()>0)
                 {
                     db.Programs.RemoveRange(progs);
