@@ -1,0 +1,63 @@
+﻿@model stitalizator01.Models.Program
+
+<td>
+    @using (Html.BeginForm("UpdateBet", "Programs", new { id = Model.ProgramID }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.CheckBoxFor(model => model.IsBet, new { onclick = "this.form.submit();" })
+        @* <input type="submit" value="Update" />*@
+    }
+    @*
+        <form method="post" action="Programs/UpdateBet">
+            @Html.AntiForgeryToken()
+            Html.CheckBoxFor(model => model.IsBet, new { @Value = model.IsBet })
+            @Html.CheckBoxFor(model => model.IsBet)
+            <input type="submit" value="Update" />
+        </form>
+    *@
+    @*Html.EditorFor(model => model.IsBet)
+        @Html.CheckBoxFor(model => model.IsBet, new { id=model.ProgramID, @class = "toggle", data_url = Url.Action("Edit", "Programs")})*@
+</td>
+<td>
+    @Html.DisplayFor(model => model.ChannelCode)
+</td>
+<td>
+    @Html.DisplayFor(model => model.ProgTitle)
+</td>
+<td>
+    @Html.DisplayFor(model => model.TvDate)
+</td>
+<td>
+    @Html.DisplayFor(model => model.TimeStart)
+</td>
+<td>
+    @Html.DisplayFor(model => model.TimeEnd)
+</td>
+<td>
+    @Html.DisplayFor(model => model.ProgDescr)
+</td>
+<td>
+    @Html.DisplayFor(model => model.ProgCat)
+</td>
+@*
+    <td>
+        @Html.DisplayFor(model => model.ShareStiPlus)
+    </td>
+    <td>
+        @Html.DisplayFor(model => model.ShareStiMob)
+    </td>
+    <td>
+        @Html.DisplayFor(model => model.ShareSti)
+    </td>
+    <td>
+        @Html.DisplayFor(model => model.ShareMos18)
+    </td>
+    <td>
+        @Html.DisplayFor(model => model.ShareRus18)
+    </td>
+*@
+<td>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ProgramID }) |
+    @Html.ActionLink("Details", "Details", new { id = Model.ProgramID }) |
+    @Html.ActionLink("Delete", "Delete", new { id = Model.ProgramID })
+</td>

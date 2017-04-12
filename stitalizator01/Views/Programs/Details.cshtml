@@ -109,5 +109,5 @@
 </div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.ProgramID }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to List", "Index", new { date = Model.TvDate.ToString("dd.MM.yyyy") })
 </p>

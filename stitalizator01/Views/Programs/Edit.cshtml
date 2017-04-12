@@ -1,11 +1,11 @@
 ﻿@model stitalizator01.Models.Program
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Изменить программу";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Edit</h2>
+<h2>Изменить</h2>
 
 
 @using (Html.BeginForm())
@@ -13,11 +13,18 @@
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>Program</h4>
+        <h4>Программу</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.ProgramID)
 
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsBet, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.IsBet, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.IsBet, "", new { @class = "text-danger" })
+            </div>
+        </div>
         <div class="form-group">
             @Html.LabelFor(model => model.ChannelCode, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -67,6 +74,14 @@
         </div>
 
         <div class="form-group">
+            @Html.LabelFor(model => model.ProgCat, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ProgCat, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ProgCat, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
             @Html.LabelFor(model => model.ShareStiPlus, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.ShareStiPlus, new { htmlAttributes = new { @class = "form-control" } })
@@ -105,24 +120,18 @@
                 @Html.ValidationMessageFor(model => model.ShareRus18, "", new { @class = "text-danger" })
             </div>
         </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.IsBet, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.IsBet, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.IsBet, "", new { @class = "text-danger" })
-            </div>
-        </div>
+
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Сохранить" class="btn btn-default" />
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to List", "Index", new { date = Model.TvDate.ToString("dd.MM.yyyy")})        
 </div>
 
 @section Scripts {

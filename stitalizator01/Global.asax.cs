@@ -12,9 +12,12 @@ namespace stitalizator01
 {
     public class MvcApplication : System.Web.HttpApplication
     {
+        public static System.Timers.Timer timer = new System.Timers.Timer(60000); // This will raise the event every one minute.
+        private ApplicationDbContext db = new ApplicationDbContext();                 
 
         protected void Application_Start()
         {
+
             AreaRegistration.RegisterAllAreas();
             //var ctx = new StitalizatorContext();
             //ctx.Database.Initialize(true);
@@ -22,9 +25,22 @@ namespace stitalizator01
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-
-
+            timer.Enabled = true;
+            timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
         }
+
+        private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            DateTime now = DateTime.Now;
+            var expiredList = db.Bets.Where(b => b.Program.TimeStart < now);
+            foreach (Bet bet in expiredList)
+            {
+                bet.IsLocked = true;
+            }
+            db.SaveChanges();
+            
+        }
+
         /*
         private void initializeBetsDB(ApplicationDbContext context)
         {

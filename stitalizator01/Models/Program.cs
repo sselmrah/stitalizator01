@@ -39,7 +39,7 @@ namespace stitalizator01.Models
             set { _programID = value; }
         }
 
-        [DisplayName("Код канала")]
+        [DisplayName("Название канала")]
         public string ChannelCode
         {
             get { return _channelCode; }
@@ -59,7 +59,7 @@ namespace stitalizator01.Models
             set { _tvDate = value; }
         }
 
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:hh:mm}")]        
+        [DisplayFormat(ApplyFormatInEditMode = false, DataFormatString = "{0:HH:mm}")]        
         [DisplayName("Время начала")]
         public DateTime TimeStart
         {
@@ -67,7 +67,7 @@ namespace stitalizator01.Models
             set { _timeStart = value; }
         }
 
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:hh:mm}")]        
+        [DisplayFormat(ApplyFormatInEditMode = false, DataFormatString = "{0:HH:mm}")]        
         [DisplayName("Время окончания")]
         public DateTime? TimeEnd
         {
@@ -86,30 +86,31 @@ namespace stitalizator01.Models
             get { return _progCat; }
             set { _progCat = value; }
         }
-
+        [DisplayName("Доля СТИ+")]
         public float? ShareStiPlus
         {
             get { return _shareStiPlus; }
             set { _shareStiPlus = value; }
         }
-
+        [DisplayName("Доля СТИ-Моб")]
         public float? ShareStiMob
         {
             get { return _shareStiMob; }
             set { _shareStiMob = value; }
         }
-
+        [DisplayName("Доля СТИ")]
         public float? ShareSti
         {
             get { return _shareSti; }
             set { _shareSti = value; }
         }
-
+        [DisplayName("Доля Mediascope-Mos")]
         public float? ShareMos18
         {
             get { return _shareMos18; }
             set { _shareMos18 = value; }
         }
+        [DisplayName("Доля СТИ+")]
         public float? ShareRus18
         {
             get { return _shareRus18; }

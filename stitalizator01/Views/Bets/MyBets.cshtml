@@ -3,20 +3,61 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var curDate = ViewData["curDate"];
+    var tableTitle = ViewData["tTitle"];
 }
 
-<h2>Ставки для @User.Identity.Name</h2>
+<h2>@tableTitle для пользователя @User.Identity.Name</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Посмотреть все непроставленные ставки", "MyBets", new { filter = "empty" })
 </p>
+
+
+
+
+@using (Html.BeginForm("MyBets", "Bets", FormMethod.Get))
+{
+    <fieldset>
+        
+        <input type="hidden" value="emptybydate" name="filter" />
+        <p>Посмотреть непроставленные ставки на <input name="date" type="date" id="bets_datepicker" class="datepickers" required="required" value="@curDate" onchange="form.submit();" /></p>        
+    </fieldset>
+}
+
+@using (Html.BeginForm("MyBets", "Bets", FormMethod.Get))
+{
+    <fieldset>        
+        <input type="hidden" value="allbydate" name="filter" />
+        <p>Посмотреть все ставки на <input name="date" type="date" id="bets_datepicker" class="datepickers" required="required" value="@curDate" onchange="form.submit();" /></p>        
+    </fieldset>
+}
+
 <table class="table">
     <tr>
+        <th></th>
         <th>
-            @Html.DisplayNameFor(model => model.Program.ProgTitle)
+            @Html.DisplayNameFor(model => model.Program.TvDate)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Program.BetSTIplus)
+            @Html.DisplayNameFor(model => model.Program.ChannelCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Program.ProgTitle)
+
+        </th>
+        
+        <th>
+            Ставка СТИ+
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Program.ShareStiPlus)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ScoreClassic)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ScoreOLS)
         </th>
 @*
     <th>
@@ -60,17 +101,63 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
+@foreach (var model in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Program.ProgTitle)
+            @{
+                if (model.IsLocked)
+                {
+                    <span class="glyphicon glyphicon-lock"></span>
+                }
+            }
         </td>
         <td>
-            @using (Html.BeginForm("MakeBet", "Bets", FormMethod.Post))
+            @Html.DisplayFor(modelItem => model.Program.TvDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => model.Program.ChannelCode)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => model.Program.ProgTitle)
+        </td>
+        <td>
+            @*using (Html.BeginForm("MakeBets", "Bets", FormMethod.Post))*@
+
+            @using(Html.BeginForm())
             {
                 @Html.AntiForgeryToken()
-                @Html.TextBoxFor(modelItem => item.BetSTIplus, new { onchange = "this.form.submit();" })
+                if (model.IsLocked)
+                { 
+                @Html.DisplayFor(modelItem => model.BetSTIplus)                    
+                }
+                else 
+                { 
+                @Html.EditorFor(modelItem => model.BetSTIplus)                
+                }
+                @Html.Hidden("BetID", model.BetID)
+                @Html.Hidden("PeriodID", model.PeriodID)
+                @Html.Hidden("ScoreOLS", model.ScoreOLS)
+                @Html.Hidden("ScoreClassic", model.ScoreClassic)
+                @Html.Hidden("AttemptNo", model.AttemptNo)
+                @Html.Hidden("TimeStamp", model.TimeStamp)
+                @Html.Hidden("IsHorse", model.IsHorse)
+                @Html.Hidden("BetRus18", model.BetRus18)
+                @Html.Hidden("BetMos18", model.BetMos18)
+                @Html.Hidden("BetSTImob", model.BetSTImob)
+                @Html.Hidden("BetSTI", model.BetSTI)                
+                @Html.Hidden("ProgramID", model.ProgramID)
+                if (!model.IsLocked) {<input type="submit" value="Сохранить" class="btn btn-default" />}
             }
+                
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => model.Program.ShareStiPlus)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => model.ScoreClassic)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => model.ScoreOLS)
         </td>
         @*
         <td>
@@ -112,10 +199,8 @@
             @Html.DisplayFor(modelItem => item.UserID)
         </td>
             *@
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.BetID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.BetID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.BetID })
+        <td>            
+            @Html.ActionLink("Подробнее", "Details", new { id=model.BetID })
         </td>
     </tr>
 }

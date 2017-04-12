@@ -13,6 +13,7 @@ using System.Xml.Xsl;
 using System.Xml.XPath;
 using System.Text;
 
+
 namespace stitalizator01.Controllers
 {
     public class ProgramsController : Controller
@@ -20,17 +21,26 @@ namespace stitalizator01.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();                           
             
         // GET: Programs
-        public ActionResult Index()
+        [HttpGet]
+        public ActionResult Index(string date = "today")
         {
-            DateTime today = DateTime.Now.Date;
+            DateTime curDay;
+            if (date == "today")
+            {
+                curDay = DateTime.Now.Date;
+            }
+            else
+            {
+                curDay = DateTime.Parse(date);
+            }
             List<Program> todayProgList = new List<Program>();
             
             List<Channel> fullChannelsList = db.Channels.ToList();
             List<Channel> channelsList = new List<Channel>();
             
-            foreach (Channel channel in channelsList)
-            {                
-                if (db.Programs.Where(o => o.TvDate == today.Date & o.ChannelCode == channel.ChannelTag).Count()==0)
+            foreach (Channel channel in fullChannelsList)
+            {
+                if (db.Programs.Where(o => o.TvDate == curDay.Date & o.ChannelCode == channel.ChannelName).Count() == 0)
                 {
                     channelsList.Add(channel);
                 }
@@ -39,16 +49,30 @@ namespace stitalizator01.Controllers
             {
                 foreach (Channel channel in channelsList)
                 {
-                    updateSchedule(today.ToString("dd.MM.yyyy"), channel.ChannelTag);
+                    updateSchedule(curDay.ToString("dd.MM.yyyy"), channel.ChannelTag);
                 }
             }
-            todayProgList = db.Programs.Where(o => o.TvDate == today.Date).ToList();
+            todayProgList = db.Programs.Where(o => o.TvDate == curDay.Date).ToList();
 
             //updateSchedule();
             //getScheduleByDateChannel();
             //return View(db.Programs.ToList());
             return View(todayProgList);
         }
+
+        public void Clear(string date)
+        {            
+            DateTime curDate = DateTime.Parse(date);
+            var listToRemove = db.Programs.Where(p => (p.IsBet == false & p.TvDate == curDate.Date));
+            
+            if (listToRemove.Count() > 0)
+            {
+                db.Programs.RemoveRange(listToRemove);
+                db.SaveChanges();
+            }
+                                   
+        }
+
 
         // GET: Programs/Details/5
         public ActionResult Details(int? id)
@@ -121,7 +145,7 @@ namespace stitalizator01.Controllers
         
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public ActionResult UpdateBet(int id)
         {
             Program curProg = db.Programs.Find(id);
@@ -150,7 +174,54 @@ namespace stitalizator01.Controllers
                 
             }
             db.SaveChanges();
-            return RedirectToAction("Index");
+            //return RedirectToAction("Index");
+            return PartialView(curProg);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult enterResult([Bind(Include = "ProgramID,ChannelCode,ProgTitle,TvDate,TimeStart,TimeEnd,ProgDescr,ProgCat,ShareStiPlus,ShareStiMob,ShareSti,ShareMos18,ShareRus18")] Program program)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(program).State = EntityState.Modified;
+                var betsList = db.Bets.Where(b => b.Program.ProgramID == program.ProgramID);
+                foreach (Bet bet in betsList)
+                {                    
+                    bet.ScoreClassic=calculateScoreClassic(bet.BetSTIplus, (float)bet.Program.ShareStiPlus);
+                    bet.ScoreOLS = calculateScoreOLS(bet.BetSTIplus, (float)bet.Program.ShareStiPlus);
+                    db.Entry(bet).State = EntityState.Modified;
+                    
+                }
+                db.SaveChanges();
+                //return RedirectToAction("Index");
+            }
+
+            return PartialView(program);
+        }
+
+
+        public float calculateScoreClassic(float bet, float result)
+        {
+            float score = 0;
+            float tempResult = 0;
+
+            tempResult = Math.Abs(result - bet);
+            if (tempResult <= 0.5) { score = 3; }
+            if (tempResult <= 1) { score = 2; }
+            if (tempResult <= 2) { score = 1; }
+
+            return score;
+        }
+
+        //Ordinary least squares result
+        public float calculateScoreOLS(float bet, float result)
+        {
+            float score = 0;
+            score = (float)Math.Pow((result - bet),2);
+
+            return score;
         }
 
         // GET: Programs/Delete/5
@@ -180,7 +251,7 @@ namespace stitalizator01.Controllers
         }
 
 
-        public void updateSchedule(string dateStr="05.04.2017", string chCodeStr = "1TV")
+        public void updateSchedule(string dateStr="05.04.2017", string chCodeStr = "1TV", string filter="9-23")
         {
             DateTime curDate = DateTime.Parse(dateStr);
             /*
@@ -270,10 +341,25 @@ namespace stitalizator01.Controllers
                         }
                     }
                 }
-
-                db.Programs.AddRange(progList);
+                List<Program> filteredProgList = new List<Program>();
+                switch (filter)
+                {
+                    case "9-23":
+                        foreach(Program p in progList)
+                        {
+                            if (p.TimeStart.Hour>=9 & p.TimeStart.Hour<23)
+                            {
+                                filteredProgList.Add(p);
+                            }
+                        }
+                        break;
+                    case "none":
+                        filteredProgList = progList;
+                        break;
+                }
+                db.Programs.AddRange(filteredProgList);
                 db.SaveChanges();
-                var x = 0;
+                
                 //lines = list.ToArray();
             }
 

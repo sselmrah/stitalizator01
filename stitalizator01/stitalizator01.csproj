@@ -193,6 +193,10 @@
     <Compile Include="Migrations\201704111323458_progIsBetAdded.Designer.cs">
       <DependentUpon>201704111323458_progIsBetAdded.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201704121406494_bet_isLocked.cs" />
+    <Compile Include="Migrations\201704121406494_bet_isLocked.Designer.cs">
+      <DependentUpon>201704121406494_bet_isLocked.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Bet.cs" />
@@ -221,6 +225,8 @@
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -287,6 +293,8 @@
     <Content Include="Views\Periods\Details.cshtml" />
     <Content Include="Views\Periods\Edit.cshtml" />
     <Content Include="Views\Periods\Index.cshtml" />
+    <Content Include="Views\Programs\UpdateBet.cshtml" />
+    <Content Include="Views\Programs\enterResult.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Temp\" />
@@ -313,6 +321,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201704111323458_progIsBetAdded.resx">
       <DependentUpon>201704111323458_progIsBetAdded.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704121406494_bet_isLocked.resx">
+      <DependentUpon>201704121406494_bet_isLocked.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

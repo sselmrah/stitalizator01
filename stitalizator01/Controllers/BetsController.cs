@@ -14,24 +14,68 @@ namespace stitalizator01.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();        
 
-
-        public ActionResult MyBets(string curDate = "today")
-        {
+        [HttpGet]
+        public ActionResult MyBets(string filter = "empty", string date = "01.01.1900")
+        {            
+            List<Bet> bets = new List<Bet>();
+            DateTime curDate;
+            string title = "";
+            if (date == "01.01.1900")
+            {
+                curDate = DateTime.Today;
+            }
+            else
+            {
+                curDate = DateTime.Parse(date.ToString());
+            }
             
-            var bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name).ToList();
+
+            switch (filter)
+            {
+                case "all":
+                    bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name).ToList();
+                    title = "Все ставки";
+                    break;
+                case "empty":
+                    bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.BetSTIplus == 0).ToList();
+                    title = "Непроставленные ставки";
+                    break;
+                case "filled":
+                    bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.BetSTIplus > 0).ToList();
+                    title = "Проставленные ставки";
+                    break;
+                case "allbydate":
+                    bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.Program.TvDate == curDate.Date).ToList();
+                    title = "Все ставки на "+curDate.ToString("dd.MM.yyyy");
+                    break;
+                case "emptybydate":
+                    bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.Program.TvDate == curDate.Date & b.BetSTIplus == 0).ToList();
+                    title = "Непроставленные ставки на "+curDate.ToString("dd.MM.yyyy");
+                    break;
+                case "filledbydate":
+                    bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.Program.TvDate == curDate.Date & b.BetSTIplus > 0).ToList();
+                    title = "Проставленные ставки на " + curDate.ToString("dd.MM.yyyy");
+                    break;
+            }
+            ViewData["curDate"] = curDate.ToString("yyyy-MM-dd");
+            ViewData["tTitle"] = title;
             return View(bets);
         }
 
         [HttpPost]
-        public ActionResult MakeBets(Bet model)
+        [ValidateAntiForgeryToken]
+        public ActionResult MyBets([Bind(Include = "BetID,PeriodID,ScoreOLS,ScoreClassic,AttemptNo,TimeStamp,IsHorse,BetRus18,BetMos18,BetSTImob,BetSTI,BetSTIplus,ProgramID")] Bet bet)
         {
             if (ModelState.IsValid)
             {
-                
+                db.Entry(bet).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("MyBets");
             }
-
+            ViewBag.ProgramID = new SelectList(db.Programs, "ProgramID", "ProgTitle", bet.ProgramID);
             return RedirectToAction("MyBets");
         }
+
 
 
         // GET: Bets

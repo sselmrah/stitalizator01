@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Web;
 
@@ -21,6 +22,8 @@ namespace stitalizator01.Models
         private float _scoreClassic;
         private float _scoreOLS;
         private int _PeriodID;
+        private bool _isLocked;
+
 
         public int PeriodID
         {
@@ -108,6 +111,12 @@ namespace stitalizator01.Models
             set { _betID = value; }
         }
 
+        [DisplayName("Заблокировано")]
+        public bool IsLocked
+        {
+            get { return _isLocked; }
+            set { _isLocked = value; }
+        }
 
 
         public virtual Program Program { get; set; }
