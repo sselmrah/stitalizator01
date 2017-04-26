@@ -14,6 +14,13 @@ namespace stitalizator01.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+
+
+        public ActionResult ChannelCheckBoxes()
+        {            
+            return PartialView(db.Channels.ToList());
+        }
+
         // GET: /Channels/
         public ActionResult Index()
         {
@@ -46,7 +53,7 @@ namespace stitalizator01.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include="ChannelID,ChannelCode,ChannelTag,ChannelName")] Channel channel)
+        public ActionResult Create([Bind(Include="ChannelID,ChannelCode,ChannelTag,ChannelName,IsDefault")] Channel channel)
         {
             if (ModelState.IsValid)
             {
@@ -78,7 +85,7 @@ namespace stitalizator01.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include="ChannelID,ChannelCode,ChannelTag,ChannelName")] Channel channel)
+        public ActionResult Edit([Bind(Include="ChannelID,ChannelCode,ChannelTag,ChannelName,IsDefault")] Channel channel)
         {
             if (ModelState.IsValid)
             {

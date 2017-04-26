@@ -3,21 +3,52 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    string tvDateStr = "";
+    if (Model.Count() == 0)
+    {
+        tvDateStr = DateTime.Now.ToString("yyyy-MM-dd");
+    }
+    else
+    {
+        tvDateStr = Model.First().TvDate.ToString("yyyy-MM-dd");
+    }
 }
 
 
 @using (Html.BeginForm("Index", "Programs", FormMethod.Get))
 {
     <fieldset>
-        <h2 style="padding-left:20px">Программы на <input name="date" type="date" id="broadcast_datepicker" class="datepickers" required="required" value="@Model.First().TvDate.ToString("yyyy-MM-dd")" onchange="form.submit();" /></h2>
+        <h2 style="padding-left:20px">Программы на <input name="date" type="date" id="broadcast_datepicker" class="datepickers" required="required" value="@tvDateStr" onchange="form.submit();" /></h2>
     </fieldset>
 }
 <p>
-    @Html.ActionLink("Добавить программу", "Create")
+    @Html.ActionLink("Добавить программу вручную", "Create")
 </p>
 <p>
-    @Html.ActionLink("Удалить все ненужное", "Clear", new { date = Model.First().TvDate.ToString("dd.MM.yyyy") })
+    <span id="clearProgListButton" class="btn btn-danger btn-lg glyphicon glyphicon-trash" onclick="ClearProgs()"></span> Удалить ненужное
+    @*Html.ActionLink("Удалить все ненужное", "Clear", new { date = tvDateStr })*@
 </p>
+
+<form id="schedDownloadForm">
+    <label id="checkBoxesLabel">Каналы</label>
+    <p>
+        @Html.Action("ChannelCheckBoxes", "Channels")
+    </p>
+    <label>Время выхода программы</label>
+    <div class="input-group input-group-lg">
+        <span class="input-group-addon" id="sizing-addon1">С</span>
+        <input id="progTimeFrom" type="text" class="form-control" aria-describedby="sizing-addon1" value="9:00">
+    </div>    
+    <div class="input-group input-group-lg">
+        <span class="input-group-addon" id="sizing-addon2">По</span>
+        <input id="progTimeTo" type="text" class="form-control" aria-describedby="sizing-addon1" value="23:00">
+    </div>
+
+    <p>        
+            <span id=" updateproglistbutton" class="btn btn-info btn-lg glyphicon glyphicon-cloud-download" onclick="downloadSchedule()"></span> Подгрузить расписание        
+    </p>
+</form>
+
 <table class="table">
     <tr>
         <th>
@@ -109,7 +140,7 @@
         <td>
             @Html.DisplayFor(modelItem => model.ProgCat)
         </td>
-        <td>
+        <td>            
             @*@Html.DisplayFor(modelItem => item.ShareStiPlus)*@
             @using (Html.BeginForm("enterResult", "Programs", new { id = "resultForm" }))
             {
@@ -126,8 +157,11 @@
                 @Html.Hidden("ShareStiMob", model.ShareStiMob)
                 @Html.Hidden("ShareSti", model.ShareSti)
                 @Html.Hidden("ShareMos18", model.ShareMos18)
-                @Html.Hidden("ShareRus18", model.ShareRus18)                
-                <button id="saveResultButton" value="Сохранить" class="btn btn-default" onclick="updateResult(e)" />
+                @Html.Hidden("ShareRus18", model.ShareRus18)
+                <a href="#" class="btn btn-success btn-lg">
+                    <span id="saveResultButton" class="glyphicon glyphicon-ok" onclick="updateResult(e)"></span> Ok
+                </a>
+                @*<button id="saveResultButton" value="Сохранить" class="btn btn-default" onclick="updateResult(e)" />*@
             }
         </td>
 @*
@@ -157,47 +191,114 @@
 
 @section scripts {
     <script>
-        function updateResult(e) {
-                console.log("here we are");
-                var formData = new FormData(this);
 
-                $.ajax({
-                    url: '@Url.Action("enterResult", "Programs")',
-                    type: "POST",
-                    dataType: "json",
-                    contentType: "application/json; charset=utf-8",
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function (result) {
-                        console.log("success!");
-                        console.log("result: " + result);// here in result you will get your data
-                 //       e.preventDefault();
-                    },
-                    error: function (result) {
-                        console.log("error: " + result.error);
-                        console.log("result: " + result);
-                    }
-                });
-                //e.preventDefault();
-            };
-
-
-
-        function updateBet(curId) {
-            //console.log("initial: " + curId);
+        function ClearProgs() {
+            var curDate = document.getElementById("broadcast_datepicker").value.toString("yyyy-MM-dd");
             $.ajax({
-                url: 'Programs/UpdateBet',
-                type: 'POST',
-                data: { id: curId },
-                success: function (msg) {
-                   // console.log(msg);                    
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    console.log(XMLHttpRequest.responseText);
+                url: '@Url.Action("Clear", "Programs")',
+                type: "GET",
+                dataType: "text",
+                data: {
+                    date: curDate,
+                    success: function (data) {                        
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1000);                        
+                    }
                 }
             });
+        };
+
+    function downloadSchedule() {
+        var timeFromStr = document.getElementById("progTimeFrom").value;
+        if (timeFromStr.indexOf(":") > 0) {
+            timeFromStr = timeFromStr.substr(0, timeFromStr.indexOf(":"));
         }
-  
+        var timeToStr = document.getElementById("progTimeTo").value;
+        if (timeToStr.indexOf(":") > 0) {
+            timeToStr = timeToStr.substr(0, timeToStr.indexOf(":"));
+        }
+        var timeFilter = timeFromStr + "-" + timeToStr;
+        var curDate = document.getElementById("broadcast_datepicker").value.toString("yyyy-MM-dd");
+        var cbs = document.getElementsByClassName("channelCb");
+        var chList = "";
+        for (i = 0; i < cbs.length; i++) {
+            if (cbs[i].checked) {
+                chList += cbs[i].id;
+                if (i != cbs.length - 1) {
+                    chList += ";";
+                }
+            }
+        }
+
+        console.log(chList);
+        //console.log(curDate);
+        //console.log(document.getElementById("progTimeFrom").value + "-" + document.getElementById("progTimeTo").value);
+        //console.log(timeFromStr+ "-" + timeToStr);
+
+
+        
+            $.ajax({
+                url: '@Url.Action("ProgsByDate", "Programs")',
+                type: "GET",
+                dataType: "text",
+                data: {
+                    date: curDate,
+                    channelsListStr: chList,
+                    filter: timeFilter,
+                    success: function (data) {
+                        console.log("success");
+                        setTimeout(function () {
+                            location.reload();
+                        }, 3000);
+                    }
+                },                
+        });
+
+    };
+
+
+    function updateResult(e) {
+        console.log("here we are");
+        var formData = new FormData(this);
+
+        $.ajax({
+            url: '@Url.Action("enterResult", "Programs")',
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (result) {
+                console.log("success!");
+                console.log("result: " + result);// here in result you will get your data
+                //       e.preventDefault();
+            },
+            error: function (result) {
+                console.log("error: " + result.error);
+                console.log("result: " + result);
+            }
+        });
+        //e.preventDefault();
+    };
+
+
+
+    function updateBet(curId) {
+        //console.log("initial: " + curId);
+        $.ajax({
+            url: 'Programs/UpdateBet',
+            type: 'POST',
+            data: { id: curId },
+            success: function (msg) {
+                // console.log(msg);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log(XMLHttpRequest.responseText);
+            }
+        });
+    }
+
     </script>
 }

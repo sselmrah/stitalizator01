@@ -41,6 +41,14 @@
                 @Html.ValidationMessageFor(model => model.ChannelName)
             </div>
         </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsDefault, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.IsDefault)
+                @Html.ValidationMessageFor(model => model.IsDefault)
+            </div>
+        </div>
+
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">

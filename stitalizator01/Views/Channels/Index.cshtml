@@ -21,6 +21,9 @@
         <th>
             @Html.DisplayNameFor(model => model.ChannelName)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsDefault)
+        </th>
         <th></th>
     </tr>
 
@@ -34,6 +37,9 @@
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.ChannelName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IsDefault)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.ChannelID }) |

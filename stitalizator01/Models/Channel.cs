@@ -11,8 +11,9 @@ namespace stitalizator01.Models
         private int _channelCode;
         private string _channelName;
         private string _channelTag;
+        private bool _isDefault;
 
-
+        
         public int ChannelID
         {
             get { return _channelID; }
@@ -38,6 +39,11 @@ namespace stitalizator01.Models
             set { _channelName = value; }
         }
 
+        public bool IsDefault
+        {
+            get { return _isDefault; }
+            set { _isDefault = value; }
+        }
 
     }
 }

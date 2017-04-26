@@ -20,7 +20,7 @@ namespace stitalizator01.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();                           
             
-        // GET: Programs
+
         [HttpGet]
         public ActionResult Index(string date = "today")
         {
@@ -34,30 +34,54 @@ namespace stitalizator01.Controllers
                 curDay = DateTime.Parse(date);
             }
             List<Program> todayProgList = new List<Program>();
-            
-            List<Channel> fullChannelsList = db.Channels.ToList();
-            List<Channel> channelsList = new List<Channel>();
-            
-            foreach (Channel channel in fullChannelsList)
+
+            todayProgList = db.Programs.Where(o => o.TvDate == curDay.Date).ToList();
+            return View(todayProgList);
+        }
+
+
+        // GET: Programs
+        [HttpGet]
+        public ActionResult ProgsByDate(string date = "today",string channelsListStr = "1TV", string filter="9-23")
+        {
+
+            DateTime curDay;
+            if (date == "today")
             {
-                if (db.Programs.Where(o => o.TvDate == curDay.Date & o.ChannelCode == channel.ChannelName).Count() == 0)
-                {
-                    channelsList.Add(channel);
-                }
+                curDay = DateTime.Now.Date;
             }
+            else
+            {
+                curDay = DateTime.Parse(date);
+            }
+            
+            List<Program> todayProgList = new List<Program>();                        
+            List<string> channelsList = getChannelTagsListFromString(channelsListStr);            
+
             if (channelsList.Count > 0)
             {
-                foreach (Channel channel in channelsList)
+                foreach (string channelTag in channelsList)
                 {
-                    updateSchedule(curDay.ToString("dd.MM.yyyy"), channel.ChannelTag);
+                    updateSchedule(curDay.ToString("dd.MM.yyyy"), channelTag, filter);
                 }
             }
             todayProgList = db.Programs.Where(o => o.TvDate == curDay.Date).ToList();
-
-            //updateSchedule();
-            //getScheduleByDateChannel();
-            //return View(db.Programs.ToList());
             return View(todayProgList);
+        }
+
+        public List<string> getChannelTagsListFromString (string channelListStr)
+        {
+            List<string> resultList = new List<string>();
+            if (channelListStr.IndexOf(";")>0)
+            {
+                resultList = channelListStr.Split(';').ToList();
+            }
+            else
+            {
+                resultList.Add(channelListStr);
+            }
+
+            return resultList;
         }
 
         public void Clear(string date)
@@ -156,22 +180,21 @@ namespace stitalizator01.Controllers
             
             if (curProg.IsBet)
             {
-                Bet curBet = new Bet();
-                curBet.ProgramID = curProg.ProgramID;
-                curBet.Program = curProg;
-                curBet.TimeStamp = DateTime.Now;
+
                 foreach (ApplicationUser user in db.Users)
                 {
+                    Bet curBet = new Bet();
+                    curBet.ProgramID = curProg.ProgramID;
+                    curBet.Program = curProg;
+                    curBet.TimeStamp = DateTime.Now;
                     curBet.ApplicationUser = user;
-                    db.Bets.Add(curBet);
-                    
+                    db.Bets.Add(curBet);                    
                 }
             }
             else
             {
                 var x = db.Bets.Where(o => o.ProgramID == curProg.ProgramID);
-                db.Bets.RemoveRange(x);
-                
+                db.Bets.RemoveRange(x);                
             }
             db.SaveChanges();
             //return RedirectToAction("Index");
@@ -188,17 +211,37 @@ namespace stitalizator01.Controllers
                 db.Entry(program).State = EntityState.Modified;
                 var betsList = db.Bets.Where(b => b.Program.ProgramID == program.ProgramID);
                 foreach (Bet bet in betsList)
-                {                    
+                {                                        
                     bet.ScoreClassic=calculateScoreClassic(bet.BetSTIplus, (float)bet.Program.ShareStiPlus);
                     bet.ScoreOLS = calculateScoreOLS(bet.BetSTIplus, (float)bet.Program.ShareStiPlus);
-                    db.Entry(bet).State = EntityState.Modified;
-                    
+                    db.Entry(bet).State = EntityState.Modified;                    
                 }
+                List<Period> periodsList = db.Periods.Where(p => (p.BegDate <= program.TvDate & program.TvDate <= p.EndDate)).ToList();
+
+                foreach (Period period in periodsList)
+                {
+                    var userResults = db.Bets.Where(bet => (bet.Program.TvDate >= period.BegDate & bet.Program.TvDate <= period.EndDate))
+                                             .GroupBy(b => b.ApplicationUser,
+                                                      b => b.ScoreClassic,
+                                                      (key, g) => new
+                                                      {
+                                                          PersonId = key,
+                                                          Score = g.Sum()
+                                                      })
+                                             .OrderBy(p => p.Score)
+                                                      ;
+
+                    period.ApplicationUser = userResults.First().PersonId;
+
+                    
+
+                }
+
                 db.SaveChanges();
                 //return RedirectToAction("Index");
             }
 
-            return PartialView(program);
+            return RedirectToAction("Index");
         }
 
 
@@ -208,9 +251,11 @@ namespace stitalizator01.Controllers
             float tempResult = 0;
 
             tempResult = Math.Abs(result - bet);
-            if (tempResult <= 0.5) { score = 3; }
-            if (tempResult <= 1) { score = 2; }
             if (tempResult <= 2) { score = 1; }
+            if (tempResult <= 1) { score = 2; }
+            if (tempResult <= 0.5) { score = 3; }
+            
+
 
             return score;
         }
@@ -254,30 +299,7 @@ namespace stitalizator01.Controllers
         public void updateSchedule(string dateStr="05.04.2017", string chCodeStr = "1TV", string filter="9-23")
         {
             DateTime curDate = DateTime.Parse(dateStr);
-            /*
-           List<string> chList = new List<string>();     
-           //Channels dictionary
-           chList.Add("1TV");
-           chList.Add("RTR");
-           chList.Add("NTV");
-           chList.Add("STS");
-           chList.Add("TNT");
-           chList.Add("MatchTV");
-           chList.Add("DOMASHNIY");
-           chList.Add("RenTV");
-           chList.Add("TVC");
-           
-           List<Tuple<string, string>> chDict = new List<Tuple<string, string>>();            
-           chDict.Add(new Tuple<string, string>("1TV", "Первый канал"));
-           chDict.Add(new Tuple<string, string>("RTR", "Россия-1"));            
-           chDict.Add(new Tuple<string, string>("NTV", "НТВ"));
-           chDict.Add(new Tuple<string, string>("STS", "СТС"));
-           chDict.Add(new Tuple<string, string>("TNT", "ТНТ"));
-           chDict.Add(new Tuple<string, string>("MatchTV", "Матч-ТВ"));
-           chDict.Add(new Tuple<string, string>("DOMASHNIY", "Домашний"));
-           chDict.Add(new Tuple<string, string>("RenTV", "Рен-ТВ"));
-           chDict.Add(new Tuple<string, string>("TVC", "ТВЦ"));
-           */
+
             string curChannelName = "";
 
             //foreach(Tuple<string,string> ch in chDict)
@@ -344,6 +366,7 @@ namespace stitalizator01.Controllers
                 List<Program> filteredProgList = new List<Program>();
                 switch (filter)
                 {
+                        /*
                     case "9-23":
                         foreach(Program p in progList)
                         {
@@ -353,8 +376,20 @@ namespace stitalizator01.Controllers
                             }
                         }
                         break;
+                         */ 
                     case "none":
                         filteredProgList = progList;
+                        break;
+                    default:
+                        string timeStart = filter.Substring(0,filter.IndexOf("-"));
+                        string timeEnd = filter.Substring(filter.IndexOf("-")+1);
+                        foreach (Program p in progList)
+                        {
+                            if (p.TimeStart.Hour >= Convert.ToInt32(timeStart) & p.TimeStart.Hour < Convert.ToInt32(timeEnd))
+                            {
+                                filteredProgList.Add(p);
+                            }
+                        }
                         break;
                 }
                 db.Programs.AddRange(filteredProgList);

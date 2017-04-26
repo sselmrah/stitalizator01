@@ -13,9 +13,6 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.UserID)
-        </th>
-        <th>
             @Html.DisplayNameFor(model => model.PeriodDescription)
         </th>
         <th>
@@ -30,9 +27,6 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.UserID)
-        </td>
-        <td>
             @Html.DisplayFor(modelItem => item.PeriodDescription)
         </td>
         <td>
@@ -41,6 +35,7 @@
         <td>
             @Html.DisplayFor(modelItem => item.BegDate)
         </td>
+        <td>@Html.ActionLink("Leaderboard", "Leaderboard", new { id = item.PeriodID })</td>        
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.PeriodID }) |
             @Html.ActionLink("Details", "Details", new { id=item.PeriodID }) |

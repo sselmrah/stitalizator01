@@ -1,0 +1,46 @@
+﻿@model List<stitalizator01.LeaderboardEntry>
+@{
+    ViewBag.Title = "Leaderboard";
+    
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var x = Model.ToString();
+}
+
+<h2>Leaderboard</h2>
+
+<div>
+    <h4>Leaderboard</h4>
+    <hr />
+    <dl class="dl-horizontal">
+
+        @{
+            int i = 0;
+            float prevScore = 0;
+            foreach (stitalizator01.LeaderboardEntry entry in Model)                
+            {
+
+                if (entry.Score != prevScore)
+                {
+                    i++;
+                    <dt>                        
+                        @i Место
+                    </dt>
+                }
+                else
+                {                    
+                    <dt>
+                    </dt>
+                }
+                <dd>
+                    @entry.ApplicationUser.UserName - @entry.Score
+                </dd>
+                prevScore = entry.Score;
+            }
+            
+        }
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>

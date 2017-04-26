@@ -1,0 +1,206 @@
+﻿@model IEnumerable<stitalizator01.Models.Program>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using (Html.BeginForm("Index", "Programs", FormMethod.Get))
+{
+    <fieldset>
+        <h2 style="padding-left:20px">Программы на <input name="date" type="date" id="broadcast_datepicker" class="datepickers" required="required" value="@Model.First().TvDate.ToString("yyyy-MM-dd")" onchange="form.submit();" /></h2>
+    </fieldset>
+}
+<p>
+    @Html.ActionLink("Добавить программу", "Create")
+</p>
+<p>
+    @Html.ActionLink("Удалить все ненужное", "Clear", new { date = Model.First().TvDate.ToString("dd.MM.yyyy") })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.IsBet)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ChannelCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProgTitle)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TvDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TimeStart)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TimeEnd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProgDescr)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProgCat)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ShareStiPlus)
+        </th>
+@*
+    <th>
+        @Html.DisplayNameFor(model => model.ShareStiMob)
+    </th>
+    <th>
+        @Html.DisplayNameFor(model => model.ShareSti)
+    </th>
+    <th>
+        @Html.DisplayNameFor(model => model.ShareMos18)
+    </th>
+    <th>
+        @Html.DisplayNameFor(model => model.ShareRus18)
+    </th>
+*@
+        <th></th>
+    </tr>
+
+@foreach (var model in Model) {
+    @*<tr id="@item.ProgramID">*@
+    <tr>
+        <td>
+        @using (Html.BeginForm("UpdateBet", "Programs", new { id = model.ProgramID}))
+            {
+            @Html.AntiForgeryToken()
+            @*Html.CheckBoxFor(modelItem => item.IsBet, new { onclick = "this.form.submit();" })*@
+            
+            @Html.CheckBoxFor(modelItem => model.IsBet, new { onclick = "updateBet(" + model.ProgramID + ");" })
+            
+             @* <input type="submit" value="Update" />*@
+        }
+            @*
+            <form method="post" action="Programs/UpdateBet">
+                @Html.AntiForgeryToken()
+                Html.CheckBoxFor(modelItem => item.IsBet, new { @Value = item.IsBet })
+                @Html.CheckBoxFor(modelItem => item.IsBet)
+                <input type="submit" value="Update" />
+            </form>
+    *@
+            @*Html.EditorFor(modelItem => item.IsBet)
+            @Html.CheckBoxFor(modelItem => item.IsBet, new { id=item.ProgramID, @class = "toggle", data_url = Url.Action("Edit", "Programs")})*@
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => model.ChannelCode)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => model.ProgTitle)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => model.TvDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => model.TimeStart)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => model.TimeEnd)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => model.ProgDescr)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => model.ProgCat)
+        </td>
+        <td>            
+            @*@Html.DisplayFor(modelItem => item.ShareStiPlus)*@
+            @using (Html.BeginForm("enterResult", "Programs", new { id = "resultForm" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.EditorFor(modelItem => model.ShareStiPlus)
+                @Html.Hidden("ProgramID", model.ProgramID)
+                @Html.Hidden("ChannelCode", model.ChannelCode)
+                @Html.Hidden("ProgTitle", model.ProgTitle)
+                @Html.Hidden("TvDate", model.TvDate)
+                @Html.Hidden("TimeStart", model.TimeStart)
+                @Html.Hidden("TimeEnd", model.TimeEnd)
+                @Html.Hidden("ProgDescr", model.ProgDescr)
+                @Html.Hidden("ProgCat", model.ProgCat)
+                @Html.Hidden("ShareStiMob", model.ShareStiMob)
+                @Html.Hidden("ShareSti", model.ShareSti)
+                @Html.Hidden("ShareMos18", model.ShareMos18)
+                @Html.Hidden("ShareRus18", model.ShareRus18)
+                <a href="#" class="btn btn-success btn-lg">
+                    <span id="saveResultButton" class="glyphicon glyphicon-ok" onclick="updateResult(e)"></span> Ok
+                </a>
+                @*<button id="saveResultButton" value="Сохранить" class="btn btn-default" onclick="updateResult(e)" />*@
+            }
+        </td>
+@*
+    <td>
+        @Html.DisplayFor(modelItem => item.ShareStiMob)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.ShareSti)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.ShareMos18)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.ShareRus18)
+    </td>
+*@
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = model.ProgramID }) |
+            @Html.ActionLink("Details", "Details", new { id = model.ProgramID }) |
+            @Html.ActionLink("Delete", "Delete", new { id = model.ProgramID })
+        </td>
+    </tr>
+}
+
+</table>
+
+
+@section scripts {
+    <script>
+        function updateResult(e) {
+                console.log("here we are");
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: '@Url.Action("enterResult", "Programs")',
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (result) {
+                        console.log("success!");
+                        console.log("result: " + result);// here in result you will get your data
+                 //       e.preventDefault();
+                    },
+                    error: function (result) {
+                        console.log("error: " + result.error);
+                        console.log("result: " + result);
+                    }
+                });
+                //e.preventDefault();
+            };
+
+
+
+        function updateBet(curId) {
+            //console.log("initial: " + curId);
+            $.ajax({
+                url: 'Programs/UpdateBet',
+                type: 'POST',
+                data: { id: curId },
+                success: function (msg) {
+                   // console.log(msg);                    
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.log(XMLHttpRequest.responseText);
+                }
+            });
+        }
+  
+    </script>
+}

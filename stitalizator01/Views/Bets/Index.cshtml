@@ -48,10 +48,9 @@
         <th>
             @Html.DisplayNameFor(model => model.BetSTIplus)
         </th>
-        @*<th>
-            @Html.DisplayNameFor(model => model.UserID)
-        </th>
-            *@
+        <th>
+            @Html.DisplayNameFor(model => model.ApplicationUser.UserName)
+        </th>            
         <th></th>
     </tr>
 
@@ -93,11 +92,11 @@
         <td>
             @Html.DisplayFor(modelItem => item.BetSTIplus)
         </td>
-        @*
+        
         <td>
-            @Html.DisplayFor(modelItem => item.UserID)
+            @Html.DisplayFor(modelItem => item.ApplicationUser.UserName)
         </td>
-            *@
+            
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.BetID }) |
             @Html.ActionLink("Details", "Details", new { id=item.BetID }) |

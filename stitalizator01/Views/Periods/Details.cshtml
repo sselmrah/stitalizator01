@@ -11,13 +11,6 @@
     <h4>Period</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.UserID)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.UserID)
-        </dd>
 
         <dt>
             @Html.DisplayNameFor(model => model.PeriodDescription)
@@ -41,6 +34,13 @@
 
         <dd>
             @Html.DisplayFor(model => model.BegDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ApplicationUser)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ApplicationUser.UserName)
         </dd>
 
     </dl>

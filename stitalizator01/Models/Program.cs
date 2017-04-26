@@ -59,15 +59,15 @@ namespace stitalizator01.Models
             set { _tvDate = value; }
         }
 
-        [DisplayFormat(ApplyFormatInEditMode = false, DataFormatString = "{0:HH:mm}")]        
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:HH:mm}")]        
         [DisplayName("Время начала")]
         public DateTime TimeStart
         {
             get { return _timeStart; }
             set { _timeStart = value; }
         }
-
-        [DisplayFormat(ApplyFormatInEditMode = false, DataFormatString = "{0:HH:mm}")]        
+        
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:HH:mm}")]        
         [DisplayName("Время окончания")]
         public DateTime? TimeEnd
         {

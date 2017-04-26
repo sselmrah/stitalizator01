@@ -15,7 +15,7 @@ namespace stitalizator01.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();        
 
         [HttpGet]
-        public ActionResult MyBets(string filter = "empty", string date = "01.01.1900")
+        public ActionResult MyBets(string filter = "allbydate", string date = "01.01.1900")
         {            
             List<Bet> bets = new List<Bet>();
             DateTime curDate;

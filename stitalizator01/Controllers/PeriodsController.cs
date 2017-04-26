@@ -58,6 +58,34 @@ namespace stitalizator01.Controllers
             return View(period);
         }
 
+
+        public ActionResult Leaderboard(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Period period = db.Periods.Find(id);
+            if (period == null)
+            {
+                return HttpNotFound();
+            }
+
+            List<LeaderboardEntry> userResults = db.Bets.Where(bet => (bet.Program.TvDate >= period.BegDate & bet.Program.TvDate <= period.EndDate))
+                                             .GroupBy(b => b.ApplicationUser,
+                                                      b => b.ScoreClassic,
+                                                      (key, g) => new LeaderboardEntry
+                                                      {
+                                                          ApplicationUser = key,
+                                                          Score = g.Sum()
+                                                      })
+                                             .OrderByDescending(p => p.Score).ToList()
+                                             ;
+
+            return View(userResults);
+        }
+
+
         // GET: Periods/Edit/5
         public ActionResult Edit(int? id)
         {
