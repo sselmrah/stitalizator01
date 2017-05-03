@@ -13,6 +13,22 @@ namespace stitalizator01.Models
         private DateTime _begDate;
         private DateTime _endDate;
         private string _periodDescription;
+        private bool _isMetaPeriod;
+        private int _scoresGambled;
+
+        [DisplayName("Очков в розыгрыше")]
+        public int ScoresGambled
+        {
+            get { return _scoresGambled; }
+            set { _scoresGambled = value; }
+        }
+
+        [DisplayName("Сезон")]
+        public bool IsMetaPeriod
+        {
+            get { return _isMetaPeriod; }
+            set { _isMetaPeriod = value; }
+        }
         /*
         private int _userID;
         

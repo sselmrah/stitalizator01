@@ -60,6 +60,7 @@
                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                     @Html.Hidden("BegDate", Model.Last().EndDate + TimeSpan.FromDays(1))
                     @Html.Hidden("EndDate", Model.Last().EndDate + TimeSpan.FromDays(7))
+                    @Html.Hidden("IsMetaPeriod", false)
                     @Html.Hidden("PeriodDescription", "Неделя с " + (Model.Last().EndDate + TimeSpan.FromDays(1)).ToString("dd.MM.yyyy")+ " по " + (Model.Last().EndDate + TimeSpan.FromDays(7)).ToString("dd.MM.yyyy"))
                     <div class="form-group">
                         <div class="col-md-offset-2 col-md-10">

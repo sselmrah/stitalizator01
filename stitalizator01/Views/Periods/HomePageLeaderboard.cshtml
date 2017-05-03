@@ -1,0 +1,64 @@
+﻿@model IEnumerable<stitalizator01.LeaderboardEntry>
+@{
+    string periodDescription = ViewBag.periodDescr;
+    string periodId = ViewBag.periodId.ToString();
+            
+    var culture = new System.Globalization.CultureInfo("ru-RU");    
+
+}
+
+<ul id="@periodId" class="list-group">
+
+            <li class="list-group-item active">
+                <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
+                @periodDescription
+                <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
+            </li>
+        @{
+            int i = 0;
+            float prevScore = 0;
+            foreach (stitalizator01.LeaderboardEntry entry in Model)
+            {
+                if (entry.Score != prevScore)
+                {
+                    i++;
+                    <li class="list-group-item">
+                        <b>@i Место</b>
+                    </li>
+                }
+                    <li class="list-group-item">
+                        @entry.ApplicationUser.UserName - @entry.Score
+                    </li>
+                    prevScore = entry.Score;
+                }
+        }
+</ul>
+
+
+    @*
+        <dl id="@periodId">
+        @{
+            int i = 0;
+            float prevScore = 0;
+            foreach (stitalizator01.LeaderboardEntry entry in Model)
+            {
+                if (entry.Score != prevScore)
+                {
+                    i++;
+                    <dt>
+                        @i Место
+                    </dt>
+                }
+                else
+                {
+                    <dt>
+                    </dt>
+                }
+                <dd>
+                    @entry.ApplicationUser.UserName - @entry.Score
+                </dd>
+                prevScore = entry.Score;
+            }
+        }
+        </dl>
+    *@

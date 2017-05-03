@@ -93,7 +93,7 @@ namespace stitalizator01.Controllers
         {
             DateTime curDate = DateTime.Now;
             List<Bet> bets = new List<Bet>();
-            bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.Program.TvDate >= curDate.Date).ToList();
+            bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.Program.TvDate >= curDate.Date & !b.IsLocked).ToList();
             if (bets.Count>0)
             {
                 return PartialView(bets);

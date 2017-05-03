@@ -40,6 +40,7 @@ namespace stitalizator01.Controllers
         }
 
 
+
         // GET: Programs
         [HttpGet]
         public ActionResult ProgsByDate(string date = "today",string channelsListStr = "1TV", string filter="9-23")
@@ -67,7 +68,7 @@ namespace stitalizator01.Controllers
             }
             //todayProgList = db.Programs.Where(o => o.TvDate == curDay.Date).ToList();
             //return View(todayProgList);
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { date = curDay.ToString("dd.MM.yyyy") });
         }
 
         public List<string> getChannelTagsListFromString (string channelListStr)
@@ -181,6 +182,16 @@ namespace stitalizator01.Controllers
             
             if (curProg.IsBet)
             {
+                var periods = db.Periods.Where(p => (p.BegDate <= curProg.TvDate) & (p.EndDate >= curProg.TvDate));
+
+                if (periods != null)
+                {
+                    foreach (Period period in periods)
+                    {
+                        period.ScoresGambled += 3;
+                        db.Entry(period).State = EntityState.Modified;
+                    }
+                }
 
                 foreach (ApplicationUser user in db.Users)
                 {
@@ -189,13 +200,24 @@ namespace stitalizator01.Controllers
                     curBet.Program = curProg;
                     curBet.TimeStamp = DateTime.Now;
                     curBet.ApplicationUser = user;
-                    db.Bets.Add(curBet);                    
+                    db.Bets.Add(curBet);                   
                 }
             }
             else
             {
+                var periods = db.Periods.Where(p => (p.BegDate <= curProg.TvDate) & (p.EndDate >= curProg.TvDate));
+
+                if (periods != null)
+                {
+                    foreach (Period period in periods)
+                    {
+                        period.ScoresGambled -= 3;
+                        db.Entry(period).State = EntityState.Modified;
+                    }
+                }
                 var x = db.Bets.Where(o => o.ProgramID == curProg.ProgramID);
                 db.Bets.RemoveRange(x);                
+
             }
             db.SaveChanges();
             //return RedirectToAction("Index");
@@ -242,7 +264,7 @@ namespace stitalizator01.Controllers
                 //return RedirectToAction("Index");
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { date = program.TvDate.ToString("dd.MM.yyyy") });
         }
 
 

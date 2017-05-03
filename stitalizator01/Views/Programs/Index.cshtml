@@ -148,7 +148,7 @@
             @using (Html.BeginForm("enterResult", "Programs", new { id = "resultForm" }))
             {
                 @Html.AntiForgeryToken()
-                @Html.EditorFor(modelItem => model.ShareStiPlus)
+                @Html.EditorFor(modelItem => model.ShareStiPlus, new { onchange = "form.submit();" })
                 @Html.Hidden("ProgramID", model.ProgramID)
                 @Html.Hidden("ChannelCode", model.ChannelCode)
                 @Html.Hidden("ProgTitle", model.ProgTitle)
@@ -161,9 +161,8 @@
                 @Html.Hidden("ShareSti", model.ShareSti)
                 @Html.Hidden("ShareMos18", model.ShareMos18)
                 @Html.Hidden("ShareRus18", model.ShareRus18)
-                <a href="#" class="btn btn-success btn-lg">
-                    <span id="saveResultButton" class="glyphicon glyphicon-ok" onclick="updateResult(e)"></span> Ok
-                </a>
+                <input type="submit" value="Ok" class="btn btn-success btn-lg" />
+                
                 @*<button id="saveResultButton" value="Сохранить" class="btn btn-default" onclick="updateResult(e)" />*@
             }
         </td>
@@ -257,7 +256,7 @@
     };
 
 
-    function updateResult(e) {
+    function updateResult() {
         console.log("here we are");
         var formData = new FormData(this);
 

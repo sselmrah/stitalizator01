@@ -46,7 +46,7 @@ namespace stitalizator01.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "PeriodID,PeriodDescription,EndDate,BegDate,ApplicationUser")] Period period)
+        public ActionResult Create([Bind(Include = "PeriodID,PeriodDescription,EndDate,BegDate,ApplicationUser,IsMetaPeriod")] Period period)
         {
             if (ModelState.IsValid)
             {
@@ -56,6 +56,54 @@ namespace stitalizator01.Controllers
             }
 
             return View(period);
+        }
+
+        public ActionResult HomePageLeaderboard(bool metaPeriod)
+        {
+            Period period = new Period();
+            DateTime curDay = DateTime.Now;
+            DateTime prevDay = curDay - TimeSpan.FromDays(1);
+            List<LeaderboardEntry> userResults = new List<LeaderboardEntry>();
+            if (!metaPeriod)
+            {
+                period = db.Periods.Where(p => (p.BegDate < curDay.Date) & (p.EndDate >= prevDay.Date) & !p.IsMetaPeriod).FirstOrDefault();
+                if (period == null)
+                {
+                    period = db.Periods.Where(p => !p.IsMetaPeriod).FirstOrDefault();
+                }
+                userResults = getScoresByPeriod(period);
+            }
+            else
+            {
+                period = db.Periods.Where(p => (p.BegDate < curDay.Date) & (p.EndDate >= prevDay.Date) & p.IsMetaPeriod).FirstOrDefault();
+                if (period == null)
+                {
+                    period = db.Periods.Where(p => p.IsMetaPeriod).FirstOrDefault();
+                }
+                userResults = getScoresByPeriod(period);
+            }
+
+            ViewBag.periodDescr = period.PeriodDescription;
+            ViewBag.periodId = period.PeriodID;
+
+            return PartialView(userResults);
+        }
+
+
+
+        private List<LeaderboardEntry> getScoresByPeriod(Period period)
+        {
+            List<LeaderboardEntry> userResults = db.Bets.Where(bet => (bet.Program.TvDate >= period.BegDate & bet.Program.TvDate <= period.EndDate))
+                                             .GroupBy(b => b.ApplicationUser,
+                                                      b => b.ScoreClassic,
+                                                      (key, g) => new LeaderboardEntry
+                                                      {
+                                                          ApplicationUser = key,
+                                                          Score = g.Sum()
+                                                      })
+                                             .OrderByDescending(p => p.Score).ToList()
+                                             ;
+            return userResults;
         }
 
 
@@ -71,16 +119,7 @@ namespace stitalizator01.Controllers
                 return HttpNotFound();
             }
 
-            List<LeaderboardEntry> userResults = db.Bets.Where(bet => (bet.Program.TvDate >= period.BegDate & bet.Program.TvDate <= period.EndDate))
-                                             .GroupBy(b => b.ApplicationUser,
-                                                      b => b.ScoreClassic,
-                                                      (key, g) => new LeaderboardEntry
-                                                      {
-                                                          ApplicationUser = key,
-                                                          Score = g.Sum()
-                                                      })
-                                             .OrderByDescending(p => p.Score).ToList()
-                                             ;
+            List<LeaderboardEntry> userResults = getScoresByPeriod(period);
 
             return View(userResults);
         }
@@ -106,7 +145,7 @@ namespace stitalizator01.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "PeriodID,UserID,PeriodDescription,EndDate,BegDate")] Period period)
+        public ActionResult Edit([Bind(Include = "PeriodID,UserID,PeriodDescription,EndDate,BegDate,IsMetaPeriod")] Period period)
         {
             if (ModelState.IsValid)
             {
