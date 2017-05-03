@@ -15,11 +15,12 @@
         <th>
             @Html.DisplayNameFor(model => model.PeriodDescription)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.EndDate)
-        </th>
+        
         <th>
             @Html.DisplayNameFor(model => model.BegDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EndDate)
         </th>
         <th></th>
     </tr>
@@ -29,11 +30,12 @@
         <td>
             @Html.DisplayFor(modelItem => item.PeriodDescription)
         </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.EndDate)
-        </td>
+
         <td>
             @Html.DisplayFor(modelItem => item.BegDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EndDate)
         </td>
         <td>@Html.ActionLink("Leaderboard", "Leaderboard", new { id = item.PeriodID })</td>        
         <td>
@@ -43,5 +45,34 @@
         </td>
     </tr>
 }
+    <tr>
+        <td>
+            @{
+                var newBegDate = (Model.Last().EndDate + TimeSpan.FromDays(1)).ToString("yyyy-MM-dd");
+                var newEndDate = (Model.Last().EndDate + TimeSpan.FromDays(7)).ToString("yyyy-MM-dd");
+            }
+
+            @using (Html.BeginForm("Create", "Periods", FormMethod.Post, new { id = "periodCreateForm" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal">                    
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.Hidden("BegDate", Model.Last().EndDate + TimeSpan.FromDays(1))
+                    @Html.Hidden("EndDate", Model.Last().EndDate + TimeSpan.FromDays(7))
+                    @Html.Hidden("PeriodDescription", "Неделя с " + (Model.Last().EndDate + TimeSpan.FromDays(1)).ToString("dd.MM.yyyy")+ " по " + (Model.Last().EndDate + TimeSpan.FromDays(7)).ToString("dd.MM.yyyy"))
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Добавить неделю" class="btn btn-default" />
+                        </div>
+                    </div>
+                </div>
+            }            
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
 
 </table>

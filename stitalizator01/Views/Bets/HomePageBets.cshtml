@@ -1,0 +1,90 @@
+﻿@model IEnumerable<stitalizator01.Models.Bet>
+@{
+    DateTime curDate = Model.First().Program.TvDate;
+    bool newDay = true;
+    var culture = new System.Globalization.CultureInfo("ru-RU");
+    var day = culture.DateTimeFormat.GetDayName(curDate.Date.DayOfWeek);
+    
+}
+
+<h2>Ставки</h2>
+<ul id="homePageBetsList" class="list-group">
+    @foreach (stitalizator01.Models.Bet bet in Model)    
+    {
+        string tempBet = bet.BetSTIplus.ToString().Replace(",",".");
+        if (bet != Model.First())
+        {            
+            if (bet.Program.TvDate == curDate)
+            {
+                newDay = false;
+            }
+            else
+            {
+                newDay = true;
+                curDate = bet.Program.TvDate;
+            }
+        }
+        
+            if (newDay)
+            {
+                day = culture.DateTimeFormat.GetDayName(bet.Program.TvDate.Date.DayOfWeek);            
+                <li class="list-group-item active">
+                    <h3>@bet.Program.TvDate.ToString("dd.MM.yyyy"), @day</h3>
+                </li>
+            }
+
+    <li class="list-group-item">        
+        <label>@bet.Program.ProgTitle</label>
+        <div class="input-group">            
+            <input class="input-lg" id="@bet.BetID" type="number" min="0" max="100" value="@tempBet" step="0.5" onchange="updateBetHomePage(@bet.BetID)" />
+            @if (@bet.BetSTIplus > 0)
+            {
+                <span onclick="updateBetHomePage(@bet.BetID)">
+                    <a id="a_@bet.BetID" href="" class="btn btn-success btn-lg">
+                        <span class="glyphicon glyphicon-pencil"></span> Изменить
+                    </a>
+                </span>
+            }
+            else
+            {
+                <span onclick="updateBetHomePage(@bet.BetID)">
+                    <a id="a_@bet.BetID" href="" class="btn btn-info btn-lg">
+                        <span class="glyphicon glyphicon-question-sign"></span> Поставить
+                    </a>
+                </span>
+            }
+        </div>
+</li>
+    }
+</ul>
+
+<script>
+    function updateBetHomePage(betID) {
+        var curBet = document.getElementById(betID);
+        var curButton = document.getElementById("a_"+betID);
+        console.log("curBet.value: "+curBet.value);                
+        $.ajax({
+            url: 'Bets/HomePageBets',
+            type: 'POST',
+            data: { 
+                betId: betID,
+                BetSTIplus: curBet.value 
+                },
+            success: function (msg) {
+                if (curBet.value>0)
+                {
+                    curButton.classList = "btn btn-success btn-lg";
+                    curButton.innerHTML = "<span class=\"glyphicon glyphicon-pencil\"></span> Изменить";
+                }
+                else
+                {
+                    curButton.classList = "btn btn-info btn-lg";
+                    curButton.innerHTML = "<span class=\"glyphicon glyphicon-question-sign\"></span> Поставить";
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log(XMLHttpRequest.responseText);
+            }
+        });
+    }
+</script>

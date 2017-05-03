@@ -34,7 +34,7 @@ namespace stitalizator01.Controllers
                 curDay = DateTime.Parse(date);
             }
             List<Program> todayProgList = new List<Program>();
-
+            ViewBag.curDate = curDay.ToString("yyyy-MM-dd");
             todayProgList = db.Programs.Where(o => o.TvDate == curDay.Date).ToList();
             return View(todayProgList);
         }
@@ -65,8 +65,9 @@ namespace stitalizator01.Controllers
                     updateSchedule(curDay.ToString("dd.MM.yyyy"), channelTag, filter);
                 }
             }
-            todayProgList = db.Programs.Where(o => o.TvDate == curDay.Date).ToList();
-            return View(todayProgList);
+            //todayProgList = db.Programs.Where(o => o.TvDate == curDay.Date).ToList();
+            //return View(todayProgList);
+            return RedirectToAction("Index");
         }
 
         public List<string> getChannelTagsListFromString (string channelListStr)
@@ -84,7 +85,7 @@ namespace stitalizator01.Controllers
             return resultList;
         }
 
-        public void Clear(string date)
+        public ActionResult Clear(string date)
         {            
             DateTime curDate = DateTime.Parse(date);
             var listToRemove = db.Programs.Where(p => (p.IsBet == false & p.TvDate == curDate.Date));
@@ -94,7 +95,7 @@ namespace stitalizator01.Controllers
                 db.Programs.RemoveRange(listToRemove);
                 db.SaveChanges();
             }
-                                   
+            return RedirectToAction("Index");
         }
 
 

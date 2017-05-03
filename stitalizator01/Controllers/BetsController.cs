@@ -77,6 +77,33 @@ namespace stitalizator01.Controllers
         }
 
 
+        [HttpPost]
+        public ActionResult HomePageBets(string betId, string BetSTIplus)
+        {
+            BetSTIplus = BetSTIplus.Replace(".", ",");
+            int id = Convert.ToInt32(betId);
+            Bet bet = db.Bets.Find(id);
+            db.Entry(bet).State = EntityState.Modified;
+            bet.BetSTIplus = float.Parse(BetSTIplus);
+            db.SaveChanges();
+            return RedirectToAction("MyBets");
+        }
+        
+        public ActionResult HomePageBets()
+        {
+            DateTime curDate = DateTime.Now;
+            List<Bet> bets = new List<Bet>();
+            bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.Program.TvDate >= curDate.Date).ToList();
+            if (bets.Count>0)
+            {
+                return PartialView(bets);
+            }
+            else
+            {
+                return PartialView("StavkiSdelany");
+            }            
+        }
+
 
         // GET: Bets
         public ActionResult Index()

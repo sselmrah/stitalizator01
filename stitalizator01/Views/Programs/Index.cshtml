@@ -4,6 +4,7 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
     string tvDateStr = "";
+    /*
     if (Model.Count() == 0)
     {
         tvDateStr = DateTime.Now.ToString("yyyy-MM-dd");
@@ -12,6 +13,8 @@
     {
         tvDateStr = Model.First().TvDate.ToString("yyyy-MM-dd");
     }
+     */
+    tvDateStr = ViewBag.curDate;
 }
 
 
@@ -193,23 +196,24 @@
     <script>
 
         function ClearProgs() {
+            document.getElementById('overlayDiv').style.display = "block";
             var curDate = document.getElementById("broadcast_datepicker").value.toString("yyyy-MM-dd");
             $.ajax({
                 url: '@Url.Action("Clear", "Programs")',
                 type: "GET",
                 dataType: "text",
                 data: {
-                    date: curDate,
-                    success: function (data) {                        
-                            setTimeout(function () {
-                                location.reload();
-                            }, 1000);                        
-                    }
-                }
+                    date: curDate
+                },
+                success: function (data) { console.log(data); location.reload(); }//document.write(data); }
             });
         };
 
-    function downloadSchedule() {
+        function downloadSchedule() {
+            document.getElementById('overlayDiv').style.display = "block";
+
+
+
         var timeFromStr = document.getElementById("progTimeFrom").value;
         if (timeFromStr.indexOf(":") > 0) {
             timeFromStr = timeFromStr.substr(0, timeFromStr.indexOf(":"));
@@ -245,14 +249,9 @@
                 data: {
                     date: curDate,
                     channelsListStr: chList,
-                    filter: timeFilter,
-                    success: function (data) {
-                        console.log("success");
-                        setTimeout(function () {
-                            location.reload();
-                        }, 3000);
-                    }
-                },                
+                    filter: timeFilter
+                },
+                success: function (data) { console.log(data); location.reload(); }//document.write(data); }
         });
 
     };

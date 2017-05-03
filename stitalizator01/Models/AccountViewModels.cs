@@ -48,6 +48,7 @@ namespace stitalizator01.Models
 
     public class LoginViewModel
     {
+
         [Required]
         [Display(Name = "Email")]
         [EmailAddress]
@@ -64,6 +65,11 @@ namespace stitalizator01.Models
 
     public class RegisterViewModel
     {
+        [Required]
+        
+        [Display(Name = "UserName")]
+        public string UserName { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]

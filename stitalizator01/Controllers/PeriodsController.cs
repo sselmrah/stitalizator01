@@ -46,7 +46,7 @@ namespace stitalizator01.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "PeriodID,UserID,PeriodDescription,EndDate,BegDate")] Period period)
+        public ActionResult Create([Bind(Include = "PeriodID,PeriodDescription,EndDate,BegDate,ApplicationUser")] Period period)
         {
             if (ModelState.IsValid)
             {
