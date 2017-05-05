@@ -69,6 +69,7 @@ namespace stitalizator01.Controllers
             if (ModelState.IsValid)
             {
                 db.Entry(bet).State = EntityState.Modified;
+                isHorse(bet);
                 db.SaveChanges();
                 return RedirectToAction("MyBets");
             }
@@ -85,10 +86,35 @@ namespace stitalizator01.Controllers
             Bet bet = db.Bets.Find(id);
             db.Entry(bet).State = EntityState.Modified;
             bet.BetSTIplus = float.Parse(BetSTIplus);
+            isHorse(bet);
             db.SaveChanges();
             return RedirectToAction("MyBets");
         }
         
+
+        private void isHorse(Bet bet)
+        {
+            List<Bet> bets = db.Bets.Where(b => b.Program.ProgramID == bet.Program.ProgramID).ToList();                        
+            if (bets != null)                
+            {                
+                double maxBet = db.Bets.Where(b => (b.Program.ProgramID == bet.Program.ProgramID) & (b.BetSTIplus > 0)).Max(b => b.BetSTIplus);
+                double minBet = db.Bets.Where(b => (b.Program.ProgramID == bet.Program.ProgramID) & (b.BetSTIplus > 0)).Min(b => b.BetSTIplus);
+                Program program = db.Programs.Find(bet.Program.ProgramID);
+                if (Math.Abs(maxBet-minBet)>=5)
+                {
+                    program.IsHorse = true;
+                    db.Entry(program).State = EntityState.Modified;
+                    db.SaveChanges();
+                }                
+                else
+                {
+                    program.IsHorse = false;
+                    db.Entry(program).State = EntityState.Modified;
+                    db.SaveChanges();
+                }
+            }
+        }
+
         public ActionResult HomePageBets()
         {
             DateTime curDate = DateTime.Now;
@@ -181,6 +207,7 @@ namespace stitalizator01.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+            isHorse(bet);
             ViewBag.ProgramID = new SelectList(db.Programs, "ProgramID", "ProgTitle", bet.ProgramID);
             return View(bet);
         }

@@ -7,13 +7,13 @@
     
 }
 
-<h2>Актуальные ставки</h2>
 <ul id="homePageBetsList" class="list-group">
-    @foreach (stitalizator01.Models.Bet bet in Model)    
+    @foreach (stitalizator01.Models.Bet bet in Model)
     {
-        string tempBet = bet.BetSTIplus.ToString().Replace(",",".");
+        string tempBet = bet.BetSTIplus.ToString().Replace(",", ".");
+        string strdatetime = bet.Program.TimeEnd.HasValue ? bet.Program.TimeEnd.Value.ToString("HH:mm") : string.Empty;
         if (bet != Model.First())
-        {            
+        {
             if (bet.Program.TvDate == curDate)
             {
                 newDay = false;
@@ -24,17 +24,17 @@
                 curDate = bet.Program.TvDate;
             }
         }
-        
-            if (newDay)
-            {
-                day = culture.DateTimeFormat.GetDayName(bet.Program.TvDate.Date.DayOfWeek);            
+
+        if (newDay)
+        {
+            day = culture.DateTimeFormat.GetDayName(bet.Program.TvDate.Date.DayOfWeek);            
                 <li class="list-group-item active">
                     <h3>@bet.Program.TvDate.ToString("dd.MM.yyyy"), @day</h3>
                 </li>
-            }
+        }
 
     <li class="list-group-item">        
-        <label>@bet.Program.ProgTitle</label>
+        <label>@bet.Program.ProgTitle (@bet.Program.TimeStart.ToShortTimeString()-@strdatetime)</label>
         <div class="input-group">            
             <input class="input-lg" id="@bet.BetID" type="number" min="0" max="100" value="@tempBet" step="0.5" onchange="updateBetHomePage(@bet.BetID)" />
             @if (@bet.BetSTIplus > 0)

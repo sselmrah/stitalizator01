@@ -1,0 +1,84 @@
+﻿@model stitalizator01.Models.GroupedUserViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string roles = "";
+}
+
+<table id="searchResultTable">
+    <thead>
+        <tr>
+            <th>Имя пользователя</th>
+            <th>Роли</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.Users)
+        {
+            <tr>
+                <td>@user.Username</td>
+                <td>
+                    @if (user.Roles.Count > 0)
+                    {
+                        roles = "";
+                        foreach (var role in user.Roles)
+                        {
+                            roles += role + ", ";
+                        }
+                        roles = roles.Substring(0, roles.Length - 2);
+                    }
+                    else
+                    {
+                        roles = "";
+                    }
+                    @roles
+                </td>
+                <td>
+                    @*
+                    <a href="#" data-username="@user.Username" class="btn btn-danger btn-sm">
+                        <span class="glyphicon glyphicon-remove-circle"></span> Удалить пользователя
+                    </a>
+                        *@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    $(".btn-danger").click(function () {
+        curObj = event.target;
+        var userName = curObj.getAttribute("data-username");
+        var r = confirm("Удалить пользователя " + userName +"?");
+        if (r == true) {
+            $.ajax({
+                type: 'GET',
+                cache: false,
+                data: {
+                    userName: userName
+                },
+                url: '/UserView/Delete',
+                success: function (data) {
+                    location.reload();
+                    console.log("Пользователь " + userName + " успешно удален.");
+
+                }
+            });
+        } else {
+            console.log("You pressed Cancel!");
+        }
+    });
+</script>
+@*foreach (var user in Model.Users)
+    {
+        <p>
+            <a href="@Url.Action("ViewRightsByUser", "UserView", new { userName = @user.Username }, null)">
+                <strong>@user.Username</strong>
+            </a>
+                @foreach (var role in user.Roles)
+                {
+                    <p>@role</p>
+                }
+        </p>
+    }*@

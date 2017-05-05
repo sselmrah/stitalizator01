@@ -48,8 +48,13 @@ namespace stitalizator01.Models
 
     public class LoginViewModel
     {
-
+        
+        //[Required]
+        
         [Required]
+        [Display(Name = "UserName")]        
+        public string UserName { get; set; }
+
         [Display(Name = "Email")]
         [EmailAddress]
         public string Email { get; set; }

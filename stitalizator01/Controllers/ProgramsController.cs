@@ -224,10 +224,46 @@ namespace stitalizator01.Controllers
             return PartialView(curProg);
         }
 
+        [HttpPost]
+        public ActionResult enterSingleResult(string ProgramID, string ShareStiPlus)
+        {
+            int prId = Convert.ToInt32(ProgramID);
+            Program program = db.Programs.Where(p => p.ProgramID == prId).FirstOrDefault();
+            program.ShareStiPlus = Convert.ToDouble(ShareStiPlus.Replace(".",","));
+            db.Entry(program).State = EntityState.Modified;
+            var betsList = db.Bets.Where(b => b.Program.ProgramID == program.ProgramID);
+            foreach (Bet bet in betsList)
+            {
+                bet.ScoreClassic = calculateScoreClassic(bet.BetSTIplus, (float)bet.Program.ShareStiPlus);
+                bet.ScoreOLS = calculateScoreOLS(bet.BetSTIplus, (float)bet.Program.ShareStiPlus);
+                db.Entry(bet).State = EntityState.Modified;
+            }
+            List<Period> periodsList = db.Periods.Where(p => (p.BegDate <= program.TvDate & program.TvDate <= p.EndDate)).ToList();
+
+            foreach (Period period in periodsList)
+            {
+                var userResults = db.Bets.Where(bet => (bet.Program.TvDate >= period.BegDate & bet.Program.TvDate <= period.EndDate))
+                                         .GroupBy(b => b.ApplicationUser,
+                                                  b => b.ScoreClassic,
+                                                  (key, g) => new
+                                                  {
+                                                      PersonId = key,
+                                                      Score = g.Sum()
+                                                  })
+                                         .OrderBy(p => p.Score)
+                                                  ;
+
+                period.ApplicationUser = userResults.First().PersonId;
+            }
+
+            db.SaveChanges();
+            return Content(program.ProgTitle + ":" + program.ShareStiPlus);
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult enterResult([Bind(Include = "ProgramID,ChannelCode,ProgTitle,TvDate,TimeStart,TimeEnd,ProgDescr,ProgCat,ShareStiPlus,ShareStiMob,ShareSti,ShareMos18,ShareRus18")] Program program)
+        public ActionResult enterResult([Bind(Include = "ProgramID,ChannelCode,ProgTitle,TvDate,TimeStart,TimeEnd,ProgDescr,ProgCat,ShareStiPlus,ShareStiMob,ShareSti,ShareMos18,ShareRus18, IsBet")] Program program)
         {
             if (ModelState.IsValid)
             {

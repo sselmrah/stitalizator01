@@ -18,12 +18,19 @@ namespace stitalizator01.Models
         private string _channelCode;
         private float? _shareSti;
         private float? _shareStiMob;
-        private float? _shareStiPlus;
+        private double? _shareStiPlus;
         private float? _shareMos18;
         private float? _shareRus18;
         private string _progDescr;
         private string _progCat;
         private bool _isBet;
+        private bool _isHorse;
+
+        public bool IsHorse
+        {
+            get { return _isHorse; }
+            set { _isHorse = value; }
+        }
 
         [DisplayName("Ставка")]
         public bool IsBet
@@ -87,7 +94,7 @@ namespace stitalizator01.Models
             set { _progCat = value; }
         }
         [DisplayName("Доля СТИ+")]
-        public float? ShareStiPlus
+        public double? ShareStiPlus
         {
             get { return _shareStiPlus; }
             set { _shareStiPlus = value; }

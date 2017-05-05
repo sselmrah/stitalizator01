@@ -58,13 +58,38 @@ namespace stitalizator01.Controllers
             return View(period);
         }
 
+        public ActionResult HomePageStats(bool metaPeriod)
+        {
+            Period period = new Period();
+            period = getCurrentPeriod(metaPeriod);
+            float score;
+            if (User.Identity.IsAuthenticated)
+            {
+                score = db.Bets.Where(b => (b.ApplicationUser.UserName == User.Identity.Name) & (b.Program.TvDate >= period.BegDate) & (b.Program.TvDate <= period.EndDate)).Select(b=>b.ScoreClassic).DefaultIfEmpty(0).Sum();                
+            }
+            else
+            {
+                score = 0;
+            }
+            float totalScore = period.ScoresGambled;
+            float percentage = score / totalScore;
+
+            ViewBag.periodDescr = period.PeriodDescription;
+            ViewBag.periodId = period.PeriodID;
+            ViewBag.score= score;
+            ViewBag.totalScore = totalScore;
+            ViewBag.percentage = percentage;
+            return PartialView();
+        }
+
         public ActionResult HomePageLeaderboard(bool metaPeriod)
         {
             Period period = new Period();
-            DateTime curDay = DateTime.Now;
-            DateTime prevDay = curDay - TimeSpan.FromDays(1);
+            //DateTime curDay = DateTime.Now;
+            //DateTime prevDay = curDay - TimeSpan.FromDays(1);
             List<LeaderboardEntry> userResults = new List<LeaderboardEntry>();
-            if (!metaPeriod)
+            
+            /*if (!metaPeriod)
             {
                 period = db.Periods.Where(p => (p.BegDate < curDay.Date) & (p.EndDate >= prevDay.Date) & !p.IsMetaPeriod).FirstOrDefault();
                 if (period == null)
@@ -82,11 +107,30 @@ namespace stitalizator01.Controllers
                 }
                 userResults = getScoresByPeriod(period);
             }
+            */
+
+            period = getCurrentPeriod(metaPeriod);
+            userResults = getScoresByPeriod(period);
 
             ViewBag.periodDescr = period.PeriodDescription;
             ViewBag.periodId = period.PeriodID;
 
             return PartialView(userResults);
+        }
+
+
+        private Period getCurrentPeriod(bool metaPeriod)
+        {
+            Period period = new Period();
+            DateTime curDay = DateTime.Now;
+            DateTime prevDay = curDay - TimeSpan.FromDays(1);
+            
+            period = db.Periods.Where(p => (p.BegDate < curDay.Date) & (p.EndDate >= prevDay.Date) & (p.IsMetaPeriod == metaPeriod)).FirstOrDefault();
+            if (period == null)
+            {
+                period = db.Periods.Where(p => (p.IsMetaPeriod == metaPeriod)).FirstOrDefault();
+            }
+            return period;
         }
 
 
