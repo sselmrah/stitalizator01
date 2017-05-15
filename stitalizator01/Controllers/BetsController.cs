@@ -69,7 +69,7 @@ namespace stitalizator01.Controllers
             if (ModelState.IsValid)
             {
                 db.Entry(bet).State = EntityState.Modified;
-                bet.BetSTIplus = (float)(Math.Round(bet.BetSTIplus * 2) / 2);
+                //bet.BetSTIplus = (float)(Math.Round(bet.BetSTIplus * 2) / 2);
                 isHorse(bet);
                 db.SaveChanges();
                 return RedirectToAction("MyBets");
@@ -95,10 +95,12 @@ namespace stitalizator01.Controllers
 
         private void isHorse(Bet bet)
         {
-            List<Bet> bets = db.Bets.Where(b => b.Program.ProgramID == bet.Program.ProgramID).ToList();                        
+            
+            var bets = db.Bets.Where(b => b.ProgramID == bet.ProgramID).FirstOrDefault();
+            
             if (bets != null)                
             {
-                var tempRes = db.Bets.Where(b => (b.Program.ProgramID == bet.Program.ProgramID) & (b.BetSTIplus > 0));
+                var tempRes = db.Bets.Where(b => (b.ProgramID == bet.ProgramID) & (b.BetSTIplus > 0));
                 double maxBet = 0;
                 double minBet = 0;
                 if (tempRes.Count() > 0)
@@ -108,7 +110,7 @@ namespace stitalizator01.Controllers
                     minBet = tempRes.Min(b => b.BetSTIplus);
                     maxBet = tempRes.Max(b => b.BetSTIplus);
                 }
-                    Program program = db.Programs.Find(bet.Program.ProgramID);
+                    Program program = db.Programs.Find(bet.ProgramID);
                 if (Math.Abs(maxBet-minBet)>=5)
                 {
                     program.IsHorse = true;

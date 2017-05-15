@@ -27,7 +27,7 @@ namespace stitalizator01.Controllers
             DateTime curDay;
             if (date == "today")
             {
-                curDay = DateTime.Now.Date;
+                curDay = DateTime.UtcNow.Date;
             }
             else
             {
@@ -49,7 +49,7 @@ namespace stitalizator01.Controllers
             DateTime curDay;
             if (date == "today")
             {
-                curDay = DateTime.Now.Date;
+                curDay = DateTime.UtcNow.Date;
             }
             else
             {
@@ -198,7 +198,7 @@ namespace stitalizator01.Controllers
                     Bet curBet = new Bet();
                     curBet.ProgramID = curProg.ProgramID;
                     curBet.Program = curProg;
-                    curBet.TimeStamp = DateTime.Now;
+                    curBet.TimeStamp = DateTime.UtcNow;
                     curBet.ApplicationUser = user;
                     db.Bets.Add(curBet);                   
                 }
@@ -230,7 +230,7 @@ namespace stitalizator01.Controllers
             int prId = Convert.ToInt32(ProgramID);
             Program program = db.Programs.Where(p => p.ProgramID == prId).FirstOrDefault();
             program.ShareStiPlus = Convert.ToDouble(ShareStiPlus.Replace(".",","));
-            program.ShareStiPlus = Math.Round((double)program.ShareStiPlus * 2) / 2;
+            //program.ShareStiPlus = Math.Round((double)program.ShareStiPlus * 2) / 2;
             db.Entry(program).State = EntityState.Modified;
             var betsList = db.Bets.Where(b => b.Program.ProgramID == program.ProgramID);
             foreach (Bet bet in betsList)
@@ -307,6 +307,9 @@ namespace stitalizator01.Controllers
 
         public float calculateScoreClassic(float bet, float result)
         {
+            //Округляем до 0.5
+            bet = (float)(Math.Round(bet * 2) / 2);
+            result = (float)(Math.Round(result * 2) / 2);
             float score = 0;
             float tempResult = 0;
 
