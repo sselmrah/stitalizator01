@@ -34,7 +34,7 @@
         }
 
     <li class="list-group-item">        
-        <label>@bet.Program.ProgTitle (@bet.Program.TimeStart.ToShortTimeString()-@strdatetime)</label>
+        <label>@bet.Program.ProgTitle (@bet.Program.TimeStart.ToString("HH:mm")-@strdatetime)</label>
         <div class="input-group">            
             <input class="input-lg" id="@bet.BetID" type="number" min="0" max="100" value="@tempBet" step="0.5" onchange="updateBetHomePage(@bet.BetID)" />
             @if (@bet.BetSTIplus > 0)

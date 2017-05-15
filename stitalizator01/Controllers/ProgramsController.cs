@@ -230,6 +230,7 @@ namespace stitalizator01.Controllers
             int prId = Convert.ToInt32(ProgramID);
             Program program = db.Programs.Where(p => p.ProgramID == prId).FirstOrDefault();
             program.ShareStiPlus = Convert.ToDouble(ShareStiPlus.Replace(".",","));
+            program.ShareStiPlus = Math.Round((double)program.ShareStiPlus * 2) / 2;
             db.Entry(program).State = EntityState.Modified;
             var betsList = db.Bets.Where(b => b.Program.ProgramID == program.ProgramID);
             foreach (Bet bet in betsList)

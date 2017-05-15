@@ -20,6 +20,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -249,6 +250,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\Temp\horseIcon.png" />
     <Content Include="Content\Img\chOneLogoSquare.png" />
     <Content Include="Content\Img\horseIcon.png" />
     <Content Include="Content\Img\preloader-01.gif" />
@@ -262,6 +264,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Properties\PublishProfiles\aws.pubxml" />
+    <None Include="Properties\PublishProfiles\stitalizator - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\stitalizator.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -353,7 +356,6 @@
     <Content Include="Views\Role\ManageUserRoles.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\Temp\" />
     <Folder Include="Views\Roles\" />
   </ItemGroup>
   <ItemGroup>
