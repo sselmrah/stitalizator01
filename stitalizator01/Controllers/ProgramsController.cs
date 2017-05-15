@@ -468,8 +468,9 @@ namespace stitalizator01.Controllers
             string targetUrl = "";            
             List<Tuple<string, DateTime, string, string, string, DateTime>> schedParsed = new List<Tuple<string, DateTime, string, string, string, DateTime>>();
             string url = "http://xmltv.s-tv.ru/xchenel.php?xmltv=1&pass=jJoM88wN54&show=2&login=tv4181";
-            stitalizator01.CookieAwareWebClient client = new stitalizator01.CookieAwareWebClient();            
-
+            stitalizator01.CookieAwareWebClient client = new stitalizator01.CookieAwareWebClient();
+            Encoding win1251 = Encoding.GetEncoding("windows-1251");
+            client.Encoding = win1251;
             string xmlString = client.DownloadString(url);            
             string[] delim = {"<File>"};
             sched = xmlString.Split(delim,System.StringSplitOptions.RemoveEmptyEntries).ToList();
