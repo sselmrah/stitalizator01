@@ -249,6 +249,8 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Img\chOneLogoSquare.png" />
+    <Content Include="Content\Img\horseIcon.png" />
     <Content Include="Content\Img\preloader-01.gif" />
     <Content Include="Content\tvXml2txt.xslt" />
     <Content Include="Content\bootstrap.css" />
@@ -345,6 +347,10 @@
     <Content Include="Views\Periods\HomePageLeaderboard.cshtml" />
     <Content Include="Views\Periods\HomePageStats.cshtml" />
     <Content Include="Views\UserView\Index.cshtml" />
+    <Content Include="Views\Role\Create.cshtml" />
+    <Content Include="Views\Role\Edit.cshtml" />
+    <Content Include="Views\Role\Index.cshtml" />
+    <Content Include="Views\Role\ManageUserRoles.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Temp\" />
