@@ -10,6 +10,7 @@ using stitalizator01.Models;
 
 namespace stitalizator01.Controllers
 {
+    
     public class PeriodsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -214,16 +215,7 @@ namespace stitalizator01.Controllers
             return period;
         }
 
-        public static Period getPeriodByDate(DateTime dt, bool metaPeriod=false)
-        {
-            Period period = new Period();
-            period = MvcApplication.db.Periods.Where(p => (p.BegDate <= dt.Date) & (p.EndDate >= dt.Date) & (p.IsMetaPeriod == metaPeriod)).FirstOrDefault();
-            if (period == null)
-            {
-                period = MvcApplication.db.Periods.Where(p => (p.IsMetaPeriod == metaPeriod)).FirstOrDefault();
-            }
-            return period;
-        }
+       
 
 
         private List<LeaderboardEntry> getScoresByPeriod(Period period)

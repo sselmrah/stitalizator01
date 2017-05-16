@@ -120,9 +120,12 @@ namespace stitalizator01.Controllers
             Bet bet = db.Bets.Find(id);
             db.Entry(bet).State = EntityState.Modified;
             bet.BetSTIplus = float.Parse(BetSTIplus);
-            isHorse(bet);
             db.SaveChanges();
-            return RedirectToAction("MyBets");
+            isHorse(bet);
+            
+            //Program program = db.Programs.Find(bet.ProgramID);
+            //return RedirectToAction("MyBets");
+            return Content(bet.Program.IsHorse.ToString());
         }
         
 
@@ -144,7 +147,7 @@ namespace stitalizator01.Controllers
                     maxBet = tempRes.Max(b => b.BetSTIplus);
                 }
                     Program program = db.Programs.Find(bet.ProgramID);
-                    Period curPeriod = PeriodsController.getPeriodByDate(program.TvDate, false);
+                    Period curPeriod = getPeriodByDate(program.TvDate, false);
                 if (Math.Abs(maxBet-minBet)>=5)
                 {            
                     //Увеличиваем количество очков в розыгрыше при добавлении лошадки
@@ -155,8 +158,10 @@ namespace stitalizator01.Controllers
                         db.SaveChanges();
                     }
                     program.IsHorse = true;
-                    db.Entry(program).State = EntityState.Modified;
+                    db.Entry(program).State = EntityState.Modified;                    
                     db.SaveChanges();
+                    //var programs = db.Bets.Select(b => {b.IsHorse})
+                    //collection.Select(c => { c.PropertyToSet = value; return c; }).ToList();
                 }                
                 else
                 {
@@ -172,6 +177,17 @@ namespace stitalizator01.Controllers
                     db.SaveChanges();
                 }
             }
+        }
+
+        private Period getPeriodByDate(DateTime dt, bool metaPeriod = false)
+        {
+            Period period = new Period();
+            period = db.Periods.Where(p => (p.BegDate <= dt.Date) & (p.EndDate >= dt.Date) & (p.IsMetaPeriod == metaPeriod)).FirstOrDefault();
+            if (period == null)
+            {
+                period = db.Periods.Where(p => (p.IsMetaPeriod == metaPeriod)).FirstOrDefault();
+            }
+            return period;
         }
 
         public ActionResult HomePageBets()
@@ -212,6 +228,7 @@ namespace stitalizator01.Controllers
             return View(bet);
         }
 
+        
         // GET: Bets/Create
         public ActionResult Create()
         {
@@ -237,6 +254,7 @@ namespace stitalizator01.Controllers
             return View(bet);
         }
 
+        
         // GET: Bets/Edit/5
         public ActionResult Edit(int? id)
         {
@@ -271,6 +289,7 @@ namespace stitalizator01.Controllers
             return View(bet);
         }
 
+        
         // GET: Bets/Delete/5
         public ActionResult Delete(int? id)
         {

@@ -11,6 +11,7 @@ using System.Web.Mvc;
 
 namespace stitalizator01.Controllers
 {
+    
     public class UserViewController : Controller
     {
         ApplicationDbContext context;

@@ -34,25 +34,33 @@
         }
 
     <li class="list-group-item">        
-        <label>@bet.Program.ProgTitle (@bet.Program.TimeStart.ToString("HH:mm")-@strdatetime)</label>
+        <div id="horseContainer_@bet.BetID">
+            @if (bet.Program.IsHorse)
+            {
+                <img src="~/Content/Img/horseIcon.png" style="width:30px;height:30px" />
+            }
+        </div>
+        <label>@bet.Program.ProgTitle (@bet.Program.TimeStart.ToString("HH:mm")-@strdatetime)<br /><i>@bet.Program.ChannelCode</i></label>
+        
         <div class="input-group">            
             <input class="input-lg" id="@bet.BetID" type="number" min="0" max="100" value="@tempBet" step="0.5" onchange="updateBetHomePage(@bet.BetID)" />
-            @if (@bet.BetSTIplus > 0)
+            @if (bet.BetSTIplus > 0)
             {
-                <span onclick="updateBetHomePage(@bet.BetID)">
-                    <a id="a_@bet.BetID" href="" class="btn btn-success btn-lg">
-                        <span class="glyphicon glyphicon-pencil"></span>@* Изменить*@
+                <span onclick="updateBetHomePage(@bet.BetID)" >
+                    <a id="a_@bet.BetID" href="" class="btn btn-info btn-lg">
+                        <span class="glyphicon glyphicon-pencil"></span> Изменить
                     </a>
                 </span>
             }
             else
             {
                 <span onclick="updateBetHomePage(@bet.BetID)">
-                    <a id="a_@bet.BetID" href="" class="btn btn-info btn-lg">
+                    <a id="a_@bet.BetID" href="" class="btn btn-danger btn-lg">
                         <span class="glyphicon glyphicon-question-sign"></span>@* Поставить*@
                     </a>
                 </span>
             }
+
         </div>
 </li>
     }
@@ -73,12 +81,28 @@
             success: function (msg) {
                 if (curBet.value>0)
                 {
+                    console.log("IsHorseNow: " + msg);
                     curButton.classList = "btn btn-success btn-lg";
-                    curButton.innerHTML = "<span class=\"glyphicon glyphicon-pencil\"></span>@* Изменить*@";
+                    curButton.innerHTML = "<span class=\"glyphicon glyphicon-ok-circle\"></span> Принято!";
+                    
+                    setTimeout(function () {
+                        curButton.classList = "btn btn-info btn-lg";
+                        curButton.innerHTML = "<span class=\"glyphicon glyphicon-pencil\"></span> Изменить";
+                    }, 3000);
+                    var hc = document.getElementById("horseContainer_"+betID);
+                    if (msg=="True")
+                    {                        
+                        hc.innerHTML = "<img src=\"Content/Img/horseIcon.png\" style=\"width:40px;height:40px\" />";
+                    }
+                    else
+                    {
+                        hc.innerHTML = "";
+                    }
                 }
                 else
                 {
-                    curButton.classList = "btn btn-info btn-lg";
+                    console.log("IsHorseNow: " + msg);
+                    curButton.classList = "btn btn-danger btn-lg";
                     curButton.innerHTML = "<span class=\"glyphicon glyphicon-question-sign\"></span>@* Поставить*@";
                 }
             },
