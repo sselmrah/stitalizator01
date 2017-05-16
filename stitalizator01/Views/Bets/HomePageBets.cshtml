@@ -41,7 +41,7 @@
             {
                 <span onclick="updateBetHomePage(@bet.BetID)">
                     <a id="a_@bet.BetID" href="" class="btn btn-success btn-lg">
-                        <span class="glyphicon glyphicon-pencil"></span> Изменить
+                        <span class="glyphicon glyphicon-pencil"></span>@* Изменить*@
                     </a>
                 </span>
             }
@@ -49,7 +49,7 @@
             {
                 <span onclick="updateBetHomePage(@bet.BetID)">
                     <a id="a_@bet.BetID" href="" class="btn btn-info btn-lg">
-                        <span class="glyphicon glyphicon-question-sign"></span> Поставить
+                        <span class="glyphicon glyphicon-question-sign"></span>@* Поставить*@
                     </a>
                 </span>
             }
@@ -74,12 +74,12 @@
                 if (curBet.value>0)
                 {
                     curButton.classList = "btn btn-success btn-lg";
-                    curButton.innerHTML = "<span class=\"glyphicon glyphicon-pencil\"></span> Изменить";
+                    curButton.innerHTML = "<span class=\"glyphicon glyphicon-pencil\"></span>@* Изменить*@";
                 }
                 else
                 {
                     curButton.classList = "btn btn-info btn-lg";
-                    curButton.innerHTML = "<span class=\"glyphicon glyphicon-question-sign\"></span> Поставить";
+                    curButton.innerHTML = "<span class=\"glyphicon glyphicon-question-sign\"></span>@* Поставить*@";
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {

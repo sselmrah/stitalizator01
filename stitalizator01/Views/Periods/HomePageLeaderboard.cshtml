@@ -4,21 +4,22 @@
     string periodId = ViewBag.periodId.ToString();
     bool first = ViewBag.first;
     bool last = ViewBag.last;
+    string isMeta = ViewBag.isMeta.ToString();
     var culture = new System.Globalization.CultureInfo("ru-RU");    
 
 }
 
-<ul id="@periodId" class="list-group">
+<ul id="lb_ul" class="list-group">
 
             <li class="list-group-item active">
                 @if (!first)
                 {
-                <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
+                    <button type="button" class="btn btn-default" onclick="switchLeaderBoard(@periodId,'prev','@isMeta')"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
                 }
                 @periodDescription
                 @if (!last)
                 {
-                <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
+                    <button type="button" class="btn btn-default" onclick="switchLeaderBoard(@periodId,'next','@isMeta')"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
                 }
             </li>
         @{
@@ -41,31 +42,27 @@
         }
 </ul>
 
+<script>
+    function switchLeaderBoard(periodId, direction, meta) {
+        var curParent = document.getElementById("lb_ul");
+        console.log("curParent: " + curParent);
 
-    @*
-        <dl id="@periodId">
-        @{
-            int i = 0;
-            float prevScore = 0;
-            foreach (stitalizator01.LeaderboardEntry entry in Model)
-            {
-                if (entry.Score != prevScore)
-                {
-                    i++;
-                    <dt>
-                        @i Место
-                    </dt>
-                }
-                else
-                {
-                    <dt>
-                    </dt>
-                }
-                <dd>
-                    @entry.ApplicationUser.UserName - @entry.Score
-                </dd>
-                prevScore = entry.Score;
+        
+        $.ajax({
+            url: 'Periods/SwitchLeaderBoard',
+            type: 'POST',
+            data: {
+                periodId: periodId,
+                direction: direction,
+                meta: meta
+            },
+            success: function (msg) {                
+               curParent.innerHTML = msg;               
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log(XMLHttpRequest.responseText);
             }
-        }
-        </dl>
-    *@
+        });
+        
+    }
+</script>

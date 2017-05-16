@@ -7,7 +7,14 @@
     var tableTitle = ViewData["tTitle"];
 }
 
-<h2>@tableTitle для пользователя @User.Identity.Name</h2>
+@if (this.User.IsInRole("Admin"))
+{
+    <h2>@tableTitle</h2>
+}
+else
+{
+    <h2>@tableTitle для пользователя @User.Identity.Name</h2>
+}
 
 <p>
     @Html.ActionLink("Посмотреть все непроставленные ставки", "MyBets", new { filter = "empty" })
@@ -46,7 +53,12 @@
             @Html.DisplayNameFor(model => model.Program.ProgTitle)
 
         </th>
-        
+        @if (this.User.IsInRole("Admin"))
+        {
+            <th>
+                Пользователь
+            </th>
+        }
         <th>
             Ставка СТИ+
         </th>
@@ -120,6 +132,12 @@
         <td>
             @Html.DisplayFor(modelItem => model.Program.ProgTitle)
         </td>
+        @if (this.User.IsInRole("Admin"))
+        {
+            <td>
+                @Html.DisplayFor(modelItem => model.ApplicationUser.UserName)
+            </td>
+        }
         <td>
             @*using (Html.BeginForm("MakeBets", "Bets", FormMethod.Post))*@
 
@@ -145,8 +163,9 @@
                 @Html.Hidden("BetMos18", model.BetMos18)
                 @Html.Hidden("BetSTImob", model.BetSTImob)
                 @Html.Hidden("BetSTI", model.BetSTI)                
-                @Html.Hidden("ProgramID", model.ProgramID)
-                if (!model.IsLocked) {<input type="submit" value="Сохранить" class="btn btn-default" />}
+                @Html.Hidden("ProgramID", model.ProgramID)                
+                if (!model.IsLocked)
+                {<input type="submit" value="Сохранить" class="btn btn-default" />}
             }
                 
         </td>

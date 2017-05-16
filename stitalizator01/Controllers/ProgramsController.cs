@@ -73,6 +73,7 @@ namespace stitalizator01.Controllers
 
         public List<string> getChannelTagsListFromString (string channelListStr)
         {
+            if (channelListStr.Last() == ';') { channelListStr = channelListStr.Substring(0, channelListStr.Length - 1); }
             List<string> resultList = new List<string>();
             if (channelListStr.IndexOf(";")>0)
             {
@@ -118,6 +119,14 @@ namespace stitalizator01.Controllers
         // GET: Programs/Create
         public ActionResult Create()
         {
+            List<Channel> channelList = db.Channels.ToList();
+            List<string> channelNames = new List<string>();
+            foreach(Channel c in channelList)
+            {
+                channelNames.Add(c.ChannelName);
+            }
+            var query = new SelectList(channelNames);
+            ViewData["ChannelCode"] = query;
             return View();
         }
 
@@ -198,7 +207,7 @@ namespace stitalizator01.Controllers
                     Bet curBet = new Bet();
                     curBet.ProgramID = curProg.ProgramID;
                     curBet.Program = curProg;
-                    curBet.TimeStamp = DateTime.UtcNow;
+                    curBet.TimeStamp = DateTime.UtcNow+MvcApplication.utcMoscowShift;
                     curBet.ApplicationUser = user;
                     db.Bets.Add(curBet);                   
                 }

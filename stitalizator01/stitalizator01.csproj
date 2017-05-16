@@ -254,6 +254,8 @@
     <Content Include="Content\Img\chOneLogoSquare.png" />
     <Content Include="Content\Img\horseIcon.png" />
     <Content Include="Content\Img\preloader-01.gif" />
+    <Content Include="Content\Img\table.jpg" />
+    <Content Include="Content\Img\table1200.jpg" />
     <Content Include="Content\tvXml2txt.xslt" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
@@ -305,7 +307,7 @@
     <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
     <Content Include="Views\Account\ForgotPassword.cshtml" />
     <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
-    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\Login_old.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
@@ -354,6 +356,9 @@
     <Content Include="Views\Role\Edit.cshtml" />
     <Content Include="Views\Role\Index.cshtml" />
     <Content Include="Views\Role\ManageUserRoles.cshtml" />
+    <Content Include="Views\Periods\SwitchLeaderBoard.cshtml" />
+    <Content Include="Views\Home\BlockScreen.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Roles\" />

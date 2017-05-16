@@ -6,12 +6,14 @@ using stitalizator01.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
+
 [assembly: OwinStartupAttribute(typeof(stitalizator01.Startup))]
 namespace stitalizator01
 {
     
     public partial class Startup
     {
+        
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
@@ -20,7 +22,7 @@ namespace stitalizator01
 
         private void createRolesandUsers()
         {
-            ApplicationDbContext context = new ApplicationDbContext();
+            ApplicationDbContext context = new ApplicationDbContext();            
 
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
             var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
@@ -30,13 +32,12 @@ namespace stitalizator01
             if (!roleManager.RoleExists("Admin"))
             {
 
-                // first we create Admin rool   
+                // first we create Admin role   
                 var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
                 role.Name = "Admin";
                 roleManager.Create(role);
 
-                //Here we create a Admin super user who will maintain the website                  
-
+                //Here we create a Admin super user
                 var user = new ApplicationUser();
                 user.UserName = "admin";
                 user.Email = "amosendz@gmail.com";

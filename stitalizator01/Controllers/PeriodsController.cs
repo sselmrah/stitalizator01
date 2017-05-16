@@ -145,15 +145,65 @@ namespace stitalizator01.Controllers
             ViewBag.periodId = period.PeriodID;
             ViewBag.last = last;
             ViewBag.first = first;
+            ViewBag.isMeta = metaPeriod;
 
             return PartialView(userResults);
         }
+
+        public ActionResult SwitchLeaderBoard(int periodId, string direction, bool meta)
+        {                        
+            //Period period = new Period();            
+            List<LeaderboardEntry> userResults = new List<LeaderboardEntry>();
+
+            List<Period> periods = db.Periods.Where(p => p.IsMetaPeriod == meta).OrderBy(p => p.BegDate).ToList();            
+            Period oldPeriod = periods.Find(p => p.PeriodID == periodId);
+            Period period = new Period();
+            int index = periods.IndexOf(oldPeriod);
+            
+            if (direction == "next")
+            {
+                index++;
+                if (index<periods.Count())
+                {
+                    period = periods[index];
+                }
+            }
+            else
+            {
+                index--;
+                if (index >= 0)
+                {
+                    period = periods[index];
+                }
+            }
+            
+            userResults = getScoresByPeriod(period);
+            bool last = false;
+            bool first = false;
+            
+            if (periods.LastOrDefault() == period)
+            {
+                last = true;
+            }
+            if (periods.FirstOrDefault() == period)
+            {
+                first = true;
+            }
+
+            ViewBag.periodDescr = period.PeriodDescription;
+            ViewBag.periodId = period.PeriodID;
+            ViewBag.last = last;
+            ViewBag.first = first;
+            ViewBag.isMeta = meta;
+
+            return PartialView(userResults);
+        } 
 
 
         private Period getCurrentPeriod(bool metaPeriod)
         {
             Period period = new Period();
-            DateTime curDay = DateTime.Now;
+            DateTime curDay = DateTime.UtcNow + MvcApplication.utcMoscowShift;
             DateTime prevDay = curDay - TimeSpan.FromDays(1);
             
             period = db.Periods.Where(p => (p.BegDate < curDay.Date) & (p.EndDate >= prevDay.Date) & (p.IsMetaPeriod == metaPeriod)).FirstOrDefault();
@@ -164,6 +214,16 @@ namespace stitalizator01.Controllers
             return period;
         }
 
+        public static Period getPeriodByDate(DateTime dt, bool metaPeriod=false)
+        {
+            Period period = new Period();
+            period = MvcApplication.db.Periods.Where(p => (p.BegDate <= dt.Date) & (p.EndDate >= dt.Date) & (p.IsMetaPeriod == metaPeriod)).FirstOrDefault();
+            if (period == null)
+            {
+                period = MvcApplication.db.Periods.Where(p => (p.IsMetaPeriod == metaPeriod)).FirstOrDefault();
+            }
+            return period;
+        }
 
 
         private List<LeaderboardEntry> getScoresByPeriod(Period period)

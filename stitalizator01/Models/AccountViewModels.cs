@@ -52,7 +52,7 @@ namespace stitalizator01.Models
         //[Required]
         
         [Required]
-        [Display(Name = "UserName")]        
+        [Display(Name = "Имя пользователя")]        
         public string UserName { get; set; }
 
         [Display(Name = "Email")]
@@ -61,10 +61,10 @@ namespace stitalizator01.Models
 
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Пароль")]
         public string Password { get; set; }
 
-        [Display(Name = "Remember me?")]
+        [Display(Name = "Запомнить?")]
         public bool RememberMe { get; set; }
     }
 
@@ -72,7 +72,7 @@ namespace stitalizator01.Models
     {
         [Required]
         
-        [Display(Name = "UserName")]
+        [Display(Name = "Имя пользователя")]
         public string UserName { get; set; }
 
         [Required]
@@ -81,14 +81,14 @@ namespace stitalizator01.Models
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "{0} должен быть длиной {2} символов", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Пароль")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Display(Name = "Подтвердите пароль")]
+        [Compare("Password", ErrorMessage = "Пароли не совпадают")]
         public string ConfirmPassword { get; set; }
     }
 
@@ -102,11 +102,11 @@ namespace stitalizator01.Models
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Пароль")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
+        [Display(Name = "Подтвердите пароль")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 

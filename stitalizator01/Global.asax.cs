@@ -13,7 +13,8 @@ namespace stitalizator01
     public class MvcApplication : System.Web.HttpApplication
     {
         public static System.Timers.Timer timer = new System.Timers.Timer(60000); // This will raise the event every one minute.
-        private ApplicationDbContext db = new ApplicationDbContext();                 
+        public static ApplicationDbContext db = new ApplicationDbContext();
+        public static TimeSpan utcMoscowShift = TimeSpan.FromHours(3);
 
         protected void Application_Start()
         {
@@ -32,7 +33,7 @@ namespace stitalizator01
         private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             //Московское время
-            DateTime now = DateTime.UtcNow+TimeSpan.FromHours(3);
+            DateTime now = DateTime.UtcNow + utcMoscowShift;
 
             var expiredList = db.Bets.Where(b => b.Program.TimeStart < now);
             foreach (Bet bet in expiredList)

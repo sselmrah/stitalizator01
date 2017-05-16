@@ -25,9 +25,15 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     @*<li>@Html.ActionLink("Home", "Index", "Home")</li>*@
-                    <li>@Html.ActionLink("Расписание", "Index", "Programs")</li>
                     <li>@Html.ActionLink("Ставки", "MyBets", "Bets")</li>
+@if (this.User.IsInRole("Admin"))
+{
+                    <li>@Html.ActionLink("Расписание", "Index", "Programs")</li>
                     <li>@Html.ActionLink("Периоды", "Index", "Periods")</li>
+                    <li>@Html.ActionLink("Каналы", "Index", "Channels")</li>                    
+                    <li>@Html.ActionLink("Пользователи", "Index", "UserView")</li>
+                    <li>@Html.ActionLink("Роли", "Index", "Role")</li>
+}
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

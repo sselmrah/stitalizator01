@@ -1,0 +1,39 @@
+﻿@model IEnumerable<stitalizator01.LeaderboardEntry>
+@{
+    string periodDescription = ViewBag.periodDescr;
+    string periodId = ViewBag.periodId.ToString();
+    bool first = ViewBag.first;
+    bool last = ViewBag.last;
+    var culture = new System.Globalization.CultureInfo("ru-RU");
+    string isMeta = ViewBag.isMeta.ToString();
+}
+
+    <li class="list-group-item active">
+        @if (!first)
+        {
+            <button type="button" class="btn btn-default" onclick="switchLeaderBoard(@periodId,'prev','@isMeta')"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
+        }
+        @periodDescription
+        @if (!last)
+        {
+            <button type="button" class="btn btn-default" onclick="switchLeaderBoard(@periodId,'next','@isMeta')"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
+        }
+    </li>
+    @{
+        int i = 0;
+        float prevScore = 0;
+        foreach (stitalizator01.LeaderboardEntry entry in Model)
+        {
+            if (entry.Score != prevScore)
+            {
+                i++;
+                <li class="list-group-item">
+                    <b>@i место</b>
+                </li>
+            }
+            <li class="list-group-item">
+                @entry.ApplicationUser.UserName - @entry.Score
+            </li>
+            prevScore = entry.Score;
+        }
+    }

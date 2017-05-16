@@ -28,35 +28,68 @@ namespace stitalizator01.Controllers
             {
                 curDate = DateTime.Parse(date.ToString());
             }
-            
 
-            switch (filter)
+            if (User.IsInRole("Admin"))
             {
-                case "all":
-                    bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name).ToList();
-                    title = "Все ставки";
-                    break;
-                case "empty":
-                    bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.BetSTIplus == 0).ToList();
-                    title = "Непроставленные ставки";
-                    break;
-                case "filled":
-                    bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.BetSTIplus > 0).ToList();
-                    title = "Проставленные ставки";
-                    break;
-                case "allbydate":
-                    bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.Program.TvDate == curDate.Date).ToList();
-                    title = "Все ставки на "+curDate.ToString("dd.MM.yyyy");
-                    break;
-                case "emptybydate":
-                    bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.Program.TvDate == curDate.Date & b.BetSTIplus == 0).ToList();
-                    title = "Непроставленные ставки на "+curDate.ToString("dd.MM.yyyy");
-                    break;
-                case "filledbydate":
-                    bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.Program.TvDate == curDate.Date & b.BetSTIplus > 0).ToList();
-                    title = "Проставленные ставки на " + curDate.ToString("dd.MM.yyyy");
-                    break;
+                switch (filter)
+                {
+                    case "all":
+                        bets = db.Bets.ToList();
+                        title = "Все ставки";
+                        break;
+                    case "empty":
+                        bets = db.Bets.Where(b => b.BetSTIplus == 0).ToList();
+                        title = "Непроставленные ставки";
+                        break;
+                    case "filled":
+                        bets = db.Bets.Where(b => b.BetSTIplus > 0).ToList();
+                        title = "Проставленные ставки";
+                        break;
+                    case "allbydate":
+                        bets = db.Bets.Where(b => b.Program.TvDate == curDate.Date).ToList();
+                        title = "Все ставки на " + curDate.ToString("dd.MM.yyyy");
+                        break;
+                    case "emptybydate":
+                        bets = db.Bets.Where(b => b.Program.TvDate == curDate.Date & b.BetSTIplus == 0).ToList();
+                        title = "Непроставленные ставки на " + curDate.ToString("dd.MM.yyyy");
+                        break;
+                    case "filledbydate":
+                        bets = db.Bets.Where(b => b.Program.TvDate == curDate.Date & b.BetSTIplus > 0).ToList();
+                        title = "Проставленные ставки на " + curDate.ToString("dd.MM.yyyy");
+                        break;
+                }
             }
+            else
+            {
+                switch (filter)
+                {
+                    case "all":
+                        bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name).ToList();
+                        title = "Все ставки";
+                        break;
+                    case "empty":
+                        bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.BetSTIplus == 0).ToList();
+                        title = "Непроставленные ставки";
+                        break;
+                    case "filled":
+                        bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.BetSTIplus > 0).ToList();
+                        title = "Проставленные ставки";
+                        break;
+                    case "allbydate":
+                        bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.Program.TvDate == curDate.Date).ToList();
+                        title = "Все ставки на " + curDate.ToString("dd.MM.yyyy");
+                        break;
+                    case "emptybydate":
+                        bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.Program.TvDate == curDate.Date & b.BetSTIplus == 0).ToList();
+                        title = "Непроставленные ставки на " + curDate.ToString("dd.MM.yyyy");
+                        break;
+                    case "filledbydate":
+                        bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.Program.TvDate == curDate.Date & b.BetSTIplus > 0).ToList();
+                        title = "Проставленные ставки на " + curDate.ToString("dd.MM.yyyy");
+                        break;
+                }
+            }
+            
             ViewData["curDate"] = curDate.ToString("yyyy-MM-dd");
             ViewData["tTitle"] = title;
             return View(bets);
@@ -111,14 +144,29 @@ namespace stitalizator01.Controllers
                     maxBet = tempRes.Max(b => b.BetSTIplus);
                 }
                     Program program = db.Programs.Find(bet.ProgramID);
+                    Period curPeriod = PeriodsController.getPeriodByDate(program.TvDate, false);
                 if (Math.Abs(maxBet-minBet)>=5)
-                {
+                {            
+                    //Увеличиваем количество очков в розыгрыше при добавлении лошадки
+                    if (!program.IsHorse)
+                    {
+                        curPeriod.ScoresGambled += 3;
+                        db.Entry(curPeriod).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
                     program.IsHorse = true;
                     db.Entry(program).State = EntityState.Modified;
                     db.SaveChanges();
                 }                
                 else
                 {
+                    //Уменьшаем количество очков в розыгрыше при удалении лошадки
+                    if (program.IsHorse)
+                    {
+                        curPeriod.ScoresGambled -= 3;
+                        db.Entry(curPeriod).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
                     program.IsHorse = false;
                     db.Entry(program).State = EntityState.Modified;
                     db.SaveChanges();
@@ -128,7 +176,7 @@ namespace stitalizator01.Controllers
 
         public ActionResult HomePageBets()
         {
-            DateTime curDate = DateTime.Now;
+            DateTime curDate = DateTime.UtcNow+MvcApplication.utcMoscowShift;
             List<Bet> bets = new List<Bet>();
             bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.Program.TvDate >= curDate.Date & !b.IsLocked).ToList();
             if (bets.Count>0)
