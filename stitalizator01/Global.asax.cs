@@ -32,7 +32,7 @@ namespace stitalizator01
         private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             //Московское время
-            DateTime now = DateTime.UtcNow+TimeSpan.FromHours(4);
+            DateTime now = DateTime.UtcNow+TimeSpan.FromHours(3);
 
             var expiredList = db.Bets.Where(b => b.Program.TimeStart < now);
             foreach (Bet bet in expiredList)

@@ -73,6 +73,22 @@ namespace stitalizator01.Controllers
             }
             float totalScore = period.ScoresGambled;
             float percentage = score / totalScore;
+            bool last = false;
+            bool first = false;
+
+
+            var periods = db.Periods.Where(p => p.IsMetaPeriod == metaPeriod).ToList();
+            if (periods.LastOrDefault() == period)
+            {
+                last = true;
+            }
+            if (periods.FirstOrDefault() == period)
+            {
+                first = true;
+            }
+            
+            ViewBag.last = last;
+            ViewBag.first = first;
 
             ViewBag.periodDescr = period.PeriodDescription;
             ViewBag.periodId = period.PeriodID;
@@ -108,12 +124,27 @@ namespace stitalizator01.Controllers
                 userResults = getScoresByPeriod(period);
             }
             */
-
+            
             period = getCurrentPeriod(metaPeriod);
             userResults = getScoresByPeriod(period);
+            bool last = false;
+            bool first = false;
+
+
+            var periods = db.Periods.Where(p => p.IsMetaPeriod == metaPeriod).ToList();
+            if (periods.LastOrDefault()==period)
+            {
+                last = true;
+            }
+            if (periods.FirstOrDefault()==period)
+            {
+                first = true;
+            }
 
             ViewBag.periodDescr = period.PeriodDescription;
             ViewBag.periodId = period.PeriodID;
+            ViewBag.last = last;
+            ViewBag.first = first;
 
             return PartialView(userResults);
         }
@@ -189,7 +220,7 @@ namespace stitalizator01.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "PeriodID,UserID,PeriodDescription,EndDate,BegDate,IsMetaPeriod")] Period period)
+        public ActionResult Edit([Bind(Include = "PeriodID,UserID,PeriodDescription,EndDate,BegDate,ScoresGambled,IsMetaPeriod")] Period period)
         {
             if (ModelState.IsValid)
             {

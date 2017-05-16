@@ -1,14 +1,22 @@
 ﻿@{
     string periodDescription = ViewBag.periodDescr;
-    string periodId = ViewBag.periodId.ToString();            
-    var culture = new System.Globalization.CultureInfo("ru-RU");    
+    string periodId = ViewBag.periodId.ToString();
+    bool first = ViewBag.first;
+    bool last = ViewBag.last;
+    var culture = new System.Globalization.CultureInfo("ru-RU");
 }
 
 <ul id="stat_@periodId" class="list-group">
             <li class="list-group-item active">
+                @if (!first)
+                {
                 <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
+                }
                 @periodDescription
+                @if (!last)
+                {
                 <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
+                }
             </li>
             <li class="list-group-item">
                 @ViewBag.Score / @ViewBag.totalScore = @ViewBag.percentage
