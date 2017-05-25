@@ -33,7 +33,9 @@
                     <li>@Html.ActionLink("Каналы", "Index", "Channels")</li>                    
                     <li>@Html.ActionLink("Пользователи", "Index", "UserView")</li>
                     <li>@Html.ActionLink("Роли", "Index", "Role")</li>
+                    <li><a id="mailLi" onclick="mailClick(event)">"MailTest"</a></li>
 }
+                    
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
@@ -52,5 +54,28 @@
 
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+    <script>
+        function mailClick(event)
+        {
+            console.log("here");
+            $.ajax({
+                url: 'Bets/Contact',
+                type: 'POST',
+                data: { 
+                    
+                },
+                success: function (msg) {
+                    console.log(msg);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.log(XMLHttpRequest.responseText);
+                }
+            });
+        }
+    </script>
+
 </body>
+
+
+
 </html>

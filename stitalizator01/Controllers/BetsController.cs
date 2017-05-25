@@ -8,11 +8,46 @@ using System.Web;
 using System.Web.Mvc;
 using stitalizator01.Models;
 
+using System.Net.Mail;
+using System.Threading.Tasks;
+
 namespace stitalizator01.Controllers
 {
     public class BetsController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();        
+        private ApplicationDbContext db = new ApplicationDbContext();
+
+
+        [HttpPost]        
+        public ActionResult Contact()
+        {
+
+            var body = "<p>Email From: {0} ({1})</p><p>Message:</p><p>{2}</p>";
+            var message = new MailMessage();
+            message.To.Add(new MailAddress("amosendz@gmail.com"));  // replace with valid value 
+            message.From = new MailAddress("stitalizator@gmail.com");  // replace with valid value
+            message.Subject = "Ставки";
+            message.Body = "Здесь будет сообщение";
+            message.IsBodyHtml = true;
+
+            using (var smtp = new SmtpClient())
+            {
+                var credential = new NetworkCredential
+                {
+                    UserName = "stitalizator@gmail.com",  // replace with valid value
+                    Password = "945549Co"  // replace with valid value
+                };
+                smtp.Credentials = credential;
+                smtp.Host = "smtp.gmail.com";
+                smtp.Port = 587;
+                smtp.EnableSsl = true;
+                smtp.Send(message);
+                //return RedirectToAction("Sent");
+                return Content("Sent!");
+            }            
+        }
+
+
 
         [HttpGet]
         public ActionResult MyBets(string filter = "allbydate", string date = "01.01.1900")
