@@ -11,6 +11,7 @@
     @foreach (stitalizator01.Models.Bet bet in Model)
     {
         string tempBet = bet.BetSTIplus.ToString().Replace(",", ".");
+        if (tempBet=="0") { tempBet = ""; }
         string strdatetime = bet.Program.TimeEnd.HasValue ? bet.Program.TimeEnd.Value.ToString("HH:mm") : string.Empty;
         if (bet != Model.First())
         {
@@ -27,7 +28,7 @@
 
         if (newDay)
         {
-            day = culture.DateTimeFormat.GetDayName(bet.Program.TvDate.Date.DayOfWeek);            
+            day = culture.DateTimeFormat.GetDayName(bet.Program.TvDate.Date.DayOfWeek);
                 <li class="list-group-item active">
                     <h3>@bet.Program.TvDate.ToString("dd.MM.yyyy"), @day</h3>
                 </li>
@@ -43,7 +44,7 @@
         <label>@bet.Program.ProgTitle (@bet.Program.TimeStart.ToString("HH:mm")-@strdatetime)<br /><i>@bet.Program.ChannelCode</i></label>
         
         <div class="input-group">            
-            <input class="input-lg" id="@bet.BetID" type="number" min="0" max="100" value="@tempBet" step="0.5" onchange="updateBetHomePage(@bet.BetID)" />
+            <input class="input-lg" id="@bet.BetID" type="number" min="0" max="100" value="@tempBet" step="0.5" onchange="updateBetHomePage(@bet.BetID)"/>
             @if (bet.BetSTIplus > 0)
             {
                 <span onclick="updateBetHomePage(@bet.BetID)" >
@@ -67,6 +68,16 @@
 </ul>
 
 <script>
+    function decimalSubstitution(event, betID){
+        var curBet = document.getElementById(betID);
+        var curButton = document.getElementById("a_" + betID);
+        var keyCode = event.which || event.keyCode;
+        if (keyCode == "188") {
+            event.preventDefault();
+            console.log(curBet.tex); 
+        }
+    }
+
     function updateBetHomePage(betID) {
         var curBet = document.getElementById(betID);
         var curButton = document.getElementById("a_"+betID);

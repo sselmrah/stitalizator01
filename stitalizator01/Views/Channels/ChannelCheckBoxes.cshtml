@@ -1,19 +1,19 @@
 ﻿@model IEnumerable<stitalizator01.Models.Channel>
 
 @{
-    string isDefaultStr = "false";    
+    string isDefaultStr = "";    
 }
 <div class="input-group input-group-lg">
     @foreach (var item in Model)
     {
         if (item.IsDefault)
         {
-            isDefaultStr = "true";
+            isDefaultStr = "checked";
         }
         else
         {
-            isDefaultStr = "false";
+            isDefaultStr = "";
         }
-        <input type="checkbox" class="channelCb" id="@item.ChannelTag" checked="@isDefaultStr" /> @item.ChannelName
+        <input type="checkbox" class="channelCb" id="@item.ChannelTag" @isDefaultStr /> @item.ChannelName
     }
 </div>

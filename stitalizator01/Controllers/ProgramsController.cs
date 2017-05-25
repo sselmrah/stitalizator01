@@ -192,6 +192,8 @@ namespace stitalizator01.Controllers
             
             if (curProg.IsBet)
             {
+                updateScoresGambled(curProg.TvDate, true, curProg.IsHorse);
+                /*
                 var periods = db.Periods.Where(p => (p.BegDate <= curProg.TvDate) & (p.EndDate >= curProg.TvDate));
 
                 if (periods != null)
@@ -202,7 +204,7 @@ namespace stitalizator01.Controllers
                         db.Entry(period).State = EntityState.Modified;
                     }
                 }
-
+                */
                 foreach (ApplicationUser user in db.Users)
                 {
                     Bet curBet = new Bet();
@@ -215,6 +217,8 @@ namespace stitalizator01.Controllers
             }
             else
             {
+                updateScoresGambled(curProg.TvDate, false, curProg.IsHorse);
+                /*
                 var periods = db.Periods.Where(p => (p.BegDate <= curProg.TvDate) & (p.EndDate >= curProg.TvDate));
 
                 if (periods != null)
@@ -225,6 +229,7 @@ namespace stitalizator01.Controllers
                         db.Entry(period).State = EntityState.Modified;
                     }
                 }
+                */
                 var x = db.Bets.Where(o => o.ProgramID == curProg.ProgramID);
                 db.Bets.RemoveRange(x);                
 
@@ -232,6 +237,22 @@ namespace stitalizator01.Controllers
             db.SaveChanges();
             //return RedirectToAction("Index");
             return PartialView(curProg);
+        }
+
+        public void updateScoresGambled (DateTime tvDate, bool add, bool isHorse)
+        {
+            var periods = db.Periods.Where(p => (p.BegDate <= tvDate) & (p.EndDate >= tvDate));
+            int pointsToAdd = 3;
+            if (isHorse) { pointsToAdd = pointsToAdd * 2; }
+            if (!add) { pointsToAdd = pointsToAdd * (-1); }
+            if (periods != null)
+            {
+                foreach (Period period in periods)
+                { 
+                    period.ScoresGambled += pointsToAdd;
+                    db.Entry(period).State = EntityState.Modified;
+                }
+            }
         }
 
         [HttpPost]
@@ -364,6 +385,10 @@ namespace stitalizator01.Controllers
         {
             Program program = db.Programs.Find(id);
             db.Programs.Remove(program);
+            if (program.IsBet)
+            {
+                updateScoresGambled(program.TvDate, false, program.IsHorse);
+            }
             db.SaveChanges();
             return RedirectToAction("Index");
         }
