@@ -15,10 +15,11 @@ namespace stitalizator01
     public class MvcApplication : System.Web.HttpApplication
     {
         public static System.Timers.Timer timer = new System.Timers.Timer(60000); // This will raise the event every one minute.
-        public static System.Timers.Timer timer10 = new System.Timers.Timer(10*60000); 
+        //public static System.Timers.Timer timer10 = new System.Timers.Timer(90000); 
         public static ApplicationDbContext db = new ApplicationDbContext();
         public static TimeSpan utcMoscowShift = TimeSpan.FromHours(3);
-        private DateTime lastWarningTimeStamp = DateTime.UtcNow-TimeSpan.FromDays(1);
+        private int minutesElapsed = 0;
+        //private DateTime lastWarningTimeStamp = DateTime.UtcNow-TimeSpan.FromDays(1);
 
         protected void Application_Start()
         {
@@ -32,8 +33,9 @@ namespace stitalizator01
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             timer.Enabled = true;
             timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
-            timer10.Enabled = true;
-            timer10.Elapsed += new System.Timers.ElapsedEventHandler(timer10_Elapsed);
+            
+            //timer10.Enabled = true;
+            //timer10.Elapsed += new System.Timers.ElapsedEventHandler(timer10_Elapsed);
 
 
         }
@@ -88,11 +90,60 @@ namespace stitalizator01
             }
         }
 
+        private void sendPersonalizedEmail(string email, List<string> betName)
+        {
+            var message = new MailMessage();
+            message.To.Add(new MailAddress(email));
+            message.From = new MailAddress("stitalizator@gmail.com");  // replace with valid value
+            message.Subject = "Нужно сделать ставки!";
+            string text = "<p>Заканчивается прием ставок на следующие программы:</p>";
+            foreach(string s in betName)
+            {
+                text += "<p>" + s + "</p>";
+            }
+            text += "<br><p><a href=\"http://stitalizator.azurewebsites.net\">" + "Перейти к выставлению ставок</a></p>";
+            message.Body = text;
+            message.IsBodyHtml = true;
+
+            using (var smtp = new SmtpClient())
+            {
+                var credential = new NetworkCredential
+                {
+                    UserName = "stitalizator@gmail.com",  // replace with valid value
+                    Password = "945549Co"  // replace with valid value
+                };
+                smtp.Credentials = credential;
+                smtp.Host = "smtp.gmail.com";
+                smtp.Port = 587;
+                smtp.EnableSsl = true;
+                smtp.Send(message);
+                //return RedirectToAction("Sent");
+                //return Content("Sent!");
+            }
+        }
 
         private void timer10_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             DateTime now = DateTime.UtcNow + utcMoscowShift;
-            List<Bet> burningBets = db.Bets.Where(b => b.Program.TimeStart < (now+TimeSpan.FromHours(1))).ToList();
+            DateTime later = now + TimeSpan.FromMinutes(19);
+            //List<Bet> burningBets = db.Bets.Where(b => b.Program.TvDate == now.Date & b.Program.TimeStart < (now+TimeSpan.FromHours(1))).ToList();
+            List<ApplicationUser> users = db.Users.ToList();
+            foreach (ApplicationUser user in users)
+            {
+                List<Bet> burningBets = db.Bets.Where(b => b.ApplicationUser.Id == user.Id & b.BetSTIplus==0 & b.Program.TimeStart > now & b.Program.TimeStart < later).ToList();   
+                if (burningBets.Count()>0)
+                {
+                    List<string> bets2send = new List<string>();
+                    foreach(Bet b in burningBets)
+                    {
+                        string betDescription = b.Program.ProgTitle + "(" + b.Program.TimeStart.ToString("HH:mm")+") "+b.Program.ChannelCode;
+                        bets2send.Add(betDescription);
+                    }
+                    sendPersonalizedEmail(user.Email, bets2send);
+                }
+            }
+
+            /*
             if (lastWarningTimeStamp.Date < now.Date)
             {                
                 if (burningBets.Count > 0)
@@ -101,7 +152,7 @@ namespace stitalizator01
                     lastWarningTimeStamp = now;    
                 }
             }
-
+            */
         }
 
         private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -115,7 +166,29 @@ namespace stitalizator01
                 bet.IsLocked = true;
             }
             db.SaveChanges();
-            
+            minutesElapsed++;
+            if (minutesElapsed==15)
+            { 
+                DateTime later = now + TimeSpan.FromMinutes(14);
+                //List<Bet> burningBets = db.Bets.Where(b => b.Program.TvDate == now.Date & b.Program.TimeStart < (now+TimeSpan.FromHours(1))).ToList();
+                List<ApplicationUser> users = db.Users.ToList();
+                foreach (ApplicationUser user in users)
+                {
+                    List<Bet> burningBets = db.Bets.Where(b => b.ApplicationUser.Id == user.Id & b.BetSTIplus == 0 & b.Program.TimeStart > now & b.Program.TimeStart < later).ToList();
+                    if (burningBets.Count() > 0)
+                    {
+                        List<string> bets2send = new List<string>();
+                        foreach (Bet b in burningBets)
+                        {
+                            string betDescription = b.Program.ProgTitle + "(" + b.Program.TimeStart.ToString("HH:mm") + ") " + b.Program.ChannelCode;
+                            bets2send.Add(betDescription);
+                        }
+                        sendPersonalizedEmail(user.Email, bets2send);
+                    }
+                }
+                minutesElapsed = 0;
+            }
+
         }
 
         /*

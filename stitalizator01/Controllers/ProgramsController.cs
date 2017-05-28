@@ -172,6 +172,8 @@ namespace stitalizator01.Controllers
         {
             if (ModelState.IsValid)
             {
+                program.TimeStart = program.TvDate + TimeSpan.FromHours(program.TimeStart.Hour)+TimeSpan.FromMinutes(program.TimeStart.Minute);
+
                 db.Entry(program).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -266,7 +268,8 @@ namespace stitalizator01.Controllers
             var betsList = db.Bets.Where(b => b.Program.ProgramID == program.ProgramID);
             foreach (Bet bet in betsList)
             {
-                bet.ScoreClassic = calculateScoreClassic(bet.BetSTIplus, (float)bet.Program.ShareStiPlus);
+                //bet.ScoreClassic = calculateScoreClassic(bet.BetSTIplus, (float)bet.Program.ShareStiPlus);
+                bet.ScoreClassic = calculateScoreClassic(bet);
                 bet.ScoreOLS = calculateScoreOLS(bet.BetSTIplus, (float)bet.Program.ShareStiPlus);
                 db.Entry(bet).State = EntityState.Modified;
             }
@@ -302,8 +305,9 @@ namespace stitalizator01.Controllers
                 db.Entry(program).State = EntityState.Modified;
                 var betsList = db.Bets.Where(b => b.Program.ProgramID == program.ProgramID);
                 foreach (Bet bet in betsList)
-                {                                        
-                    bet.ScoreClassic=calculateScoreClassic(bet.BetSTIplus, (float)bet.Program.ShareStiPlus);
+                {
+                    //bet.ScoreClassic=calculateScoreClassic(bet.BetSTIplus, (float)bet.Program.ShareStiPlus);
+                    bet.ScoreClassic = calculateScoreClassic(bet);
                     bet.ScoreOLS = calculateScoreOLS(bet.BetSTIplus, (float)bet.Program.ShareStiPlus);
                     db.Entry(bet).State = EntityState.Modified;                    
                 }
@@ -336,8 +340,11 @@ namespace stitalizator01.Controllers
         }
 
 
-        public float calculateScoreClassic(float bet, float result)
+        //public float calculateScoreClassic(float bet, float result)
+        public float calculateScoreClassic(Bet curBet)
         {
+            float bet = curBet.BetSTIplus;
+            float result = (float)curBet.Program.ShareStiPlus;
             //Округляем до 0.5
             bet = (float)(Math.Round(bet * 2) / 2);
             result = (float)(Math.Round(result * 2) / 2);
@@ -349,7 +356,7 @@ namespace stitalizator01.Controllers
             if (tempResult <= 1) { score = 2; }
             if (tempResult <= 0.5) { score = 3; }
             
-
+            if (curBet.IsHorse) { score = score * 2; }
 
             return score;
         }
