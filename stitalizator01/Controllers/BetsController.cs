@@ -99,6 +99,46 @@ namespace stitalizator01.Controllers
             return View(bets);
         }
 
+
+
+        public ActionResult WhiteBoard(int periodId = 0)
+        {
+            Period curPeriod = new Period();
+            if (periodId == 0)
+            {
+                DateTime tempDt = DateTime.UtcNow;
+                if (tempDt.DayOfWeek == DayOfWeek.Monday) { tempDt = tempDt - TimeSpan.FromDays(1); }
+                curPeriod = getPeriodByDate(tempDt,false);
+            }
+            else
+            {
+                curPeriod = db.Periods.Where(p => p.PeriodID == periodId).FirstOrDefault();
+            }
+            List<Bet> bets = db.Bets.Where(b => (b.Program.TvDate >= curPeriod.BegDate) & (b.Program.TvDate <= curPeriod.EndDate)).OrderBy(b => b.ApplicationUser.UserName).ThenBy(b => b.Program.TvDate).ThenBy(b => b.Program.TimeStart).ToList();
+            
+
+            return View(bets);
+        }
+
+        public ActionResult WhiteBoardHomepage(int periodId = 0)
+        {
+            Period curPeriod = new Period();
+            if (periodId == 0)
+            {
+                DateTime tempDt = DateTime.UtcNow;
+                if (tempDt.DayOfWeek == DayOfWeek.Monday) { tempDt = tempDt - TimeSpan.FromDays(1); }
+                curPeriod = getPeriodByDate(tempDt, false);
+            }
+            else
+            {
+                curPeriod = db.Periods.Where(p => p.PeriodID == periodId).FirstOrDefault();
+            }
+            List<Bet> bets = db.Bets.Where(b => (b.Program.TvDate >= curPeriod.BegDate) & (b.Program.TvDate <= curPeriod.EndDate)).OrderBy(b => b.ApplicationUser.UserName).ThenBy(b => b.Program.TvDate).ThenBy(b => b.Program.TimeStart).ToList();
+
+
+            return PartialView(bets);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult MyBets([Bind(Include = "BetID,PeriodID,ScoreOLS,ScoreClassic,AttemptNo,TimeStamp,IsHorse,BetRus18,BetMos18,BetSTImob,BetSTI,BetSTIplus,ProgramID")] Bet bet)

@@ -265,6 +265,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="fonts\marker_font01.ttf" />
     <None Include="Properties\PublishProfiles\aws.pubxml" />
     <None Include="Properties\PublishProfiles\stitalizator - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\stitalizator.pubxml" />
@@ -359,6 +360,8 @@
     <Content Include="Views\Periods\SwitchLeaderBoard.cshtml" />
     <Content Include="Views\Home\BlockScreen.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Bets\WhiteBoard.cshtml" />
+    <Content Include="Views\Bets\WhiteBoardHomepage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Roles\" />
@@ -426,7 +429,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>9607</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:9607/</IISUrl>
+          <IISUrl>http://localhost:9608/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

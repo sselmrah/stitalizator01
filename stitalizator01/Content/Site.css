@@ -78,3 +78,54 @@ input[type="checkbox"]{
     /*height: 1000px;
     background: url('Img/chOneLogoSquare.png') no-repeat center center;    */
 }
+
+#whiteBoardTable {
+    table-layout: fixed;
+    font-family: 'marker_font01';
+    text-align: center;        
+}
+
+#whiteBoardTable td {
+    word-wrap: break-word;
+    width:70px;
+}
+#whiteBoardTable tr {
+    height: 70px;
+}
+
+@font-face {
+    font-family: 'marker_font01';
+    src: url('../../fonts/marker_font01.ttf') format('truetype');
+}
+
+#totalScoreTd {
+    color: red;
+    font-weight:bold;
+    font-size:x-large;
+}
+#resultsTr {
+    font-weight: bold;
+    font-size: x-large;
+}
+.table-responsive2 {
+    width: 80%;
+    margin-bottom: 15px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    border: 0 solid #DDD;
+    float:left;
+}
+
+
+#whiteBoardTable2 {
+    table-layout: fixed;
+    font-family: 'marker_font01';
+    text-align: center;    
+    width: 50px;    
+}
+#whiteBoardTable2 tr {
+        height: 70px;
+}
+    
