@@ -16,60 +16,7 @@ namespace stitalizator01.Controllers
     public class BetsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-
-
-        [HttpPost]        
-        public ActionResult Contact()
-        {
-            DateTime curTime = DateTime.UtcNow;
-            List<ApplicationUser> users = db.Users.ToList();
-            List<Bet> userBets = new List<Bet>();
-            //var body = "<p>Email From: {0} ({1})</p><p>Message:</p><p>{2}</p>";
-            var message = new MailMessage();
-
-            foreach (ApplicationUser user in users)
-            {
-                userBets = db.Bets.Where(b => b.ApplicationUser.UserName == user.UserName & b.Program.TvDate == curTime.Date & b.BetSTIplus == 0).ToList();
-                
-                if (user.UserName != "admin")
-                {
-                    if (userBets.Count() > 0)
-                    {
-                        message.To.Add(new MailAddress(user.Email));
-                    }
-                }
-            }
-            if (message.To.Count() > 0)
-            {
-                //message.To.Add(new MailAddress("amosendz@gmail.com"));  // replace with valid value 
-                message.From = new MailAddress("stitalizator@gmail.com");  // replace with valid value
-                message.Subject = "Нужно сделать ставки на " + curTime.Date.ToString("dd.MM.yyyy");
-                message.Body = "В далеком светлом будущем здесь будет перечень ставок.";
-                message.IsBodyHtml = true;
-
-                using (var smtp = new SmtpClient())
-                {
-                    var credential = new NetworkCredential
-                    {
-                        UserName = "stitalizator@gmail.com",  // replace with valid value
-                        Password = "945549Co"  // replace with valid value
-                    };
-                    smtp.Credentials = credential;
-                    smtp.Host = "smtp.gmail.com";
-                    smtp.Port = 587;
-                    smtp.EnableSsl = true;
-                    smtp.Send(message);
-                    //return RedirectToAction("Sent");
-                    return Content("Sent!");
-                }
-            }
-            else
-            {
-                return Content("Все молодцы! Отправлять некому!");
-            }
-        }
-
-
+        
 
         [HttpGet]
         public ActionResult MyBets(string filter = "allbydate", string date = "01.01.1900")

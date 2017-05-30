@@ -356,7 +356,7 @@ namespace stitalizator01.Controllers
             if (tempResult <= 1) { score = 2; }
             if (tempResult <= 0.5) { score = 3; }
             
-            if (curBet.IsHorse) { score = score * 2; }
+            if (curBet.Program.IsHorse) { score = score * 2; }
 
             return score;
         }

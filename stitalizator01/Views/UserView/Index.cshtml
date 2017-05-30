@@ -42,6 +42,13 @@
                     </a>
                         
                 </td>
+                <td>
+
+                    <a href="#" data-username="@user.Username" class="btn btn-info btn-sm">
+                        <span class="glyphicon glyphicon-remove-circle"></span> Изменить e-mail
+                    </a>
+
+                </td>
              
             </tr>
         }
@@ -71,6 +78,31 @@
             console.log("You pressed Cancel!");
         }
     });
+
+    $(".btn-info").click(function () {
+        curObj = event.target;
+        var userName = curObj.getAttribute("data-username");
+        var newEmail = prompt("Введите новый email для пользователя " + userName, "");
+        if (newEmail.indexOf('@@',0) > 0) 
+        {
+            $.ajax({
+                type: 'GET',
+                cache: false,
+                data: {
+                    userName: userName,
+                    newEmail: newEmail
+                },
+                url: '/UserView/ChangeEmail',
+                success: function (data) {
+                    location.reload();
+                    console.log("Новый почтовый адрес пользователя " + userName + ": " + newEmail);
+                }
+            });
+        } else {
+            console.log("You pressed Cancel!");
+        }
+    });
+
 </script>
 @*foreach (var user in Model.Users)
     {

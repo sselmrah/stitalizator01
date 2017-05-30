@@ -7,7 +7,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-
+using System.Data.Entity;
 
 namespace stitalizator01.Controllers
 {
@@ -42,6 +42,16 @@ namespace stitalizator01.Controllers
             context.Users.Remove(thisUser);
             context.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public ActionResult ChangeEmail(string userName, string newEmail)
+        {
+            var thisUser = context.Users.Where(r => r.UserName.Equals(userName, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+            thisUser.Email = newEmail;
+            context.Entry(thisUser).State = EntityState.Modified;
+            context.SaveChanges();
+
+            return Content(thisUser.Email);
         }
 
     }
