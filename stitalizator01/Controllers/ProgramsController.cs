@@ -183,6 +183,40 @@ namespace stitalizator01.Controllers
         
 
         [HttpPost]
+        public ActionResult updateBetsUsers(int id)
+        {
+            Program curProg = db.Programs.Find(id);
+            List<ApplicationUser> users = db.Users.ToList();
+            List<Bet> bets = db.Bets.Where(b => b.Program.ProgramID == curProg.ProgramID).ToList();
+            List<ApplicationUser> curUsers = new List<ApplicationUser>();
+            foreach (Bet b in bets)
+            {
+                if (!curUsers.Contains(b.ApplicationUser))
+                {
+                    curUsers.Add(b.ApplicationUser);
+                }                
+            }
+            foreach (ApplicationUser u in users)
+            {
+                if (!curUsers.Contains(u))
+                {
+                    if (u.UserName != "Admin")
+                    {
+                        Bet curBet = new Bet();
+                        curBet.ProgramID = curProg.ProgramID;
+                        curBet.Program = curProg;
+                        curBet.TimeStamp = DateTime.UtcNow + MvcApplication.utcMoscowShift;
+                        curBet.ApplicationUser = u;
+                        db.Bets.Add(curBet);
+                    }
+                }
+            }
+            db.SaveChanges();
+            return Content("Added bets");
+        }
+    
+
+        [HttpPost]
         //[ValidateAntiForgeryToken]
         public ActionResult UpdateBet(int id)
         {

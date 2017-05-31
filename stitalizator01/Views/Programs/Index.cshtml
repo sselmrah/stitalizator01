@@ -123,7 +123,9 @@
         <td class="visible-lg">
             @Html.ActionLink("Edit", "Edit", new { id = model.ProgramID }) |
             @Html.ActionLink("Details", "Details", new { id = model.ProgramID }) |
-            @Html.ActionLink("Delete", "Delete", new { id = model.ProgramID })
+            @Html.ActionLink("Delete", "Delete", new { id = model.ProgramID }) |
+            <p onclick="updateBetsUsers(@curProgId)">Update all users</p>
+            
         </td>
     </tr>
 }
@@ -133,6 +135,18 @@
 
 @section scripts {
     <script>
+
+        function updateBetsUsers(curId) {            
+            $.ajax({
+                url: '@Url.Action("updateBetsUsers", "Programs")',
+                type: "POST",
+                dataType: "text",
+                data: {
+                    id: curId
+                },
+                success: function (data) { console.log("succrss"); }//document.write(data); }
+            });
+        };
 
         function ClearProgs() {
             document.getElementById('overlayDiv').style.display = "block";
@@ -175,7 +189,7 @@
         }
 
         console.log(chList);
-       
+
             $.ajax({
                 url: '@Url.Action("ProgsByDate", "Programs")',
                 type: "GET",
@@ -234,17 +248,17 @@
     }
 
 
-        
+
     function updateProgResult(progID) {
         var curProg = document.getElementById(progID);
-        
-        console.log("curProg.value: "+curProg.value);                
+
+        console.log("curProg.value: "+curProg.value);
         $.ajax({
             url: 'Programs/enterSingleResult',
             type: 'POST',
-            data: { 
+            data: {
                 ProgramID: progID,
-                ShareSTIplus: curProg.value 
+                ShareSTIplus: curProg.value
                 },
             success: function (data) {console.log(data);},
             error: function (XMLHttpRequest, textStatus, errorThrown) {
