@@ -37,5 +37,7 @@ namespace stitalizator01.Models
         public System.Data.Entity.DbSet<stitalizator01.Models.Channel> Channels { get; set; }
 
         //public System.Data.Entity.DbSet<stitalizator01.Models.ApplicationUser> ApplicationUsers { get; set; }
+
+        //public System.Data.Entity.DbSet<stitalizator01.Models.ApplicationUser> ApplicationUsers { get; set; }
     }
 }

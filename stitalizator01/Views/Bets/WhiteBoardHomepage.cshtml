@@ -106,6 +106,8 @@
                                     {
                                         totalScore += bet.ScoreClassic;
                                         <td>
+                                            @if (bet.BetSTIplus>0)
+                                            { 
                                             <p>@bet.BetSTIplus</p>
                                             <p style="color:red">
                                                 @if (bet.ScoreClassic > 0)
@@ -120,6 +122,7 @@
                                                     <b>&nbsp;</b>
                                                 }
                                             </p>
+                                            }
                                         </td>
                                     }
                                 }

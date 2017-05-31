@@ -220,7 +220,7 @@ namespace stitalizator01.Controllers
 
         private List<LeaderboardEntry> getScoresByPeriod(Period period)
         {
-            List<LeaderboardEntry> userResults = db.Bets.Where(bet => (bet.Program.TvDate >= period.BegDate & bet.Program.TvDate <= period.EndDate))
+            List<LeaderboardEntry> userResults = db.Bets.Where(bet => (bet.ApplicationUser.UserName!="Admin")&(bet.Program.TvDate >= period.BegDate & bet.Program.TvDate <= period.EndDate))
                                              .GroupBy(b => b.ApplicationUser,
                                                       b => b.ScoreClassic,
                                                       (key, g) => new LeaderboardEntry

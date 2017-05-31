@@ -114,7 +114,7 @@ namespace stitalizator01.Controllers
             {
                 curPeriod = db.Periods.Where(p => p.PeriodID == periodId).FirstOrDefault();
             }
-            List<Bet> bets = db.Bets.Where(b => (b.Program.TvDate >= curPeriod.BegDate) & (b.Program.TvDate <= curPeriod.EndDate)).OrderBy(b => b.ApplicationUser.UserName).ThenBy(b => b.Program.TvDate).ThenBy(b => b.Program.TimeStart).ToList();
+            List<Bet> bets = db.Bets.Where(b => (b.Program.TvDate >= curPeriod.BegDate) & (b.Program.TvDate <= curPeriod.EndDate)).OrderBy(b => b.ApplicationUser.UserName).ThenBy(b => b.Program.TvDate).ThenBy(b=> b.Program.ChannelCode.Length).ThenBy(b => b.Program.TimeStart).ToList();
             
 
             return View(bets);
@@ -133,7 +133,7 @@ namespace stitalizator01.Controllers
             {
                 curPeriod = db.Periods.Where(p => p.PeriodID == periodId).FirstOrDefault();
             }
-            List<Bet> bets = db.Bets.Where(b => (b.Program.TvDate >= curPeriod.BegDate) & (b.Program.TvDate <= curPeriod.EndDate)).OrderBy(b => b.ApplicationUser.UserName).ThenBy(b => b.Program.TvDate).ThenBy(b => b.Program.TimeStart).ToList();
+            List<Bet> bets = db.Bets.Where(b => (b.ApplicationUser.UserName!="Admin")&(b.Program.TvDate >= curPeriod.BegDate) & (b.Program.TvDate <= curPeriod.EndDate)).OrderBy(b => b.ApplicationUser.UserName).ThenBy(b => b.Program.TvDate).ThenByDescending(b => b.Program.ChannelCode.Length).ThenBy(b => b.Program.TimeStart).ToList();
 
 
             return PartialView(bets);

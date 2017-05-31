@@ -167,9 +167,9 @@ namespace stitalizator01
             }
             db.SaveChanges();
             minutesElapsed++;
-            if (minutesElapsed==15)
+            if (minutesElapsed==30)
             { 
-                DateTime later = now + TimeSpan.FromMinutes(14);
+                DateTime later = now + TimeSpan.FromMinutes(29);
                 //List<Bet> burningBets = db.Bets.Where(b => b.Program.TvDate == now.Date & b.Program.TimeStart < (now+TimeSpan.FromHours(1))).ToList();
                 List<ApplicationUser> users = db.Users.ToList();
                 foreach (ApplicationUser user in users)

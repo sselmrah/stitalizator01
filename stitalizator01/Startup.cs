@@ -17,7 +17,7 @@ namespace stitalizator01
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
-            createRolesandUsers();   
+           // createRolesandUsers();   
         }
 
         private void createRolesandUsers()
@@ -40,7 +40,7 @@ namespace stitalizator01
                 //Here we create a Admin super user
                 var user = new ApplicationUser();
                 user.UserName = "admin";
-                user.Email = "amosendz@gmail.com";
+                user.Email = "stitalizator@gmail.com";
 
                 string userPWD = "945549";
 

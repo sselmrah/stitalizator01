@@ -209,12 +209,15 @@ namespace stitalizator01.Controllers
                 */
                 foreach (ApplicationUser user in db.Users)
                 {
-                    Bet curBet = new Bet();
-                    curBet.ProgramID = curProg.ProgramID;
-                    curBet.Program = curProg;
-                    curBet.TimeStamp = DateTime.UtcNow+MvcApplication.utcMoscowShift;
-                    curBet.ApplicationUser = user;
-                    db.Bets.Add(curBet);                   
+                    if (user.UserName != "Admin")
+                    {
+                        Bet curBet = new Bet();
+                        curBet.ProgramID = curProg.ProgramID;
+                        curBet.Program = curProg;
+                        curBet.TimeStamp = DateTime.UtcNow + MvcApplication.utcMoscowShift;
+                        curBet.ApplicationUser = user;
+                        db.Bets.Add(curBet);
+                    }
                 }
             }
             else
