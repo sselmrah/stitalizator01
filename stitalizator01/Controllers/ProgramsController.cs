@@ -243,7 +243,7 @@ namespace stitalizator01.Controllers
                 */
                 foreach (ApplicationUser user in db.Users)
                 {
-                    if (user.UserName != "Admin")
+                    if (user.UserName != "admin")
                     {
                         Bet curBet = new Bet();
                         curBet.ProgramID = curProg.ProgramID;

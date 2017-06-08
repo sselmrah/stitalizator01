@@ -362,6 +362,7 @@
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Bets\WhiteBoard.cshtml" />
     <Content Include="Views\Bets\WhiteBoardHomepage.cshtml" />
+    <Content Include="Views\Bets\SwitchWhiteBoardHomepage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Roles\" />

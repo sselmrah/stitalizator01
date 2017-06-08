@@ -144,7 +144,7 @@ else
             @using(Html.BeginForm())
             {
                 @Html.AntiForgeryToken()
-                if (model.IsLocked)
+                if (model.IsLocked &! this.User.IsInRole("Admin"))
                 { 
                 @Html.DisplayFor(modelItem => model.BetSTIplus)                    
                 }
@@ -163,7 +163,8 @@ else
                 @Html.Hidden("BetMos18", model.BetMos18)
                 @Html.Hidden("BetSTImob", model.BetSTImob)
                 @Html.Hidden("BetSTI", model.BetSTI)                
-                @Html.Hidden("ProgramID", model.ProgramID)                
+                @Html.Hidden("ProgramID", model.ProgramID)    
+                @Html.Hidden("IsLocked", model.IsLocked)
                 if (!model.IsLocked)
                 {<input type="submit" value="Сохранить" class="btn btn-default" />}
             }

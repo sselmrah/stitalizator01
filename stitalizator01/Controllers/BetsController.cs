@@ -123,6 +123,7 @@ namespace stitalizator01.Controllers
         public ActionResult WhiteBoardHomepage(int periodId = 0)
         {
             Period curPeriod = new Period();
+            List<Period> periods = db.Periods.Where(p => !p.IsMetaPeriod).OrderBy(p => p.BegDate).ToList();
             if (periodId == 0)
             {
                 DateTime tempDt = DateTime.UtcNow;
@@ -136,18 +137,101 @@ namespace stitalizator01.Controllers
             List<Bet> bets = db.Bets.Where(b => (b.ApplicationUser.UserName!="Admin")&(b.Program.TvDate >= curPeriod.BegDate) & (b.Program.TvDate <= curPeriod.EndDate)).OrderBy(b => b.ApplicationUser.UserName).ThenBy(b => b.Program.TvDate).ThenByDescending(b => b.Program.ChannelCode.Length).ThenBy(b => b.Program.TimeStart).ToList();
 
 
+            bool last = false;
+            bool first = false;
+            if (periods.LastOrDefault() == curPeriod)
+            {
+                last = true;
+            }
+            if (periods.FirstOrDefault() == curPeriod)
+            {
+                first = true;
+            }
+            
+            ViewBag.last = last;
+            ViewBag.first = first;
+            ViewBag.periodId = curPeriod.PeriodID;
+            ViewBag.periodDescription = curPeriod.PeriodDescription;
             return PartialView(bets);
         }
 
+        public ActionResult SwitchWhiteBoardHomepage(int periodId, string direction)
+        {
+            Period curPeriod = new Period();
+
+            List<Period> periods = db.Periods.Where(p => !p.IsMetaPeriod).OrderBy(p => p.BegDate).ToList();
+            Period oldPeriod = periods.Find(p => p.PeriodID == periodId);
+            int index = periods.IndexOf(oldPeriod);
+
+            if (direction == "next")
+            {
+                index++;
+                if (index < periods.Count())
+                {
+                    curPeriod = periods[index];
+                }
+            }
+            else
+            {
+                index--;
+                if (index >= 0)
+                {
+                    curPeriod = periods[index];
+                }
+            }
+
+            /*
+            if (periodId == 0)
+            {
+                DateTime tempDt = DateTime.UtcNow;
+                if (tempDt.DayOfWeek == DayOfWeek.Monday) { tempDt = tempDt - TimeSpan.FromDays(1); }
+                curPeriod = getPeriodByDate(tempDt, false);
+            }
+            else
+            {
+                curPeriod = db.Periods.Where(p => p.PeriodID == periodId).FirstOrDefault();
+            }
+            */
+            List<Bet> bets = db.Bets.Where(b => (b.ApplicationUser.UserName != "Admin") & (b.Program.TvDate >= curPeriod.BegDate) & (b.Program.TvDate <= curPeriod.EndDate)).OrderBy(b => b.ApplicationUser.UserName).ThenBy(b => b.Program.TvDate).ThenByDescending(b => b.Program.ChannelCode.Length).ThenBy(b => b.Program.TimeStart).ToList();
+
+
+            bool last = false;
+            bool first = false;
+            if (periods.LastOrDefault() == curPeriod)
+            {
+                last = true;
+            }
+            if (periods.FirstOrDefault() == curPeriod)
+            {
+                first = true;
+            }
+
+            ViewBag.last = last;
+            ViewBag.first = first;
+            ViewBag.periodId = curPeriod.PeriodID;
+            ViewBag.periodDescription = curPeriod.PeriodDescription;
+            return PartialView(bets);
+        }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult MyBets([Bind(Include = "BetID,PeriodID,ScoreOLS,ScoreClassic,AttemptNo,TimeStamp,IsHorse,BetRus18,BetMos18,BetSTImob,BetSTI,BetSTIplus,ProgramID")] Bet bet)
+        public ActionResult MyBets([Bind(Include = "BetID,PeriodID,ScoreOLS,ScoreClassic,AttemptNo,TimeStamp,IsHorse,IsLocked,BetRus18,BetMos18,BetSTImob,BetSTI,BetSTIplus,ProgramID")] Bet bet)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(bet).State = EntityState.Modified;
                 //bet.BetSTIplus = (float)(Math.Round(bet.BetSTIplus * 2) / 2);
                 isHorse(bet);
+                db.SaveChanges();
+                //Какая-то фигня с лошадьми... Нужно проверить...
+                var betsList = db.Bets.Where(b => b.Program.ProgramID == bet.Program.ProgramID);
+                foreach (Bet b in betsList)
+                {
+                    b.ScoreClassic = calculateScoreClassic(b);
+                    b.ScoreOLS = calculateScoreOLS(b.BetSTIplus, (float)b.Program.ShareStiPlus);
+                    db.Entry(bet).State = EntityState.Modified;
+                }
                 db.SaveChanges();
                 return RedirectToAction("MyBets");
             }
@@ -320,11 +404,20 @@ namespace stitalizator01.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "BetID,PeriodID,ScoreOLS,ScoreClassic,AttemptNo,TimeStamp,IsHorse,BetRus18,BetMos18,BetSTImob,BetSTI,BetSTIplus,UserID,ProgramID")] Bet bet)
+        public ActionResult Edit([Bind(Include = "BetID,PeriodID,ScoreOLS,ScoreClassic,AttemptNo,TimeStamp,IsHorse,IsLocked,BetRus18,BetMos18,BetSTImob,BetSTI,BetSTIplus,UserID,ProgramID")] Bet bet)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(bet).State = EntityState.Modified;
+                isHorse(bet);
+                db.SaveChanges();
+                var betsList = db.Bets.Where(b => b.Program.ProgramID == bet.Program.ProgramID);
+                foreach (Bet b in betsList)
+                {
+                    b.ScoreClassic = calculateScoreClassic(b);
+                    b.ScoreOLS = calculateScoreOLS(b.BetSTIplus, (float)b.Program.ShareStiPlus);
+                    db.Entry(bet).State = EntityState.Modified;
+                }
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -367,6 +460,36 @@ namespace stitalizator01.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+
+
+        public float calculateScoreClassic(Bet curBet)
+        {
+            float bet = curBet.BetSTIplus;
+            float result = (float)curBet.Program.ShareStiPlus;
+            //Округляем до 0.5
+            bet = (float)(Math.Round(bet * 2) / 2);
+            result = (float)(Math.Round(result * 2) / 2);
+            float score = 0;
+            float tempResult = 0;
+
+            tempResult = Math.Abs(result - bet);
+            if (tempResult <= 2) { score = 1; }
+            if (tempResult <= 1) { score = 2; }
+            if (tempResult <= 0.5) { score = 3; }
+
+            if (curBet.Program.IsHorse) { score = score * 2; }
+
+            return score;
+        }
+
+        public float calculateScoreOLS(float bet, float result)
+        {
+            float score = 0;
+            score = (float)Math.Pow((result - bet), 2);
+
+            return score;
         }
     }
 }

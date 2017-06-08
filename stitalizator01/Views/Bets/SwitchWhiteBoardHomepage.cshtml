@@ -1,0 +1,226 @@
+﻿@model IEnumerable<stitalizator01.Models.Bet>
+@{
+    ViewBag.Title = "Доска подсчета";
+    var periodId = ViewBag.periodId;
+    bool first = ViewBag.first;
+    bool last = ViewBag.last;
+    var periodDescription = ViewBag.periodDescription;
+    var usersList = Model.GroupBy(b => b.ApplicationUser.UserName);
+    var datesList = Model.GroupBy(b => b.Program.TvDate, b => b.Program.TvDate.ToString("dd.MM.yyyy"));
+    var progsList = Model.GroupBy(b => b.ProgramID);
+    int addCols = 0;
+    int tempRes = Model.Select(b => b.Program.ProgramID).Distinct().Count();
+    if (tempRes<15) { addCols = 15 - tempRes; }
+}
+
+  <div id="whiteBoardHeader">
+    <div style="width:10%; float:left">
+        @if (!first)
+            {
+            <button type="button" class="btn btn-default" onclick="switchWhiteBoard(@periodId,'prev')"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
+        }
+    </div>
+    <div style="width:70%; float:left">
+        <p id="whiteBoardTitle">@periodDescription</p>
+    </div>
+    <div style="width:10%; float:left">
+        @if (!last)
+            {
+            <button type="button" class="btn btn-default" onclick="switchWhiteBoard(@periodId,'next')"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
+        }
+    </div>
+</div>
+<div style="clear: both;"></div>
+<table class="whiteBoardTable" id="whiteBoardNames">
+    <tr></tr>
+    <tr></tr>
+    @foreach (IGrouping<string, stitalizator01.Models.Bet> userBets in usersList)
+    {
+        <tr>
+            <td>@userBets.Key</td>
+        </tr>
+    }
+    <tr></tr>
+</table>
+<div class="table-responsive2">
+    <table id="whiteBoardTable" class="table-bordered table-hover">
+
+        <tr>
+            @{
+
+                foreach (IGrouping<DateTime, string> datesBets in datesList)
+                {
+                    int cspan = 1;
+                    string curDate = "";
+
+                    cspan = Model.Count(b => b.Program.TvDate == datesBets.Key) / Model.Select(u => u.ApplicationUser).Distinct().Count();
+
+
+                    curDate = datesBets.Key.ToString("dd.MM.yyyy");
+                    <td colspan="@cspan">@curDate</td>
+
+                    foreach (string date in datesBets)
+                    {
+                        if (curDate == date)
+                        {
+                            cspan++;
+                        }
+                        else
+                        {
+                            curDate = date;
+                        }
+                    }
+
+                }
+            }
+
+        </tr>
+
+
+
+        <tr>
+
+            @{
+
+                foreach (IGrouping<int, stitalizator01.Models.Bet> bet in progsList)
+                {
+                    foreach (stitalizator01.Models.Bet b in bet)
+                    {
+                        string tempName = b.Program.ProgTitle;
+                        string shortName = tempName;
+                        if (tempName.IndexOf('\"') >= 0)
+                        {
+                            int start = tempName.IndexOf('\"') + 1;
+                            int end = tempName.LastIndexOf('\"');
+                            tempName = tempName.Substring(start, end - start);
+                        }
+                        if (tempName.IndexOf('.') > 0)
+                        {
+                            int end = tempName.IndexOf('.');
+                            shortName = tempName.Substring(0, end) + "...";
+                        }
+                        else
+                        {
+                            shortName = tempName;
+                        }
+                        string fullTitle = b.Program.ProgTitle + " (" + b.Program.ChannelCode + ") " + b.Program.TimeStart.ToString("HH:mm");
+                        <td title="@fullTitle">@shortName</td>
+                        break;
+                    }
+                }
+                for (int i = 0; i < addCols; i++)
+                {
+                    <td></td>
+                }
+
+
+
+
+
+
+                foreach (IGrouping<string, stitalizator01.Models.Bet> userBets in usersList)
+                {
+                <tr>
+                    @*<td>@userBets.Key</td>*@
+                    @{
+                        float totalScore = 0;
+                        foreach (stitalizator01.Models.Bet bet in userBets)
+                        {
+                            totalScore += bet.ScoreClassic;
+                            <td>
+                                @if (bet.BetSTIplus > 0)
+                                {
+                                    <p>@bet.BetSTIplus</p>
+                                        <p style="color:red">
+                                            @if (bet.ScoreClassic > 0)
+                                            {
+                                                for (int i = 0; i < bet.ScoreClassic; i++)
+                                                {
+                                                    <b>|</b>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <b>&nbsp;</b>
+                                            }
+                                        </p>
+                                }
+                            </td>
+                        }
+                    }
+                    @for (int i = 0; i < addCols; i++)
+                    {
+                        <td></td>
+                    }
+                    @*<td id="totalScoreTd">@totalScore</td>*@
+                </tr>
+                        }
+
+                        <tr id="resultsTr">
+                            @foreach (IGrouping<int, stitalizator01.Models.Bet> bet in progsList)
+                            {
+
+                                foreach (stitalizator01.Models.Bet b in bet)
+                                {
+                                    <td>@b.Program.ShareStiPlus</td>
+                                    break;
+                                }
+                            }
+                            @for (int i = 0; i < addCols; i++)
+                            {
+                                <td></td>
+                            }
+                        </tr>
+            }
+
+
+        </table>
+
+
+
+    </div>
+    <table class="whiteBoardTable">
+        <tr></tr>
+        <tr></tr>
+        @foreach (IGrouping<string, stitalizator01.Models.Bet> userBets in usersList)
+            {
+            <tr>
+                @{
+                    float totalScore = 0;
+                    foreach (stitalizator01.Models.Bet bet in userBets)
+                    {
+                        totalScore += bet.ScoreClassic;
+                    }
+                }
+                <td id="totalScoreTd">@totalScore</td>
+            </tr>
+                    }
+        <tr></tr>
+    </table>
+    <div style="clear:both;"></div>
+
+
+
+<script>
+    function switchWhiteBoard(periodId, direction, meta) {
+        var targetName = "whiteBoardContainer";
+        var curParent = document.getElementById(targetName);
+
+
+        $.ajax({
+            url: 'Bets/SwitchWhiteBoardHomepage',
+            type: 'POST',
+            data: {
+                periodId: periodId,
+                direction: direction
+            },
+            success: function (msg) {
+                curParent.innerHTML = msg;
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log(XMLHttpRequest.responseText);
+            }
+        });
+
+    }
+</script>

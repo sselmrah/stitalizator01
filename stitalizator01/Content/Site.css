@@ -134,6 +134,17 @@ input[type="checkbox"]{
     width:100px;
 }
 
+#whiteBoardHeader {
+    font-family: 'marker_font01';
+    text-align: center;
+    font-size:larger;
+    padding-top:10px;
+}
+#whiteBoardTitle {
+    width:80%;
+    padding-left:10px;
+}
+
 @media (max-width: 768px) {
     .whiteBoardTable {
         width: 15%;

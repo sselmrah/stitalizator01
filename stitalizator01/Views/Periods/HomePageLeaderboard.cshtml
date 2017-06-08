@@ -5,11 +5,20 @@
     bool first = ViewBag.first;
     bool last = ViewBag.last;
     string isMeta = ViewBag.isMeta.ToString();
-    var culture = new System.Globalization.CultureInfo("ru-RU");    
+    string ulName = "";
+    if (isMeta.ToUpper()=="TRUE")
+    {
+        ulName = "lb_ul_meta";
+    }
+    else
+    {
+        ulName = "lb_ul";
+    }
+    var culture = new System.Globalization.CultureInfo("ru-RU");
 
 }
 
-<ul id="lb_ul" class="list-group">
+<ul id="@ulName" class="list-group">
 
             <li class="list-group-item active">
                 @if (!first)
@@ -44,9 +53,19 @@
 
 <script>
     function switchLeaderBoard(periodId, direction, meta) {
-        var curParent = document.getElementById("lb_ul");
-        console.log("curParent: " + curParent);
-
+        var targetName = "";
+        //console.log(meta);
+        if (meta=="True") {
+            targetName = "lb_ul_meta";
+            //console.log(targetName);
+        }
+        else
+        {
+            targetName = "lb_ul";
+        }
+        var curParent = document.getElementById(targetName);
+        //console.log("curParent: " + curParent);
+        
         
         $.ajax({
             url: 'Periods/SwitchLeaderBoard',

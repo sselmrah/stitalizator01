@@ -54,5 +54,41 @@ namespace stitalizator01.Controllers
             return Content(thisUser.Email);
         }
 
+        public ActionResult updateBets(string userName)
+        {
+            var thisUser = context.Users.Where(r => r.UserName.Equals(userName, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+
+            var programs = context.Programs.Where(p => p.IsBet);
+            var existingBets = context.Bets.Where(b => b.ApplicationUser.UserName == userName);
+            
+            foreach (Program p in programs)
+            {
+                bool found = false;
+                foreach(Bet b in existingBets)
+                {
+                    if (b.ProgramID==p.ProgramID)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    Bet curBet = new Bet();
+                    curBet.ProgramID = p.ProgramID;
+                    curBet.Program = p;
+                    curBet.TimeStamp = DateTime.UtcNow + MvcApplication.utcMoscowShift;
+                    if (p.TvDate.Date + TimeSpan.FromHours(p.TimeStart.Hour) + TimeSpan.FromMinutes(p.TimeStart.Minute) <= curBet.TimeStamp)
+                    {
+                        curBet.IsLocked = true;
+                    }
+                    curBet.ApplicationUser = thisUser;
+
+                    context.Bets.Add(curBet);
+                }
+            }
+            context.SaveChanges();
+            return Content("Bets updated for user");
+        }
     }
 }
