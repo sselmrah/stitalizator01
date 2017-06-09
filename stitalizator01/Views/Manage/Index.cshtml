@@ -1,6 +1,8 @@
 ﻿@model stitalizator01.Models.IndexViewModel
 @{
     ViewBag.Title = "Manage";
+    string telegramUserName = ViewBag.telegramUserName;
+    string userEmail = ViewBag.userEmail;
 }
 
 <h2>@ViewBag.Title.</h2>
@@ -10,12 +12,12 @@
     <h4>Change your account settings</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>Password:</dt>
+        <dt>Пароль:</dt>
         <dd>
             [
             @if (Model.HasPassword)
             {
-                @Html.ActionLink("Change your password", "ChangePassword")
+                @Html.ActionLink("Изменить пароль", "ChangePassword")
             }
             else
             {
@@ -23,11 +25,35 @@
             }
             ]
         </dd>
+
+        <dt>Имя пользователя:</dt>
+        <dd>
+            @User.Identity.Name            
+            [
+            <a href="#" id="userNameChangeP" data-username="@User.Identity.Name">Изменить</a>
+            ]
+        </dd>
+        <dt>Email:</dt>
+        <dd>
+            @userEmail 
+            [
+            <a href="#" id="emailChangeP" data-username="@User.Identity.Name">Изменить</a>
+            ]
+        </dd>
+        <dt>Telegram username:</dt>
+        <dd>
+            @telegramUserName
+            [
+            <a href="#" id="telegramChangeP" data-username="@User.Identity.Name">Изменить</a>
+            ]
+        </dd>
+        @*
         <dt>External Logins:</dt>
         <dd>
             @Model.Logins.Count [
             @Html.ActionLink("Manage", "ManageLogins") ]
         </dd>
+            *@
         @*
             Phone Numbers can used as a second factor of verification in a two-factor authentication system.
              
@@ -53,12 +79,15 @@
                 ]
             </dd>
         *@
+        
+        @*
         <dt>Two-Factor Authentication:</dt>
         <dd>
             <p>
                 There are no two-factor authentication providers configured. See <a href="http://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
                 for details on setting up this ASP.NET application to support two-factor authentication.
             </p>
+            *@
             @*@if (Model.TwoFactor)
                 {
                     using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
@@ -79,6 +108,70 @@
                         </text>
                     }
                 }*@
-        </dd>
+       @* </dd>*@
+        
     </dl>
 </div>
+
+<script>
+    $("#emailChangeP").click(function () {
+        curObj = event.target;        
+        var userName = curObj.getAttribute("data-username");
+        var newEmail = prompt("Введите новый email для пользователя " + userName, "");
+        if (newEmail.indexOf('@@', 0) > 0) {
+            $.ajax({
+                type: 'GET',
+                cache: false,
+                data: {
+                    userName: userName,
+                    newEmail: newEmail
+                },
+                url: '/UserView/ChangeEmail',
+                success: function (data) {
+                    location.reload();
+                    console.log("Новый почтовый адрес пользователя " + userName + ": " + newEmail);
+                }
+            });
+        } else {
+            console.log("You pressed Cancel!");
+        }
+    });
+    $("#telegramChangeP").click(function () {
+        curObj = event.target;
+        var userName = curObj.getAttribute("data-username");
+        var newTelegramUserName = prompt("Введите новое имя пользователя в Telegram ", "");        
+            $.ajax({
+                type: 'GET',
+                cache: false,
+                data: {
+                    userName: userName,
+                    newTelegramUserName: newTelegramUserName
+                },
+                url: '/UserView/ChangeTelegram',
+                success: function (data) {
+                    location.reload();
+                    console.log("Новое имя в Telegram " + userName + ": " + newEmail);
+                }
+            });        
+    });
+    $("#userNameChangeP").click(function () {
+        curObj = event.target;
+        var userName = curObj.getAttribute("data-username");
+        var newUserName = prompt("Введите новое имя пользователя вместо " + userName, "");
+        
+            $.ajax({
+                type: 'GET',
+                cache: false,
+                data: {
+                    userName: userName,
+                    newUserName: newUserName
+                },
+                url: '/UserView/ChangeUserName',
+                success: function (data) {
+                    location.reload();
+                    console.log("Новое имя пользователя " + userName);
+                }
+            });
+        
+    });
+</script>

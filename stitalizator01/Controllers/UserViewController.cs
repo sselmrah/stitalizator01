@@ -54,6 +54,26 @@ namespace stitalizator01.Controllers
             return Content(thisUser.Email);
         }
 
+        public ActionResult ChangeTelegram(string userName, string newTelegramUserName)
+        {
+            var thisUser = context.Users.Where(r => r.UserName.Equals(userName, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+            thisUser.TelegramUserName= newTelegramUserName;
+            context.Entry(thisUser).State = EntityState.Modified;
+            context.SaveChanges();
+
+            return Content(thisUser.TelegramUserName);
+        }
+
+        public ActionResult ChangeUserName(string userName, string newUserName)
+        {
+            var thisUser = context.Users.Where(r => r.UserName.Equals(userName, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+            thisUser.UserName = newUserName;
+            context.Entry(thisUser).State = EntityState.Modified;
+            context.SaveChanges();
+
+            return Content(thisUser.UserName);
+        }
+
         public ActionResult updateBets(string userName)
         {
             var thisUser = context.Users.Where(r => r.UserName.Equals(userName, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();

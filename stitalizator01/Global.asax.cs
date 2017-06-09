@@ -9,6 +9,19 @@ using System.Web.Routing;
 using stitalizator01.Models;
 using System.Net.Mail;
 using System.Net;
+using System.ComponentModel;
+using System.Diagnostics;
+
+
+using Telegram.Bot;
+using Telegram.Bot.Args;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.InlineQueryResults;
+using Telegram.Bot.Types.InputMessageContents;
+using Telegram.Bot.Types.ReplyMarkups;
+
+
 
 namespace stitalizator01
 {
@@ -19,6 +32,7 @@ namespace stitalizator01
         public static ApplicationDbContext db = new ApplicationDbContext();
         public static TimeSpan utcMoscowShift = TimeSpan.FromHours(3);
         private int minutesElapsed = 0;
+        public BackgroundWorker bw;
         //private DateTime lastWarningTimeStamp = DateTime.UtcNow-TimeSpan.FromDays(1);
 
         protected void Application_Start()
@@ -34,11 +48,95 @@ namespace stitalizator01
             timer.Enabled = true;
             timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
             
+
+
+            this.bw = new BackgroundWorker();
+            this.bw.DoWork += this.bw_DoWork; // метод bw_DoWork будет работать асинхронно
+            this.bw.RunWorkerAsync();
             //timer10.Enabled = true;
             //timer10.Elapsed += new System.Timers.ElapsedEventHandler(timer10_Elapsed);
-
+            
+            
 
         }
+
+        async void bw_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var worker = sender as BackgroundWorker; // получаем ссылку на класс вызвавший событие
+            var key = "385340523:AAFPdWdVpE_oI4gLn8Z0XCb2_q-zaVVzP24";
+            try
+            {
+                var Bot = new Telegram.Bot.TelegramBotClient(key); // инициализируем API
+                await Bot.SetWebhookAsync("");
+                //Bot.SetWebhook(""); // Обязательно! убираем старую привязку к вебхуку для бота
+                int offset = 0; // отступ по сообщениям
+                while (true)
+                {
+                    var updates = await Bot.GetUpdatesAsync(offset); // получаем массив обновлений
+                    foreach (var update in updates) // Перебираем все обновления
+                    {                        
+                        var message = update.Message;
+                        if (message.Type == Telegram.Bot.Types.Enums.MessageType.TextMessage)
+                        {
+                            if (message.Text == "/saysomething")
+                            {
+                                // в ответ на команду /saysomething выводим сообщение
+                                await Bot.SendTextMessageAsync(message.Chat.Id, "тест",
+                                       replyToMessageId: message.MessageId);
+                            }
+                            if (message.Text == "/mybets")
+                            {
+                                string senderUserName = message.From.Username;
+                                DateTime dt = DateTime.UtcNow.Date;
+                                Debug.Print("Sender: " + senderUserName);
+                                string reply = "";
+                                reply = "А вот твоя панама, " + senderUserName + "!";
+                                List<Bet> bets = getBetsByTelegramUserNameAndDate(senderUserName, dt);
+                                InlineKeyboardMarkup kb = createKeabordFromBets(bets);
+                                await Bot.SendTextMessageAsync(message.Chat.Id, reply, false,false, message.MessageId,  kb);                                
+
+                            }
+                        }
+                        offset = update.Id + 1;
+                    }
+
+                }
+            }
+            catch (Telegram.Bot.Exceptions.ApiRequestException ex)
+            {
+                Console.WriteLine(ex.Message); // если ключ не подошел - пишем об этом в консоль отладки
+            }
+        }
+
+        public List<Bet> getBetsByTelegramUserNameAndDate(string tUserName, DateTime curDate)
+        {
+            List<Bet> bets = db.Bets.Where(b => b.ApplicationUser.TelegramUserName == tUserName & b.Program.TvDate == curDate).ToList();
+
+            return bets;
+        }
+
+        public InlineKeyboardMarkup createKeabordFromBets(List<Bet> bets)
+        {
+            InlineKeyboardMarkup kb = new InlineKeyboardMarkup();
+
+            List<InlineKeyboardButton> buttons = new List<InlineKeyboardButton>();
+            List<InlineKeyboardButton[]> rows = new List<InlineKeyboardButton[]>();
+            foreach (Bet b in bets)
+            {
+                InlineKeyboardButton curButton = new InlineKeyboardButton();
+                curButton.Text = b.Program.ProgTitle + " (" + b.Program.ChannelCode + ", " + b.Program.TimeStart.ToString("HH:mm") + ")";
+                curButton.CallbackData = b.BetID.ToString();
+                InlineKeyboardButton[] row = new InlineKeyboardButton[1];
+                row[0] = curButton;
+                rows.Add(row);
+            }
+
+            kb.InlineKeyboard = rows.ToArray();
+
+
+            return kb;
+        }
+
 
         private void Contact()
         {

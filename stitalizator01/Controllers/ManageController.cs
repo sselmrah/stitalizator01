@@ -72,6 +72,12 @@ namespace stitalizator01.Controllers
                 Logins = await UserManager.GetLoginsAsync(userId),
                 BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId)
             };
+
+            ApplicationUser user = UserManager.Users.Where(u => u.Id == userId).FirstOrDefault();
+
+            ViewBag.userEmail = user.Email;
+            ViewBag.telegramUserName = user.TelegramUserName;
+
             return View(model);
         }
 
