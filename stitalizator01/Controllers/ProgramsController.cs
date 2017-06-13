@@ -136,7 +136,7 @@ namespace stitalizator01.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ProgramID,ChannelCode,ProgTitle,TvDate,TimeStart,TimeEnd,ProgDescr,ShareStiPlus,ShareStiMob,ShareSti,ShareMos18,ShareRus18")] Program program)
+        public ActionResult Create([Bind(Include = "ProgramID,ChannelCode,ProgTitle,TvDate,TimeStart,TimeEnd,ProgCat,ProgDescr,ShareStiPlus,ShareStiMob,ShareSti,ShareMos18,ShareRus18")] Program program)
         {
             if (ModelState.IsValid)
             {
@@ -168,7 +168,7 @@ namespace stitalizator01.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ProgramID,ChannelCode,ProgTitle,TvDate,TimeStart,TimeEnd,ProgDescr,ShareStiPlus,ShareStiMob,ShareSti,ShareMos18,ShareRus18,IsBet")] Program program)
+        public ActionResult Edit([Bind(Include = "ProgramID,ChannelCode,ProgTitle,TvDate,TimeStart,TimeEnd,ProgCat,ProgDescr,ShareStiPlus,ShareStiMob,ShareSti,ShareMos18,ShareRus18,IsBet")] Program program)
         {
             if (ModelState.IsValid)
             {
@@ -223,24 +223,10 @@ namespace stitalizator01.Controllers
             Program curProg = db.Programs.Find(id);
             curProg.IsBet = !curProg.IsBet;
             db.Entry(curProg).State = EntityState.Modified;
-
-
             
             if (curProg.IsBet)
             {
-                updateScoresGambled(curProg.TvDate, true, curProg.IsHorse);
-                /*
-                var periods = db.Periods.Where(p => (p.BegDate <= curProg.TvDate) & (p.EndDate >= curProg.TvDate));
-
-                if (periods != null)
-                {
-                    foreach (Period period in periods)
-                    {
-                        period.ScoresGambled += 3;
-                        db.Entry(period).State = EntityState.Modified;
-                    }
-                }
-                */
+                updateScoresGambled(curProg.TvDate, true, curProg.IsHorse); 
                 foreach (ApplicationUser user in db.Users)
                 {
                     if (user.UserName != "admin")
@@ -256,25 +242,12 @@ namespace stitalizator01.Controllers
             }
             else
             {
-                updateScoresGambled(curProg.TvDate, false, curProg.IsHorse);
-                /*
-                var periods = db.Periods.Where(p => (p.BegDate <= curProg.TvDate) & (p.EndDate >= curProg.TvDate));
-
-                if (periods != null)
-                {
-                    foreach (Period period in periods)
-                    {
-                        period.ScoresGambled -= 3;
-                        db.Entry(period).State = EntityState.Modified;
-                    }
-                }
-                */
+                updateScoresGambled(curProg.TvDate, false, curProg.IsHorse);                
                 var x = db.Bets.Where(o => o.ProgramID == curProg.ProgramID);
                 db.Bets.RemoveRange(x);                
 
             }
-            db.SaveChanges();
-            //return RedirectToAction("Index");
+            db.SaveChanges();            
             return PartialView(curProg);
         }
 
@@ -299,13 +272,12 @@ namespace stitalizator01.Controllers
         {
             int prId = Convert.ToInt32(ProgramID);
             Program program = db.Programs.Where(p => p.ProgramID == prId).FirstOrDefault();
-            program.ShareStiPlus = Convert.ToDouble(ShareStiPlus.Replace(".",","));
-            //program.ShareStiPlus = Math.Round((double)program.ShareStiPlus * 2) / 2;
+            program.ShareStiPlus = Convert.ToDouble(ShareStiPlus.Replace(".",","));            
             db.Entry(program).State = EntityState.Modified;
             var betsList = db.Bets.Where(b => b.Program.ProgramID == program.ProgramID);
             foreach (Bet bet in betsList)
             {
-                //bet.ScoreClassic = calculateScoreClassic(bet.BetSTIplus, (float)bet.Program.ShareStiPlus);
+                
                 bet.ScoreClassic = calculateScoreClassic(bet);
                 bet.ScoreOLS = calculateScoreOLS(bet.BetSTIplus, (float)bet.Program.ShareStiPlus);
                 db.Entry(bet).State = EntityState.Modified;

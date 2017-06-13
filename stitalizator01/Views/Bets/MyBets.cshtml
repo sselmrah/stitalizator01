@@ -114,6 +114,11 @@ else
     </tr>
 
 @foreach (var model in Model) {
+
+    int curBetID = model.BetID;
+    string tempBet = model.BetSTIplus.ToString().Replace(",", ".");
+    if (tempBet == "0") { tempBet = ""; }
+
     <tr>
         <td>
             @{
@@ -140,7 +145,7 @@ else
         }
         <td>
             @*using (Html.BeginForm("MakeBets", "Bets", FormMethod.Post))*@
-
+            @*
             @using(Html.BeginForm())
             {
                 @Html.AntiForgeryToken()
@@ -168,7 +173,27 @@ else
                 if (!model.IsLocked)
                 {<input type="submit" value="Сохранить" class="btn btn-default" />}
             }
-                
+              *@
+            <div class="input-group">
+                <input class="input-lg" id="@curBetID" type="number" min="0" max="100" value="@tempBet" step="0.5" onchange="updateBetMyBets(@curBetID)" />
+                @if (model.BetSTIplus > 0)
+                {
+                    <span onclick="updateBetMyBets(@curBetID)">
+                        <a id="a_@curBetID" href="" class="btn btn-info btn-lg">
+                            <span class="glyphicon glyphicon-pencil"></span> Изменить
+                        </a>
+                    </span>
+                }
+                else
+                {
+                    <span onclick="updateBetMyBets(@curBetID)">
+                        <a id="a_@curBetID" href="" class="btn btn-danger btn-lg">
+                            <span class="glyphicon glyphicon-question-sign"></span>@* Поставить*@
+                        </a>
+                    </span>
+                }
+
+            </div>
         </td>
         <td>
             @Html.DisplayFor(modelItem => model.Program.ShareStiPlus)
@@ -226,3 +251,43 @@ else
 }
 
 </table>
+
+<script>
+function updateBetMyBets(betID) {
+        var curBet = document.getElementById(betID);
+        var curButton = document.getElementById("a_"+betID);
+        console.log("curBet.value: "+curBet.value);
+        $.ajax({
+            url: 'HomePageBets',
+            type: 'POST',
+            data: {
+                betId: betID,
+                BetSTIplus: curBet.value
+                },
+            success: function (msg) {
+                if (curBet.value>0)
+                {
+                    console.log("IsHorseNow: " + msg);
+                    curButton.classList = "btn btn-success btn-lg";
+                    curButton.innerHTML = "<span class=\"glyphicon glyphicon-ok-circle\"></span> Принято!";
+
+                    setTimeout(function () {
+                        curButton.classList = "btn btn-info btn-lg";
+                        curButton.innerHTML = "<span class=\"glyphicon glyphicon-pencil\"></span> Изменить";
+                    }, 3000);
+                    
+                }
+                else
+                {
+                    console.log("IsHorseNow: " + msg);
+                    curButton.classList = "btn btn-danger btn-lg";
+                    curButton.innerHTML = "<span class=\"glyphicon glyphicon-question-sign\"></span>@* Поставить*@";
+                    }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.log(XMLHttpRequest.responseText);
+                    }
+                    });
+    }
+
+</script>

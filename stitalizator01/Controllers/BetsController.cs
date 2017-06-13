@@ -216,7 +216,7 @@ namespace stitalizator01.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult MyBets([Bind(Include = "BetID,PeriodID,ScoreOLS,ScoreClassic,AttemptNo,TimeStamp,IsHorse,IsLocked,BetRus18,BetMos18,BetSTImob,BetSTI,BetSTIplus,ProgramID")] Bet bet)
+        public ActionResult MyBets([Bind(Include = "BetID,PeriodID,ScoreOLS,ScoreClassic,AttemptNo,TimeStamp,IsHorse,IsLocked,BetRus18,BetMos18,BetSTImob,BetSTI,BetSTIplus,ProgramID")] Bet bet)        
         {
             if (ModelState.IsValid)
             {
@@ -233,10 +233,13 @@ namespace stitalizator01.Controllers
                     db.Entry(bet).State = EntityState.Modified;
                 }
                 db.SaveChanges();
-                return RedirectToAction("MyBets");
+                
+                return Content("bet updated");
+                //return RedirectToAction("MyBets");
             }
             ViewBag.ProgramID = new SelectList(db.Programs, "ProgramID", "ProgTitle", bet.ProgramID);
-            return RedirectToAction("MyBets");
+            //return RedirectToAction("MyBets");
+            return Content("bet NOT updated");
         }
 
 
@@ -250,12 +253,27 @@ namespace stitalizator01.Controllers
             bet.BetSTIplus = float.Parse(BetSTIplus);
             db.SaveChanges();
             isHorse(bet);
+            if (bet.Program.ShareStiPlus>0)
+            {
+                bet.ScoreClassic = calculateScoreClassic(bet);
+                bet.ScoreOLS = calculateScoreOLS(bet.BetSTIplus, (float)bet.Program.ShareStiPlus);
+                Program program = db.Programs.Where(p => p.ProgramID == bet.Program.ProgramID).FirstOrDefault();
+                var betsList = db.Bets.Where(b => b.Program.ProgramID == program.ProgramID);
+                foreach (Bet b in betsList)
+                {
+
+                    b.ScoreClassic = calculateScoreClassic(b);
+                    b.ScoreOLS = calculateScoreOLS(b.BetSTIplus, (float)b.Program.ShareStiPlus);
+                    db.Entry(b).State = EntityState.Modified;
+                }
+                db.SaveChanges();
+            }
             
             //Program program = db.Programs.Find(bet.ProgramID);
             //return RedirectToAction("MyBets");
             return Content(bet.Program.IsHorse.ToString());
-        }
-        
+        }                
+
 
         private void isHorse(Bet bet)
         {
@@ -322,7 +340,7 @@ namespace stitalizator01.Controllers
         {
             DateTime curDate = DateTime.UtcNow+MvcApplication.utcMoscowShift;
             List<Bet> bets = new List<Bet>();
-            bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.Program.TvDate >= curDate.Date & !b.IsLocked).ToList();
+            bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.Program.TvDate >= curDate.Date & !b.IsLocked).OrderByDescending(b => b.Program.ChannelCode.Length).ThenBy(b => b.Program.TimeStart).ToList();
             if (bets.Count>0)
             {
                 return PartialView(bets);

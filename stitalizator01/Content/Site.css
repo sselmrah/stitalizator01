@@ -38,12 +38,13 @@ textarea {
     z-index: 1000000;
 }
 
-#indexLogoDiv{
-    background: url('Img/table1200.jpg') no-repeat left top;    
+
+#indexLogoDiv {
+    background: url('Img/table1200.jpg') no-repeat left top;
     /*background-color: #3061a6;    */
     text-align: center;
     /*max-height:270px;*/
-    min-height:290px;
+    min-height: 290px;
     min-width: 250px;
 }
 

@@ -19,7 +19,7 @@
             {
                 <button type="button" class="btn btn-default" onclick="switchWhiteBoard(@periodId,'prev')"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
             }
-        </div>
+        </div>        
         <div style="width:70%; float:left">
             <p id="whiteBoardTitle">@periodDescription</p>
         </div>
@@ -206,7 +206,8 @@
     function switchWhiteBoard(periodId, direction, meta) {
         var targetName = "whiteBoardContainer";
         var curParent = document.getElementById(targetName);
-        
+        document.getElementById('whiteBoardTitle').innerHTML = "<img id=\"whiteBoardPreloader\" src=\"/Content/Img/preloader-01.gif\" />";
+        //document.getElementById('whiteBoardPreloader').style.display = "block";
 
         $.ajax({
             url: 'Bets/SwitchWhiteBoardHomepage',
