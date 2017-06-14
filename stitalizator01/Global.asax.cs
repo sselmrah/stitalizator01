@@ -395,7 +395,7 @@ namespace stitalizator01
                             string betDescription = b.Program.ProgTitle + "(" + b.Program.TimeStart.ToString("HH:mm") + ") " + b.Program.ChannelCode;
                             bets2send.Add(betDescription);
                         }
-                        //sendPersonalizedEmail(user.Email, bets2send);
+                        sendPersonalizedEmail(user.Email, bets2send);
                         if (user.TelegramChatId > 0)
                         {
                             sendTelegramUpdate(user.TelegramUserName, bets2send);
