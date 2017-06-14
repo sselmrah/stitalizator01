@@ -10,8 +10,10 @@ namespace stitalizator01.Models
     public class ApplicationUser : IdentityUser
     {
         private string _telegramUserName;
+        private long _telegramChatId;
 
         public string TelegramUserName { get => _telegramUserName; set => _telegramUserName = value; }
+        public long TelegramChatId { get => _telegramChatId; set => _telegramChatId = value; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {

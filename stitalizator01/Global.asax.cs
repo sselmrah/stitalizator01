@@ -32,6 +32,7 @@ namespace stitalizator01
         public static ApplicationDbContext db = new ApplicationDbContext();
         public static TimeSpan utcMoscowShift = TimeSpan.FromHours(3);
         private int minutesElapsed = 0;
+        string key = "385340523:AAFPdWdVpE_oI4gLn8Z0XCb2_q-zaVVzP24";
         public BackgroundWorker bw;
         //private DateTime lastWarningTimeStamp = DateTime.UtcNow-TimeSpan.FromDays(1);
 
@@ -47,23 +48,25 @@ namespace stitalizator01
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             timer.Enabled = true;
             timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
-            
+
 
 
             this.bw = new BackgroundWorker();
             this.bw.DoWork += this.bw_DoWork; // метод bw_DoWork будет работать асинхронно
             this.bw.RunWorkerAsync();
+
+
             //timer10.Enabled = true;
             //timer10.Elapsed += new System.Timers.ElapsedEventHandler(timer10_Elapsed);
-            
-            
+
+
 
         }
 
         async void bw_DoWork(object sender, DoWorkEventArgs e)
         {
             var worker = sender as BackgroundWorker; // получаем ссылку на класс вызвавший событие
-            var key = "385340523:AAFPdWdVpE_oI4gLn8Z0XCb2_q-zaVVzP24";
+            
             try
             {
                 var Bot = new Telegram.Bot.TelegramBotClient(key); // инициализируем API
@@ -74,27 +77,68 @@ namespace stitalizator01
                 {
                     var updates = await Bot.GetUpdatesAsync(offset); // получаем массив обновлений
                     foreach (var update in updates) // Перебираем все обновления
-                    {                        
+                    {
+                         
                         var message = update.Message;
-                        if (message.Type == Telegram.Bot.Types.Enums.MessageType.TextMessage)
+                        if (message != null)
                         {
-                            if (message.Text == "/saysomething")
+                            //Добавляем ChatId
+                            string curUserName = message.Chat.Username;
+                            ApplicationUser curUser = db.Users.Where(u => u.TelegramUserName == curUserName).FirstOrDefault();
+                            if (curUser != null)
                             {
-                                // в ответ на команду /saysomething выводим сообщение
-                                await Bot.SendTextMessageAsync(message.Chat.Id, "тест",
-                                       replyToMessageId: message.MessageId);
+                                if (curUser.TelegramChatId == 0)
+                                {
+                                    curUser.TelegramChatId = message.Chat.Id;
+                                    db.Entry(curUser).State = EntityState.Modified;
+                                    db.SaveChanges();
+                                }
                             }
-                            if (message.Text == "/mybets")
-                            {
-                                string senderUserName = message.From.Username;
-                                DateTime dt = DateTime.UtcNow.Date;
-                                Debug.Print("Sender: " + senderUserName);
-                                string reply = "";
-                                reply = "А вот твоя панама, " + senderUserName + "!";
-                                List<Bet> bets = getBetsByTelegramUserNameAndDate(senderUserName, dt);
-                                InlineKeyboardMarkup kb = createKeabordFromBets(bets);
-                                await Bot.SendTextMessageAsync(message.Chat.Id, reply, false,false, message.MessageId,  kb);                                
 
+                            if (message.Type == Telegram.Bot.Types.Enums.MessageType.TextMessage)
+                            {
+                                
+                                if (message.Text == "/saysomething")
+                                {
+                                    // в ответ на команду /saysomething выводим сообщение
+                                    ReplyKeyboardHide rkh = new ReplyKeyboardHide();
+
+                                    await Bot.SendTextMessageAsync(message.Chat.Id, "тест",
+                                           replyToMessageId: message.MessageId, replyMarkup: rkh);
+                                }
+                                if (message.Text == "/mybets")
+                                {
+                                    string senderUserName = message.From.Username;
+                                    DateTime dt = DateTime.UtcNow.Date;
+                                    Debug.Print("Sender: " + senderUserName);
+                                    string reply = "";
+                                    reply = "А вот твоя панама, " + senderUserName + "!";
+                                    List<Bet> bets = getBetsByTelegramUserNameAndDate(senderUserName, dt);
+                                    InlineKeyboardMarkup kb = createKeabordFromBets(bets);
+                                    await Bot.SendTextMessageAsync(message.Chat.Id, reply, false, false, message.MessageId, kb);
+
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (update.CallbackQuery.Data != null)
+                            {
+                                if (update.CallbackQuery.Data.Length > 1)
+                                {
+
+                                    InlineKeyboardMarkup kb = createNumericInlineKb();
+                                    ReplyKeyboardHide rkh = new ReplyKeyboardHide();
+                                    rkh.HideKeyboard = true;
+                                    Bet b = db.Bets.Find(Convert.ToInt32(update.CallbackQuery.Data));
+                                    string reply = "Сколько ставим на " + b.Program.ProgTitle + "?";
+                                    //await Bot.SendTextMessageAsync(update.CallbackQuery.Message.Chat.Id, reply, false, false, update.CallbackQuery.Message.MessageId, kb);
+                                    await Bot.SendTextMessageAsync(update.CallbackQuery.Message.Chat.Id, reply, false, false, update.CallbackQuery.Message.MessageId, rkh);
+                                }
+                                else
+                                {
+                                    
+                                }
                             }
                         }
                         offset = update.Id + 1;
@@ -108,6 +152,9 @@ namespace stitalizator01
             }
         }
 
+
+
+
         public List<Bet> getBetsByTelegramUserNameAndDate(string tUserName, DateTime curDate)
         {
             List<Bet> bets = db.Bets.Where(b => b.ApplicationUser.TelegramUserName == tUserName & b.Program.TvDate == curDate).ToList();
@@ -115,24 +162,59 @@ namespace stitalizator01
             return bets;
         }
 
+        public InlineKeyboardMarkup createNumericInlineKb()
+        {
+            
+            //List<InlineKeyboardButton[]> rows = new List<InlineKeyboardButton[]>();
+            
+
+            InlineKeyboardButton[][] rows = new InlineKeyboardButton[][]
+            {
+                new InlineKeyboardButton[] { new InlineKeyboardButton(text: "7"), new InlineKeyboardButton(text: "8"), new InlineKeyboardButton(text: "9") },
+                new InlineKeyboardButton[] { new InlineKeyboardButton(text: "4"), new InlineKeyboardButton(text: "5"), new InlineKeyboardButton(text: "6") },
+                new InlineKeyboardButton[] { new InlineKeyboardButton(text: "1"), new InlineKeyboardButton(text: "2"), new InlineKeyboardButton(text: "3") },
+                new InlineKeyboardButton[] { new InlineKeyboardButton(text: "0"), new InlineKeyboardButton(text: ",") }
+            };
+            InlineKeyboardMarkup kb = new InlineKeyboardMarkup(rows);
+            
+            return kb;
+        }
+        public ReplyKeyboardMarkup createNumericReplyKb()
+        {
+
+            //List<InlineKeyboardButton[]> rows = new List<InlineKeyboardButton[]>();
+
+
+            KeyboardButton[][] rows = new KeyboardButton[][]
+            {
+                new KeyboardButton[] { new KeyboardButton(text: "7"), new KeyboardButton(text: "8"), new KeyboardButton(text: "9") },
+                new KeyboardButton[] { new KeyboardButton(text: "4"), new KeyboardButton(text: "5"), new KeyboardButton(text: "6") },
+                new KeyboardButton[] { new KeyboardButton(text: "1"), new KeyboardButton(text: "2"), new KeyboardButton(text: "3") },
+                new KeyboardButton[] { new KeyboardButton(text: "0"), new KeyboardButton(text: ",") }
+            };
+            ReplyKeyboardMarkup kb = new ReplyKeyboardMarkup(rows);
+
+            return kb;
+        }
+
+
         public InlineKeyboardMarkup createKeabordFromBets(List<Bet> bets)
         {
             InlineKeyboardMarkup kb = new InlineKeyboardMarkup();
-
+            
             List<InlineKeyboardButton> buttons = new List<InlineKeyboardButton>();
             List<InlineKeyboardButton[]> rows = new List<InlineKeyboardButton[]>();
             foreach (Bet b in bets)
             {
                 InlineKeyboardButton curButton = new InlineKeyboardButton();
                 curButton.Text = b.Program.ProgTitle + " (" + b.Program.ChannelCode + ", " + b.Program.TimeStart.ToString("HH:mm") + ")";
-                curButton.CallbackData = b.BetID.ToString();
+                curButton.CallbackData = b.BetID.ToString();                
                 InlineKeyboardButton[] row = new InlineKeyboardButton[1];
                 row[0] = curButton;
                 rows.Add(row);
             }
 
-            kb.InlineKeyboard = rows.ToArray();
-
+            kb.InlineKeyboard = rows.ToArray();            
 
             return kb;
         }
@@ -190,6 +272,7 @@ namespace stitalizator01
 
         private void sendPersonalizedEmail(string email, List<string> betName)
         {
+            
             var message = new MailMessage();
             message.To.Add(new MailAddress(email));
             message.From = new MailAddress("stitalizator@gmail.com");  // replace with valid value
@@ -223,7 +306,7 @@ namespace stitalizator01
         private void timer10_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             DateTime now = DateTime.UtcNow + utcMoscowShift;
-            DateTime later = now + TimeSpan.FromMinutes(19);
+            DateTime later = now + TimeSpan.FromMinutes(4);//19);
             //List<Bet> burningBets = db.Bets.Where(b => b.Program.TvDate == now.Date & b.Program.TimeStart < (now+TimeSpan.FromHours(1))).ToList();
             List<ApplicationUser> users = db.Users.ToList();
             foreach (ApplicationUser user in users)
@@ -237,7 +320,11 @@ namespace stitalizator01
                         string betDescription = b.Program.ProgTitle + "(" + b.Program.TimeStart.ToString("HH:mm")+") "+b.Program.ChannelCode;
                         bets2send.Add(betDescription);
                     }
-                    sendPersonalizedEmail(user.Email, bets2send);
+                    //sendPersonalizedEmail(user.Email, bets2send);
+                    if (user.TelegramChatId > 0)
+                    {
+                        sendTelegramUpdate(user.TelegramUserName, bets2send);
+                    }
                 }
             }
 
@@ -253,6 +340,33 @@ namespace stitalizator01
             */
         }
 
+        async void sendTelegramUpdate(string telegramUserName, List<string> betName)
+        {
+            var Bot = new Telegram.Bot.TelegramBotClient(key);
+            await Bot.SetWebhookAsync("");
+            
+            string text = "Нужно сделать ставки: ";
+            foreach (string s in betName)
+            {
+                text += "\n" + s;
+            }
+            InlineKeyboardButton curButton = new InlineKeyboardButton(text: "Перейти к выставлению ставок");
+            curButton.Url = "http://stitalizator.azurewebsites.net";
+            InlineKeyboardButton[][] rows = new InlineKeyboardButton[][]
+            {                
+                new InlineKeyboardButton[] { curButton},                
+            };
+            InlineKeyboardMarkup kb = new InlineKeyboardMarkup(rows);
+            
+            ApplicationUser curUser = db.Users.Where(u => u.TelegramUserName == telegramUserName).FirstOrDefault();
+            if (curUser.TelegramChatId > 0)
+            {
+                await Bot.SendTextMessageAsync(chatId: curUser.TelegramChatId, text: text,replyMarkup: kb);
+            }
+
+        }
+
+
         private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             //Московское время
@@ -265,9 +379,9 @@ namespace stitalizator01
             }
             db.SaveChanges();
             minutesElapsed++;
-            if (minutesElapsed==30)
+            if (minutesElapsed==5)
             { 
-                DateTime later = now + TimeSpan.FromMinutes(29);
+                DateTime later = now + TimeSpan.FromMinutes(4);
                 //List<Bet> burningBets = db.Bets.Where(b => b.Program.TvDate == now.Date & b.Program.TimeStart < (now+TimeSpan.FromHours(1))).ToList();
                 List<ApplicationUser> users = db.Users.ToList();
                 foreach (ApplicationUser user in users)
@@ -281,7 +395,11 @@ namespace stitalizator01
                             string betDescription = b.Program.ProgTitle + "(" + b.Program.TimeStart.ToString("HH:mm") + ") " + b.Program.ChannelCode;
                             bets2send.Add(betDescription);
                         }
-                        sendPersonalizedEmail(user.Email, bets2send);
+                        //sendPersonalizedEmail(user.Email, bets2send);
+                        if (user.TelegramChatId > 0)
+                        {
+                            sendTelegramUpdate(user.TelegramUserName, bets2send);
+                        }
                     }
                 }
                 minutesElapsed = 0;

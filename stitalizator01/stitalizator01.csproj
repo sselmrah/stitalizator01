@@ -244,6 +244,10 @@
     <Compile Include="Migrations\201706081329471_TelegramUserName.Designer.cs">
       <DependentUpon>201706081329471_TelegramUserName.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201706140925249_TelegramChatId.cs" />
+    <Compile Include="Migrations\201706140925249_TelegramChatId.Designer.cs">
+      <DependentUpon>201706140925249_TelegramChatId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Bet.cs" />
@@ -425,6 +429,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706081329471_TelegramUserName.resx">
       <DependentUpon>201706081329471_TelegramUserName.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706140925249_TelegramChatId.resx">
+      <DependentUpon>201706140925249_TelegramChatId.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
