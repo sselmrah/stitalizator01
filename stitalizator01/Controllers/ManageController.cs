@@ -77,6 +77,7 @@ namespace stitalizator01.Controllers
 
             ViewBag.userEmail = user.Email;
             ViewBag.telegramUserName = user.TelegramUserName;
+            ViewBag.ChatId = user.TelegramChatId;
 
             return View(model);
         }

@@ -75,10 +75,6 @@ input[type="checkbox"]{
     height:100%;
     background-color: #3061a6;
 }
-#welcomeLogo {
-    /*height: 1000px;
-    background: url('Img/chOneLogoSquare.png') no-repeat center center;    */
-}
 
 #whiteBoardTable {
     table-layout: fixed;

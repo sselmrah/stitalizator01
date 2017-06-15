@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Manage";
     string telegramUserName = ViewBag.telegramUserName;
+    string telegramChatId= ViewBag.ChatId.ToString();
     string userEmail = ViewBag.userEmail;
 }
 
@@ -46,6 +47,10 @@
             [
             <a href="#" id="telegramChangeP" data-username="@User.Identity.Name">Изменить</a>
             ]
+        </dd>
+        <dt>Telegram ChatId:</dt>
+        <dd>
+            @telegramChatId            
         </dd>
         @*
         <dt>External Logins:</dt>

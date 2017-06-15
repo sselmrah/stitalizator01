@@ -33,6 +33,7 @@ namespace stitalizator01
         public static ApplicationDbContext db = new ApplicationDbContext();
         public static TimeSpan utcMoscowShift = TimeSpan.FromHours(3);
         private int minutesElapsed = 0;
+        private int minutesElapsed2 = 0;
         string key = "385340523:AAFPdWdVpE_oI4gLn8Z0XCb2_q-zaVVzP24";
         public BackgroundWorker bw;
         //private DateTime lastWarningTimeStamp = DateTime.UtcNow-TimeSpan.FromDays(1);
@@ -177,7 +178,7 @@ namespace stitalizator01
                                 }
                                 else
                                 {
-                                    
+
                                 }
                             }
                         }
@@ -204,9 +205,9 @@ namespace stitalizator01
 
         public InlineKeyboardMarkup createNumericInlineKb()
         {
-            
+
             //List<InlineKeyboardButton[]> rows = new List<InlineKeyboardButton[]>();
-            
+
 
             InlineKeyboardButton[][] rows = new InlineKeyboardButton[][]
             {
@@ -216,7 +217,7 @@ namespace stitalizator01
                 new InlineKeyboardButton[] { new InlineKeyboardButton(text: "0"), new InlineKeyboardButton(text: ",") }
             };
             InlineKeyboardMarkup kb = new InlineKeyboardMarkup(rows);
-            
+
             return kb;
         }
         public ReplyKeyboardMarkup createNumericReplyKb()
@@ -241,22 +242,22 @@ namespace stitalizator01
         public InlineKeyboardMarkup createKeabordFromBets(List<Bet> bets)
         {
             InlineKeyboardMarkup kb = new InlineKeyboardMarkup();
-            
+
             List<InlineKeyboardButton> buttons = new List<InlineKeyboardButton>();
             List<InlineKeyboardButton[]> rows = new List<InlineKeyboardButton[]>();
             foreach (Bet b in bets)
             {
                 InlineKeyboardButton curButton = new InlineKeyboardButton();
                 string curValue = "";
-                if (b.BetSTIplus>0) { curValue = " - " + b.BetSTIplus.ToString(); }
+                if (b.BetSTIplus > 0) { curValue = " - " + b.BetSTIplus.ToString(); }
                 curButton.Text = b.Program.ProgTitle + " (" + b.Program.ChannelCode + ", " + b.Program.TimeStart.ToString("HH:mm") + ")" + curValue;
-                curButton.CallbackData = "betId_"+b.BetID.ToString();                
+                curButton.CallbackData = "betId_" + b.BetID.ToString();
                 InlineKeyboardButton[] row = new InlineKeyboardButton[1];
                 row[0] = curButton;
                 rows.Add(row);
             }
 
-            kb.InlineKeyboard = rows.ToArray();            
+            kb.InlineKeyboard = rows.ToArray();
 
             return kb;
         }
@@ -308,19 +309,19 @@ namespace stitalizator01
             }
             else
             {
-               // return Content("Все молодцы! Отправлять некому!");
+                // return Content("Все молодцы! Отправлять некому!");
             }
         }
 
         private void sendPersonalizedEmail(string email, List<string> betName)
         {
-            
+
             var message = new MailMessage();
             message.To.Add(new MailAddress(email));
             message.From = new MailAddress("stitalizator@gmail.com");  // replace with valid value
             message.Subject = "Нужно сделать ставки!";
             string text = "<p>Заканчивается прием ставок на следующие программы:</p>";
-            foreach(string s in betName)
+            foreach (string s in betName)
             {
                 text += "<p>" + s + "</p>";
             }
@@ -353,13 +354,13 @@ namespace stitalizator01
             List<ApplicationUser> users = db.Users.ToList();
             foreach (ApplicationUser user in users)
             {
-                List<Bet> burningBets = db.Bets.Where(b => b.ApplicationUser.Id == user.Id & b.BetSTIplus==0 & b.Program.TimeStart > now & b.Program.TimeStart < later).ToList();   
-                if (burningBets.Count()>0)
+                List<Bet> burningBets = db.Bets.Where(b => b.ApplicationUser.Id == user.Id & b.BetSTIplus == 0 & b.Program.TimeStart > now & b.Program.TimeStart < later).ToList();
+                if (burningBets.Count() > 0)
                 {
                     List<string> bets2send = new List<string>();
-                    foreach(Bet b in burningBets)
+                    foreach (Bet b in burningBets)
                     {
-                        string betDescription = b.Program.ProgTitle + "(" + b.Program.TimeStart.ToString("HH:mm")+") "+b.Program.ChannelCode;
+                        string betDescription = b.Program.ProgTitle + "(" + b.Program.TimeStart.ToString("HH:mm") + ") " + b.Program.ChannelCode;
                         bets2send.Add(betDescription);
                     }
                     //sendPersonalizedEmail(user.Email, bets2send);
@@ -386,24 +387,24 @@ namespace stitalizator01
         {
             var Bot = new Telegram.Bot.TelegramBotClient(key);
             await Bot.SetWebhookAsync("");
-            
+
             string text = "Нужно сделать ставки: ";
             foreach (string s in betName)
             {
-                text += "\n" + s;
+                text += "\n\"" + s + "\"";
             }
             InlineKeyboardButton curButton = new InlineKeyboardButton(text: "Перейти к выставлению ставок");
             curButton.Url = "http://stitalizator.azurewebsites.net";
             InlineKeyboardButton[][] rows = new InlineKeyboardButton[][]
-            {                
-                new InlineKeyboardButton[] { curButton},                
+            {
+                new InlineKeyboardButton[] { curButton},
             };
             InlineKeyboardMarkup kb = new InlineKeyboardMarkup(rows);
-            
+
             ApplicationUser curUser = db.Users.Where(u => u.TelegramUserName == telegramUserName).FirstOrDefault();
             if (curUser.TelegramChatId > 0)
             {
-                await Bot.SendTextMessageAsync(chatId: curUser.TelegramChatId, text: text,replyMarkup: kb);
+                await Bot.SendTextMessageAsync(chatId: curUser.TelegramChatId, text: text, replyMarkup: kb);
             }
 
         }
@@ -421,8 +422,9 @@ namespace stitalizator01
             }
             db.SaveChanges();
             minutesElapsed++;
-            if (minutesElapsed==30)
-            { 
+            minutesElapsed2++;
+            if (minutesElapsed == 30)
+            {
                 DateTime later = now + TimeSpan.FromMinutes(29);
                 //List<Bet> burningBets = db.Bets.Where(b => b.Program.TvDate == now.Date & b.Program.TimeStart < (now+TimeSpan.FromHours(1))).ToList();
                 List<ApplicationUser> users = db.Users.ToList();
@@ -442,26 +444,51 @@ namespace stitalizator01
                         {
                             sendTelegramUpdate(user.TelegramUserName, bets2send);
                         }
+                        minutesElapsed = 0;
+                    }
+
+                }
+            }
+            /*
+            if (minutesElapsed2 == 5)
+            {
+                DateTime later = now + TimeSpan.FromMinutes(30);
+
+                List<ApplicationUser> users = db.Users.ToList();
+                foreach (ApplicationUser user in users)
+                {
+                    List<Bet> burningBets = db.Bets.Where(b => b.ApplicationUser.Id == user.Id & b.BetSTIplus == 0 & b.Program.TimeStart > now & b.Program.TimeStart < later).ToList();
+                    if (burningBets.Count() > 0)
+                    {
+                        List<string> bets2send = new List<string>();
+                        foreach (Bet b in burningBets)
+                        {
+                            string betDescription = b.Program.ProgTitle + "(" + b.Program.TimeStart.ToString("HH:mm") + ") " + b.Program.ChannelCode;
+                            bets2send.Add(betDescription);
+                        }
+                        if (user.TelegramChatId > 0)
+                        {
+                            sendTelegramUpdate(user.TelegramUserName, bets2send);
+                        }
+                        minutesElapsed2 = 0;
                     }
                 }
-                minutesElapsed = 0;
             }
-
-        }
-
-        /*
-        private void initializeBetsDB(ApplicationDbContext context)
-        {
-            var programs = new List<Program>
+            */
+            /*
+            private void initializeBetsDB(ApplicationDbContext context)
             {
-                new Program{ProgTitle="Вечерние новости", TvDate=DateTime.Parse("04.04.2017"), TimeStart=DateTime.Parse("04.04.2017 18:00:00"), TimeEnd=DateTime.Parse("04.04.2017 18:25:00"), ChannelCode=10},
-                new Program{ProgTitle="Первая студия", TvDate=DateTime.Parse("04.04.2017"), TimeStart=DateTime.Parse("04.04.2017 18:25:00"), TimeEnd=DateTime.Parse("04.04.2017 21:00:00"), ChannelCode=10},
-                new Program{ProgTitle="Время", TvDate=DateTime.Parse("04.04.2017"), TimeStart=DateTime.Parse("04.04.2017 21:00:00"), TimeEnd=DateTime.Parse("04.04.2017 21:30:00"), ChannelCode=10},
-                new Program{ProgTitle="Волчье солнце", TvDate=DateTime.Parse("04.04.2017"), TimeStart=DateTime.Parse("04.04.2017 21:30:00"), TimeEnd=DateTime.Parse("04.04.2017 23:35:00"), ChannelCode=10},
-            };
-            programs.ForEach(p => context.Programs.Add(p));
-            context.SaveChanges();
+                var programs = new List<Program>
+                {
+                    new Program{ProgTitle="Вечерние новости", TvDate=DateTime.Parse("04.04.2017"), TimeStart=DateTime.Parse("04.04.2017 18:00:00"), TimeEnd=DateTime.Parse("04.04.2017 18:25:00"), ChannelCode=10},
+                    new Program{ProgTitle="Первая студия", TvDate=DateTime.Parse("04.04.2017"), TimeStart=DateTime.Parse("04.04.2017 18:25:00"), TimeEnd=DateTime.Parse("04.04.2017 21:00:00"), ChannelCode=10},
+                    new Program{ProgTitle="Время", TvDate=DateTime.Parse("04.04.2017"), TimeStart=DateTime.Parse("04.04.2017 21:00:00"), TimeEnd=DateTime.Parse("04.04.2017 21:30:00"), ChannelCode=10},
+                    new Program{ProgTitle="Волчье солнце", TvDate=DateTime.Parse("04.04.2017"), TimeStart=DateTime.Parse("04.04.2017 21:30:00"), TimeEnd=DateTime.Parse("04.04.2017 23:35:00"), ChannelCode=10},
+                };
+                programs.ForEach(p => context.Programs.Add(p));
+                context.SaveChanges();
+            }
+             */
         }
-         */
     }
 }
