@@ -11,9 +11,11 @@ namespace stitalizator01.Models
     {
         private string _telegramUserName;
         private long _telegramChatId;
+        private int _telegramBetId;
 
         public string TelegramUserName { get => _telegramUserName; set => _telegramUserName = value; }
         public long TelegramChatId { get => _telegramChatId; set => _telegramChatId = value; }
+        public int TelegramBetId { get => _telegramBetId; set => _telegramBetId = value; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {

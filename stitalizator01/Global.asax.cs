@@ -21,6 +21,7 @@ using Telegram.Bot.Types.InlineQueryResults;
 using Telegram.Bot.Types.InputMessageContents;
 using Telegram.Bot.Types.ReplyMarkups;
 
+using System.Text.RegularExpressions;
 
 
 namespace stitalizator01
@@ -66,7 +67,7 @@ namespace stitalizator01
         async void bw_DoWork(object sender, DoWorkEventArgs e)
         {
             var worker = sender as BackgroundWorker; // получаем ссылку на класс вызвавший событие
-            
+            var exp = new Regex("^(?=.*\\d)\\d*[\\.\\,]?\\d*$");
             try
             {
                 var Bot = new Telegram.Bot.TelegramBotClient(key); // инициализируем API
@@ -78,13 +79,13 @@ namespace stitalizator01
                     var updates = await Bot.GetUpdatesAsync(offset); // получаем массив обновлений
                     foreach (var update in updates) // Перебираем все обновления
                     {
-                         
+                        ApplicationUser curUser;
                         var message = update.Message;
                         if (message != null)
                         {
                             //Добавляем ChatId
                             string curUserName = message.Chat.Username;
-                            ApplicationUser curUser = db.Users.Where(u => u.TelegramUserName == curUserName).FirstOrDefault();
+                            curUser = db.Users.Where(u => u.TelegramUserName == curUserName).FirstOrDefault();
                             if (curUser != null)
                             {
                                 if (curUser.TelegramChatId == 0)
@@ -97,7 +98,7 @@ namespace stitalizator01
 
                             if (message.Type == Telegram.Bot.Types.Enums.MessageType.TextMessage)
                             {
-                                
+
                                 if (message.Text == "/saysomething")
                                 {
                                     // в ответ на команду /saysomething выводим сообщение
@@ -106,7 +107,19 @@ namespace stitalizator01
                                     await Bot.SendTextMessageAsync(message.Chat.Id, "тест",
                                            replyToMessageId: message.MessageId, replyMarkup: rkh);
                                 }
-                                if (message.Text == "/mybets")
+                                /*else if (message.Text == "/mybets")
+                                {
+                                    string senderUserName = message.From.Username;
+                                    DateTime dt = DateTime.UtcNow.Date;
+                                    Debug.Print("Sender: " + senderUserName);
+                                    string reply = "";
+                                    reply = "А вот твоя панама, " + senderUserName + "!";
+                                    List<Bet> bets = getBetsByTelegramUserNameAndDate(senderUserName, dt);
+                                    InlineKeyboardMarkup kb = createKeabordFromBets(bets);
+                                    await Bot.SendTextMessageAsync(message.Chat.Id, reply, false, false, message.MessageId, kb);
+
+                                }*/
+                                else if (message.Text == "/mybets")
                                 {
                                     string senderUserName = message.From.Username;
                                     DateTime dt = DateTime.UtcNow.Date;
@@ -118,22 +131,49 @@ namespace stitalizator01
                                     await Bot.SendTextMessageAsync(message.Chat.Id, reply, false, false, message.MessageId, kb);
 
                                 }
+                                else if (Regex.IsMatch(message.Text, "^(?=.*\\d)\\d*[\\.\\,]?\\d*$"))
+                                {
+                                    string betStr = message.Text.Replace(".", ",");
+                                    Bet curBet = db.Bets.Find(curUser.TelegramBetId);
+                                    float telegramBet = (float)Convert.ToDecimal(betStr);
+                                    curBet.BetSTIplus = telegramBet;
+                                    db.Entry(curBet).State = EntityState.Modified;
+                                    db.SaveChanges();
+                                    if (curBet.BetSTIplus == telegramBet)
+                                    {
+                                        await Bot.SendTextMessageAsync(chatId: message.Chat.Id, text: "Принято!");
+                                    }
+                                    else
+                                    {
+                                        await Bot.SendTextMessageAsync(chatId: message.Chat.Id, text: "Что-то пошло не так. Ставка не принята.");
+                                    }
+                                }
                             }
                         }
                         else
                         {
                             if (update.CallbackQuery.Data != null)
                             {
+                                string curUserName = update.CallbackQuery.Message.Chat.Username;
+                                curUser = db.Users.Where(u => u.TelegramUserName == curUserName).FirstOrDefault();
+
                                 if (update.CallbackQuery.Data.Length > 1)
                                 {
+                                    if (update.CallbackQuery.Data.Substring(0, 5) == "betId")
+                                    {
 
-                                    InlineKeyboardMarkup kb = createNumericInlineKb();
-                                    ReplyKeyboardHide rkh = new ReplyKeyboardHide();
-                                    rkh.HideKeyboard = true;
-                                    Bet b = db.Bets.Find(Convert.ToInt32(update.CallbackQuery.Data));
-                                    string reply = "Сколько ставим на " + b.Program.ProgTitle + "?";
-                                    //await Bot.SendTextMessageAsync(update.CallbackQuery.Message.Chat.Id, reply, false, false, update.CallbackQuery.Message.MessageId, kb);
-                                    await Bot.SendTextMessageAsync(update.CallbackQuery.Message.Chat.Id, reply, false, false, update.CallbackQuery.Message.MessageId, rkh);
+
+                                        //InlineKeyboardMarkup kb = createNumericInlineKb();
+                                        //ReplyKeyboardHide rkh = new ReplyKeyboardHide();
+                                        //rkh.HideKeyboard = true;
+                                        string betId = update.CallbackQuery.Data.Substring(6);
+                                        Bet b = db.Bets.Find(Convert.ToInt32(betId));
+                                        curUser.TelegramBetId = Convert.ToInt32(betId);
+                                        string reply = "Сколько ставим на " + b.Program.ProgTitle + "?";
+                                        //await Bot.SendTextMessageAsync(update.CallbackQuery.Message.Chat.Id, reply, false, false, update.CallbackQuery.Message.MessageId, kb);
+                                        //await Bot.SendTextMessageAsync(update.CallbackQuery.Message.Chat.Id, reply, false, false, update.CallbackQuery.Message.MessageId, rkh);
+                                        await Bot.SendTextMessageAsync(chatId: update.CallbackQuery.Message.Chat.Id, text: reply);
+                                    }
                                 }
                                 else
                                 {
@@ -207,8 +247,10 @@ namespace stitalizator01
             foreach (Bet b in bets)
             {
                 InlineKeyboardButton curButton = new InlineKeyboardButton();
-                curButton.Text = b.Program.ProgTitle + " (" + b.Program.ChannelCode + ", " + b.Program.TimeStart.ToString("HH:mm") + ")";
-                curButton.CallbackData = b.BetID.ToString();                
+                string curValue = "";
+                if (b.BetSTIplus>0) { curValue = " - " + b.BetSTIplus.ToString(); }
+                curButton.Text = b.Program.ProgTitle + " (" + b.Program.ChannelCode + ", " + b.Program.TimeStart.ToString("HH:mm") + ")" + curValue;
+                curButton.CallbackData = "betId_"+b.BetID.ToString();                
                 InlineKeyboardButton[] row = new InlineKeyboardButton[1];
                 row[0] = curButton;
                 rows.Add(row);
