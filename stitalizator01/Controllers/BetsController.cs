@@ -340,7 +340,7 @@ namespace stitalizator01.Controllers
         {
             DateTime curDate = DateTime.UtcNow+MvcApplication.utcMoscowShift;
             List<Bet> bets = new List<Bet>();
-            bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.Program.TvDate >= curDate.Date & !b.IsLocked).OrderByDescending(b => b.Program.ChannelCode.Length).ThenBy(b => b.Program.TimeStart).ToList();
+            bets = db.Bets.Where(b => b.ApplicationUser.UserName == User.Identity.Name & b.Program.TvDate >= curDate.Date & !b.IsLocked).OrderBy(b=>b.Program.TvDate).ThenByDescending(b => b.Program.ChannelCode.Length).ThenBy(b => b.Program.TimeStart).ToList();
             if (bets.Count>0)
             {
                 return PartialView(bets);

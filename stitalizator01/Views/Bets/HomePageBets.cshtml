@@ -48,7 +48,7 @@
             @if (bet.BetSTIplus > 0)
             {
                 <span onclick="updateBetHomePage(@bet.BetID)" >
-                    <a id="a_@bet.BetID" href="" class="btn btn-info btn-lg">
+                    <a id="a_@bet.BetID" href="#" class="btn btn-info btn-lg">
                         <span class="glyphicon glyphicon-pencil"></span> Изменить
                     </a>
                 </span>
@@ -56,7 +56,7 @@
             else
             {
                 <span onclick="updateBetHomePage(@bet.BetID)">
-                    <a id="a_@bet.BetID" href="" class="btn btn-danger btn-lg">
+                    <a id="a_@bet.BetID" href="#" class="btn btn-danger btn-lg">
                         <span class="glyphicon glyphicon-question-sign"></span>@* Поставить*@
                     </a>
                 </span>
