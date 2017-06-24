@@ -193,8 +193,9 @@ namespace chopper1.Controllers
             //account.UserManager.AddToRole(user.Id, RoleName);
 
             userManager.AddToRole(user.Id, RoleName);
-
-            ViewBag.ResultMessage = "Role created successfully !";
+            userManager.UpdateSecurityStampAsync(user.Id);
+            
+            ViewBag.ResultMessage = "Role added successfully !";
 
             // prepopulat roles for the view dropdown
             var list = context.Roles.OrderBy(r => r.Name).ToList().Select(rr => new SelectListItem { Value = rr.Name.ToString(), Text = rr.Name }).ToList();

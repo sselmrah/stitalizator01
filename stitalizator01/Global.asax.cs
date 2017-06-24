@@ -38,7 +38,7 @@ namespace stitalizator01
         public BackgroundWorker bw;
         private List<ApplicationUser> users = db.Users.ToList();
         private List<Bet> allbets = db.Bets.Where(b => b.BetSTIplus == 0 & !b.IsLocked).ToList();
-
+        //TeleBot tBot = new TeleBot();
 
 
         protected void Application_Start()
@@ -49,9 +49,13 @@ namespace stitalizator01
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             timer.Enabled = true;
             timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
+            //tBot.StartBot();
+            /*
+            //Вернуть при восстановлении бота
             this.bw = new BackgroundWorker();
             this.bw.DoWork += this.bw_DoWork; // метод bw_DoWork будет работать асинхронно
             this.bw.RunWorkerAsync();
+            */
         }
 
         async void bw_DoWork(object sender, DoWorkEventArgs e)
@@ -77,7 +81,7 @@ namespace stitalizator01
                 while (true)
                 {
                     
-                    if (watch.Elapsed >= TimeSpan.FromMinutes(30))
+                    if (watch.Elapsed >= TimeSpan.FromMinutes(60))
                     {
                         //await sendTelegramUpdate(Bot, "amosendz", new List<string> { "1253" });   
                         foreach (ApplicationUser user in users)
@@ -92,140 +96,141 @@ namespace stitalizator01
                     }
                     
                     var updates = await Bot.GetUpdatesAsync(offset); // получаем массив обновлений
-                    foreach (var update in updates) // Перебираем все обновления
+                    if (updates != null)
                     {
-                        ApplicationUser curUser;
-                        var message = update.Message;
-                        if (message != null)
+                        if (updates.Count() > 0)
                         {
-                            string curUserName = message.Chat.Username;
-                            curUser = db.Users.Where(u => u.TelegramUserName == curUserName).FirstOrDefault();
-                            /*
-                            //Добавляем ChatId
-                            if (curUser != null)
-                            {
-                                if (curUser.TelegramChatId == 0)
+                                foreach (var update in updates) // Перебираем все обновления
                                 {
-                                    curUser.TelegramChatId = message.Chat.Id;
-                                    db.Entry(curUser).State = EntityState.Modified;
-                                    db.SaveChanges();
-                                }
-                            }
-                            */
-
-
-                            if (message.Type == Telegram.Bot.Types.Enums.MessageType.TextMessage)
-                            {
-                                if (message.Text == "/register")
-                                {
-                                    //Добавляем ChatId
-                                    if (curUser != null)
+                                    ApplicationUser curUser;
+                                    var message = update.Message;
+                                    if (message != null)
                                     {
-                                        curUser.TelegramChatId = message.Chat.Id;
-                                        db.Entry(curUser).State = EntityState.Modified;
-                                        db.SaveChanges();
-                                        await Bot.SendTextMessageAsync(message.Chat.Id, "Регистрация прошла успешно!", replyToMessageId: message.MessageId);
-                                    }
-
-                                }
-                                if (message.Text == "/saysomething")
-                                {
-                                    // в ответ на команду /saysomething выводим сообщение
-                                    ReplyKeyboardHide rkh = new ReplyKeyboardHide();
-
-                                    await Bot.SendTextMessageAsync(message.Chat.Id, "тест",
-                                           replyToMessageId: message.MessageId, replyMarkup: rkh);
-                                }
-                                else if (message.Text == "/mybets")
-                                {
-                                    string senderUserName = message.From.Username;
-                                    DateTime dt = DateTime.UtcNow.Date;
-                                    Debug.Print("Sender: " + senderUserName);
-                                    string reply = "";
-                                    reply = "А вот твоя панама, " + senderUserName + "!";
-                                    List<Bet> bets = getBetsByTelegramUserNameAndDate(senderUserName, dt);
-                                    InlineKeyboardMarkup kb = createKeabordFromBets(bets);
-                                    await Bot.SendTextMessageAsync(message.Chat.Id, reply, false, false, message.MessageId, kb);
-
-                                }
-                                else if (Regex.IsMatch(message.Text, "^(?=.*\\d)\\d*[\\.\\,]?\\d*$"))
-                                {
-                                    string betStr = message.Text.Replace(',','.');
-                                    if (curUser.TelegramBetId>0)
-                                    { 
-                                        Bet curBet = db.Bets.Find(curUser.TelegramBetId);
-                                        if (curBet.IsLocked)
+                                        string curUserName = message.Chat.Username;
+                                        curUser = db.Users.Where(u => u.TelegramUserName == curUserName).FirstOrDefault();
+                                        /*
+                                        //Добавляем ChatId
+                                        if (curUser != null)
                                         {
-                                            float telegramBet = Convert.ToSingle(betStr, CultureInfo.InvariantCulture.NumberFormat);
-                                            curBet.BetSTIplus = telegramBet;
-                                            db.Entry(curBet).State = EntityState.Modified;
-                                            db.SaveChanges();
-                                            if (curBet.BetSTIplus == telegramBet)
+                                            if (curUser.TelegramChatId == 0)
                                             {
-                                                string reply = "Принято: \n\"" + curBet.Program.ProgTitle + "\" - " + curBet.BetSTIplus.ToString();
-
-                                                await Bot.SendTextMessageAsync(chatId: message.Chat.Id, text: reply);
+                                                curUser.TelegramChatId = message.Chat.Id;
+                                                db.Entry(curUser).State = EntityState.Modified;
+                                                db.SaveChanges();
                                             }
-                                            else
-                                            {
-                                                await Bot.SendTextMessageAsync(chatId: message.Chat.Id, text: "Что-то пошло не так. Ставка не принята.");
-                                            }
-                                            curUser.TelegramBetId = 0;
-                                            db.Entry(curUser).State = EntityState.Modified;
-                                            db.SaveChanges();
                                         }
-                                        else
+                                        */
+
+
+                                        if (message.Type == Telegram.Bot.Types.Enums.MessageType.TextMessage)
                                         {
-                                            string reply = "Ставка: \n\"" + curBet.Program.ProgTitle + "\" заблокирована. Поставить не удалось.";
-                                            await Bot.SendTextMessageAsync(chatId: message.Chat.Id, text: reply);
+                                            if (message.Text == "/register")
+                                            {
+                                                //Добавляем ChatId
+                                                if (curUser != null)
+                                                {
+                                                    curUser.TelegramChatId = message.Chat.Id;
+                                                    db.Entry(curUser).State = EntityState.Modified;
+                                                    db.SaveChanges();
+                                                    await Bot.SendTextMessageAsync(message.Chat.Id, "Регистрация прошла успешно!", replyToMessageId: message.MessageId);
+                                                }
+
+                                            }
+                                            else if (message.Text == "/saysomething")
+                                            {
+                                                // в ответ на команду /saysomething выводим сообщение
+                                                ReplyKeyboardHide rkh = new ReplyKeyboardHide();
+
+                                                await Bot.SendTextMessageAsync(message.Chat.Id, "тест",
+                                                       replyToMessageId: message.MessageId, replyMarkup: rkh);
+                                            }
+                                            else if (message.Text == "/mybets")
+                                            {
+                                                string senderUserName = message.From.Username;
+                                                DateTime dt = DateTime.UtcNow.Date;
+                                                Debug.Print("Sender: " + senderUserName);
+                                                string reply = "";
+                                                reply = "А вот твоя панама, " + senderUserName + "!";
+                                                List<Bet> bets = getBetsByTelegramUserNameAndDate(senderUserName, dt);
+                                                InlineKeyboardMarkup kb = createKeabordFromBets(bets);
+                                                await Bot.SendTextMessageAsync(chatId: message.Chat.Id, text: reply, replyMarkup: kb);
+
+                                            }
+                                            else if (Regex.IsMatch(message.Text, "^(?=.*\\d)\\d*[\\.\\,]?\\d*$"))
+                                            {
+                                                string betStr = message.Text.Replace(',', '.');
+                                                if (curUser.TelegramBetId > 0)
+                                                {
+                                                    Bet curBet = db.Bets.Find(curUser.TelegramBetId);
+                                                    if (!curBet.IsLocked)
+                                                    {
+                                                        float telegramBet = Convert.ToSingle(betStr, CultureInfo.InvariantCulture.NumberFormat);
+                                                        curBet.BetSTIplus = telegramBet;
+                                                        db.Entry(curBet).State = EntityState.Modified;
+                                                        db.SaveChanges();
+                                                        if (curBet.BetSTIplus == telegramBet)
+                                                        {
+                                                            string reply = "Принято: \n\"" + curBet.Program.ProgTitle + "\" - " + curBet.BetSTIplus.ToString();
+
+                                                            await Bot.SendTextMessageAsync(chatId: message.Chat.Id, text: reply);
+                                                        }
+                                                        else
+                                                        {
+                                                            await Bot.SendTextMessageAsync(chatId: message.Chat.Id, text: "Что-то пошло не так. Ставка не принята.");
+                                                        }
+                                                        curUser.TelegramBetId = 0;
+                                                        db.Entry(curUser).State = EntityState.Modified;
+                                                        db.SaveChanges();
+                                                    }
+                                                    else
+                                                    {
+                                                        string reply = "Ставка \"" + curBet.Program.ProgTitle + "\" заблокирована. Поставить не удалось.";
+                                                        await Bot.SendTextMessageAsync(chatId: message.Chat.Id, text: reply);
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                     else
                                     {
-                                        await Bot.SendTextMessageAsync(chatId: message.Chat.Id, text: "Что-то пошло не так. Ставка не принята.");
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (update.CallbackQuery.Data != null)
-                            {
-                                string curUserName = update.CallbackQuery.Message.Chat.Username;
-                                curUser = db.Users.Where(u => u.TelegramUserName == curUserName).FirstOrDefault();
-
-                                if (update.CallbackQuery.Data.Length > 1)
-                                {
-                                    if (update.CallbackQuery.Data.Substring(0, 5) == "betId")
-                                    {
-                                        string betId = update.CallbackQuery.Data.Substring(6);
-                                        Bet b = db.Bets.Find(Convert.ToInt32(betId));
-                                        if (b.ApplicationUser == curUser)
+                                        if (update.CallbackQuery.Data != null)
                                         {
-                                            curUser.TelegramBetId = Convert.ToInt32(betId);
-                                            db.Entry(curUser).State = EntityState.Modified;
-                                            db.SaveChanges();
-                                            string reply = "Сколько ставим на \"" + b.Program.ProgTitle + "\"?";
-                                            //await Bot.SendTextMessageAsync(update.CallbackQuery.Message.Chat.Id, reply, false, false, update.CallbackQuery.Message.MessageId, kb);
-                                            //await Bot.SendTextMessageAsync(update.CallbackQuery.Message.Chat.Id, reply, false, false, update.CallbackQuery.Message.MessageId, rkh);
-                                            await Bot.SendTextMessageAsync(chatId: update.CallbackQuery.Message.Chat.Id, text: reply);
+                                            string curUserName = update.CallbackQuery.Message.Chat.Username;
+                                            curUser = db.Users.Where(u => u.TelegramUserName == curUserName).FirstOrDefault();
+
+                                            if (update.CallbackQuery.Data.Length > 5)
+                                            {
+                                                if (update.CallbackQuery.Data.Substring(0, 5) == "betId")
+                                                {
+                                                    string betId = update.CallbackQuery.Data.Substring(6);
+                                                    Bet b = db.Bets.Find(Convert.ToInt32(betId));
+                                                    if (b.ApplicationUser == curUser)
+                                                    {
+                                                        curUser.TelegramBetId = Convert.ToInt32(betId);
+                                                        db.Entry(curUser).State = EntityState.Modified;
+                                                        db.SaveChanges();
+                                                        string reply = "Сколько ставим на \"" + b.Program.ProgTitle + "\"?";
+                                                        //await Bot.SendTextMessageAsync(update.CallbackQuery.Message.Chat.Id, reply, false, false, update.CallbackQuery.Message.MessageId, kb);
+                                                        //await Bot.SendTextMessageAsync(update.CallbackQuery.Message.Chat.Id, reply, false, false, update.CallbackQuery.Message.MessageId, rkh);
+                                                        await Bot.SendTextMessageAsync(chatId: update.CallbackQuery.Message.Chat.Id, text: reply);
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                await Bot.SendTextMessageAsync(chatId: message.Chat.Id, text: "Что-то пошло не так...");
+                                            }
                                         }
                                     }
-                                }
-                                else
-                                {
-
+                                    offset = update.Id + 1;
                                 }
                             }
                         }
-                        offset = update.Id + 1;
-                    }
-
                 }
             }
             catch (Telegram.Bot.Exceptions.ApiRequestException ex)
             {
-                Console.WriteLine(ex.Message); // если ключ не подошел - пишем об этом в консоль отладки
+                //Console.WriteLine(ex.Message); // если ключ не подошел - пишем об этом в консоль отладки
             }
         }
 
@@ -306,61 +311,42 @@ namespace stitalizator01
                 //return Content("Sent!");
             }
         }
-
-        async Task sendTelegramUpdate(Telegram.Bot.TelegramBotClient Bot,string telegramUserName, List<string> betName)
-        {
-            //var Bot = new Telegram.Bot.TelegramBotClient(key);
-            //await Bot.SetWebhookAsync("");
-
-            string text = "Нужно сделать ставки: ";
-            foreach (string s in betName)
-            {
-                text += "\n\"" + s + "\"";
-            }
-            InlineKeyboardButton curButton = new InlineKeyboardButton(text: "Перейти к выставлению ставок");
-            curButton.Url = "http://stitalizator.azurewebsites.net";
-            InlineKeyboardButton[][] rows = new InlineKeyboardButton[][]
-            {
-                new InlineKeyboardButton[] { curButton},
-            };
-            InlineKeyboardMarkup kb = new InlineKeyboardMarkup(rows);
-
-            ApplicationUser curUser = db.Users.Where(u => u.TelegramUserName == telegramUserName).FirstOrDefault();
-            if (curUser.TelegramChatId > 0)
-            {
-                await Bot.SendTextMessageAsync(chatId: curUser.TelegramChatId, text: text, replyMarkup: kb);
-            }
-
-        }
-
+        
         async Task sendTelegramUpdateBets(Telegram.Bot.TelegramBotClient Bot, ApplicationUser user)
         {
-            //var Bot = new Telegram.Bot.TelegramBotClient(key);
-            //await Bot.SetWebhookAsync("");
-            //string telegramUserName = user.TelegramUserName;
-            string text = "Нужно сделать ставки: ";
-            DateTime now = DateTime.UtcNow + utcMoscowShift;
-            DateTime later = now + TimeSpan.FromMinutes(30);
-            //List<string> bets2send = new List<string>();
-            //List<Bet> burningBets = db.Bets.Where(b => b.ApplicationUser == user & b.BetSTIplus == 0 & !b.IsLocked).ToList();
-            List<Bet> bets2send = new List<Bet>();
-            foreach (Bet b in allbets)
+            if (user.TelegramChatId > 0)
             {
-                if (b.ApplicationUser.TelegramUserName==user.TelegramUserName & b.Program.TimeStart >= now & b.Program.TvDate == now.Date)
+                //var Bot = new Telegram.Bot.TelegramBotClient(key);
+                //await Bot.SetWebhookAsync("");
+                //string telegramUserName = user.TelegramUserName;
+                string text = "Нужно сделать ставки: ";
+                DateTime now = DateTime.UtcNow + utcMoscowShift;
+                DateTime later = now + TimeSpan.FromMinutes(120);
+                bool timeToRemind = false;
+                //List<string> bets2send = new List<string>();
+                //List<Bet> burningBets = db.Bets.Where(b => b.ApplicationUser == user & b.BetSTIplus == 0 & !b.IsLocked).ToList();
+                List<Bet> bets2send = new List<Bet>();
+                foreach (Bet b in allbets)
                 {
-                    //string betDescription = b.Program.ProgTitle + "(" + b.Program.TimeStart.ToString("HH:mm") + ") " + b.Program.ChannelCode;
-                    //bets2send.Add(betDescription);
-                    bets2send.Add(b);
+                    if (b.ApplicationUser.TelegramUserName == user.TelegramUserName & b.Program.TimeStart >= now & b.Program.TvDate == now.Date)
+                    {
+                        //string betDescription = b.Program.ProgTitle + "(" + b.Program.TimeStart.ToString("HH:mm") + ") " + b.Program.ChannelCode;
+                        //bets2send.Add(betDescription);
+                        bets2send.Add(b);
+                        if (b.Program.TimeStart < later)
+                        {
+                            timeToRemind = true;
+                        }
+                    }
+                }
+
+                InlineKeyboardMarkup kb = createKeabordFromBets(bets2send, true);
+
+                if (timeToRemind)
+                {
+                    await Bot.SendTextMessageAsync(chatId: user.TelegramChatId, text: text, replyMarkup: kb);
                 }
             }
-            
-            InlineKeyboardMarkup kb = createKeabordFromBets(bets2send, true);
-
-            if (user.TelegramChatId > 0 & bets2send.Count>0)
-            {
-                await Bot.SendTextMessageAsync(chatId: user.TelegramChatId, text: text, replyMarkup: kb);
-            }
-
         }
 
         private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -368,80 +354,30 @@ namespace stitalizator01
             //Московское время
             DateTime now = DateTime.UtcNow + utcMoscowShift;
 
-            var expiredList = db.Bets.Where(b => b.Program.TimeStart < now);
-            foreach (Bet bet in expiredList)
+            var expiredList = db.Bets.Where(b => b.Program.TimeStart < now & !b.IsLocked);
+            if (expiredList != null)
             {
-                bet.IsLocked = true;
+                if (expiredList.Count() > 0)
+                {
+                    foreach (Bet bet in expiredList)
+                    {
+                        bet.IsLocked = true;
+                        db.Entry(bet).State = EntityState.Modified;
+                    }
+                    db.SaveChanges();
+
+                }
             }
-            db.SaveChanges();
+            //Вернуть при восстановлении бота
+            /*
             minutesElapsed++;
-          
+             
             if (minutesElapsed == 15)
             {
                 allbets = db.Bets.Where(b => b.BetSTIplus == 0 & !b.IsLocked).ToList();
-                //DateTime later = now + TimeSpan.FromMinutes(50);
-                //List<ApplicationUser> users = db.Users.ToList();
-                /*
-                //Рассылка по e-mail. Пока отключили
-                foreach (ApplicationUser user in users)
-                {
-                   
-                    List<Bet> burningBets = db.Bets.Where(b => b.ApplicationUser.Id == user.Id & b.BetSTIplus == 0 & b.Program.TimeStart > now & b.Program.TimeStart < later).ToList();
-                    if (burningBets.Count() > 0)
-                    {
-                        List<string> bets2send = new List<string>();
-                        foreach (Bet b in burningBets)
-                        {
-                            string betDescription = b.Program.ProgTitle + "(" + b.Program.TimeStart.ToString("HH:mm") + ") " + b.Program.ChannelCode;
-                            bets2send.Add(betDescription);
-                        }
-                        sendPersonalizedEmail(user.Email, bets2send);   
-                    }
-                }
-                */
                 minutesElapsed = 0;
             }
-            
-            /*
-            if (minutesElapsed2 == 5)
-            {
-                DateTime later = now + TimeSpan.FromMinutes(30);
-
-                List<ApplicationUser> users = db.Users.ToList();
-                foreach (ApplicationUser user in users)
-                {
-                    List<Bet> burningBets = db.Bets.Where(b => b.ApplicationUser.Id == user.Id & b.BetSTIplus == 0 & b.Program.TimeStart > now & b.Program.TimeStart < later).ToList();
-                    if (burningBets.Count() > 0)
-                    {
-                        List<string> bets2send = new List<string>();
-                        foreach (Bet b in burningBets)
-                        {
-                            string betDescription = b.Program.ProgTitle + "(" + b.Program.TimeStart.ToString("HH:mm") + ") " + b.Program.ChannelCode;
-                            bets2send.Add(betDescription);
-                        }
-                        if (user.TelegramChatId > 0)
-                        {
-                            sendTelegramUpdate(user.TelegramUserName, bets2send);
-                        }
-                        minutesElapsed2 = 0;
-                    }
-                }
-            }
             */
-            /*
-            private void initializeBetsDB(ApplicationDbContext context)
-            {
-                var programs = new List<Program>
-                {
-                    new Program{ProgTitle="Вечерние новости", TvDate=DateTime.Parse("04.04.2017"), TimeStart=DateTime.Parse("04.04.2017 18:00:00"), TimeEnd=DateTime.Parse("04.04.2017 18:25:00"), ChannelCode=10},
-                    new Program{ProgTitle="Первая студия", TvDate=DateTime.Parse("04.04.2017"), TimeStart=DateTime.Parse("04.04.2017 18:25:00"), TimeEnd=DateTime.Parse("04.04.2017 21:00:00"), ChannelCode=10},
-                    new Program{ProgTitle="Время", TvDate=DateTime.Parse("04.04.2017"), TimeStart=DateTime.Parse("04.04.2017 21:00:00"), TimeEnd=DateTime.Parse("04.04.2017 21:30:00"), ChannelCode=10},
-                    new Program{ProgTitle="Волчье солнце", TvDate=DateTime.Parse("04.04.2017"), TimeStart=DateTime.Parse("04.04.2017 21:30:00"), TimeEnd=DateTime.Parse("04.04.2017 23:35:00"), ChannelCode=10},
-                };
-                programs.ForEach(p => context.Programs.Add(p));
-                context.SaveChanges();
-            }
-             */
         }
     }
 }
