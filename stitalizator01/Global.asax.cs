@@ -4,6 +4,9 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+
+using System.Web.Http;
+
 using System.Web.Optimization;
 using System.Web.Routing;
 using stitalizator01.Models;
@@ -27,6 +30,15 @@ using System.Threading.Tasks;
 
 namespace stitalizator01
 {
+    public class WebApiApplication : System.Web.HttpApplication
+    {
+        protected void Application_Start()
+        {
+            int x = 0;
+            System.Web.Http.GlobalConfiguration.Configure(WebApiConfig.Register);
+        }
+    }
+
     public class MvcApplication : System.Web.HttpApplication
     {
         public static System.Timers.Timer timer = new System.Timers.Timer(60000); // This will raise the event every one minute.
@@ -37,8 +49,9 @@ namespace stitalizator01
         string key = "385340523:AAFPdWdVpE_oI4gLn8Z0XCb2_q-zaVVzP24";
         public BackgroundWorker bw;
         private List<ApplicationUser> users = db.Users.ToList();
-        private List<Bet> allbets = db.Bets.Where(b => b.BetSTIplus == 0 & !b.IsLocked).ToList();
-        //TeleBot tBot = new TeleBot();
+        //private List<Bet> allbets = db.Bets.Where(b => b.BetSTIplus == 0 & !b.IsLocked).ToList();
+        private List<Bet> allbets = new List<Bet>();
+            //TeleBot tBot = new TeleBot();
 
 
         protected void Application_Start()
@@ -47,8 +60,12 @@ namespace stitalizator01
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
             timer.Enabled = true;
             timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
+
+            System.Web.Http.GlobalConfiguration.Configure(WebApiConfig.Register);
+            
             //tBot.StartBot();
             /*
             //Вернуть при восстановлении бота
@@ -362,7 +379,7 @@ namespace stitalizator01
                     foreach (Bet bet in expiredList)
                     {
                         bet.IsLocked = true;
-                        db.Entry(bet).State = EntityState.Modified;
+                        //db.Entry(bet).State = EntityState.Modified;
                     }
                     db.SaveChanges();
 

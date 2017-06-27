@@ -174,7 +174,7 @@ else
                 {<input type="submit" value="Сохранить" class="btn btn-default" />}
             }
               *@
-            @if (!model.IsLocked)
+            @if (!model.IsLocked | this.User.IsInRole("Admin"))
             {
             <div class="input-group">
                 <input class="input-lg" id="@curBetID" type="number" min="0" max="100" value="@tempBet" step="0.5" onchange="updateBetMyBets(@curBetID)" />
@@ -199,6 +199,7 @@ else
             }
             else
             {
+
             @Html.DisplayFor(modelItem => model.BetSTIplus)
             }
         </td>
