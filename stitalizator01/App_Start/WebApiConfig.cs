@@ -31,8 +31,7 @@ namespace stitalizator01
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
-            );
-            int x = 0;
+            );            
         }
     }
 }

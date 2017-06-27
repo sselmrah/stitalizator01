@@ -445,6 +445,7 @@
     <Content Include="Views\Bets\SwitchWhiteBoardHomepage.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Controllers\Api\" />
     <Folder Include="Views\Roles\" />
   </ItemGroup>
   <ItemGroup>
