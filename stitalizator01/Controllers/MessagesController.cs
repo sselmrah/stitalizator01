@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using stitalizator01.Models;
 
 namespace stitalizator01.Controllers
 {
@@ -19,9 +20,23 @@ namespace stitalizator01.Controllers
         /// </summary>
         public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
         {
+            //var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+            //MvcApplication.db.Users.Where(u => u.)
+            ConversationStarter cs = new ConversationStarter();
+            cs.ToId = activity.From.Id;
+            cs.ToName = activity.From.Name;
+            cs.FromId = activity.Recipient.Id;
+            cs.FromName = activity.Recipient.Name;
+            cs.ServiceUrl = activity.ServiceUrl;
+            cs.ChannelId = activity.ChannelId;
+            cs.ConversationId = activity.Conversation.Id;
+
+
+
             if (activity.Type == ActivityTypes.Message)
             {
                 await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
+                
             }
             else
             {

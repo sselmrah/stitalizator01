@@ -17,6 +17,8 @@ namespace stitalizator01.Models
         public long TelegramChatId { get => _telegramChatId; set => _telegramChatId = value; }
         public int TelegramBetId { get => _telegramBetId; set => _telegramBetId = value; }
 
+
+        
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType

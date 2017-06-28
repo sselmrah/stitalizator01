@@ -316,6 +316,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Bet.cs" />
     <Compile Include="Models\Channel.cs" />
+    <Compile Include="Models\ConversationStarter.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="LeaderboardEntry.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
