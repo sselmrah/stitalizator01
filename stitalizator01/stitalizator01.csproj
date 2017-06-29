@@ -329,6 +329,7 @@
     <Compile Include="Models\Program.cs" />
     <Compile Include="Models\StitalizatorContext.cs" />
     <Compile Include="Models\TelegramChannelData.cs" />
+    <Compile Include="Models\TelegramParameters.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="MyStartupClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

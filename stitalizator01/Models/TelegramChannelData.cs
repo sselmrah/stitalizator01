@@ -10,9 +10,7 @@ namespace stitalizator01.Models
     {
         [JsonProperty("method")]
         public string method { get; set; }
-        [JsonProperty("text")]
-        public string text { get; set; }
-        [JsonProperty("keyboard")]
-        public string keyboard { get; set; }
+        [JsonProperty("parameters")]
+        public TelegramParameters parameters{get;set;}
     }
 }

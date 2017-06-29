@@ -60,6 +60,8 @@ namespace stitalizator01.Controllers
                         if (activity.Text == "/mybets")
                         {
                             sendUserBetsTelegram(activity);
+                            Activity reply = activity.CreateReply("!!!");
+                            connector.Conversations.ReplyToActivity(reply);
                         }
                     }
                     else if (activity.ChannelId=="skype")
@@ -157,6 +159,7 @@ namespace stitalizator01.Controllers
         private void sendUserBetsTelegram(Activity activity)
         {
             ApplicationUser curUser = getUserFromActivity(activity);
+            var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
             if (curUser != null)
             {
                 Activity reply = activity.CreateReply("");
@@ -169,9 +172,13 @@ namespace stitalizator01.Controllers
                 reply.ChannelData = new TelegramChannelData()
                 {
                     method = "sendMessage",
-                    text = "Ставки на " + curDt.ToString("dd.MM.yyyy"),
-                    keyboard = jsonKb
+                    parameters =
+                    {
+                        text = "Ставки на " + curDt.ToString("dd.MM.yyyy"),
+                        reply_markup = jsonKb
+                    }
                 };
+                connector.Conversations.ReplyToActivity(reply);
             }
         }
 
@@ -179,14 +186,17 @@ namespace stitalizator01.Controllers
         private ApplicationUser getUserFromActivity(Activity activity)
         {
             ApplicationUser curUser = null;
-            string givenUserName = activity.Text.Substring(9);
-            curUser = db.Users.Where(u => u.UserName.ToLower() == givenUserName.ToLower()).FirstOrDefault();
+            //string givenUserName = activity.Text.Substring(9);
+            //curUser = db.Users.Where(u => u.UserName.ToLower() == givenUserName.ToLower()).FirstOrDefault();
+            var cs = db.CSs.Where(c => c.ToId == activity.From.Id).FirstOrDefault();
+            curUser = cs.ApplicationUser;
 
             return curUser;
         }
         public List<Bet> getBetsByUserDay(ApplicationUser curUser, DateTime curDate)
         {
-            List<Bet> bets = db.Bets.Where(b => b.ApplicationUser == curUser & b.Program.TvDate == curDate & !b.IsLocked).ToList();
+            curDate = curDate.Date;
+            List<Bet> bets = db.Bets.Where(b => b.ApplicationUser.UserName == curUser.UserName & b.Program.TvDate == curDate & !b.IsLocked).ToList();
             return bets;
         }
 
