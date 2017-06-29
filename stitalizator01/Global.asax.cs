@@ -34,7 +34,7 @@ namespace stitalizator01
     {
         protected void Application_Start()
         {
-            int x = 0;
+            //int x = 0;
             System.Web.Http.GlobalConfiguration.Configure(WebApiConfig.Register);
         }
     }
@@ -45,12 +45,12 @@ namespace stitalizator01
 
         public static ApplicationDbContext db = new ApplicationDbContext();
         public static TimeSpan utcMoscowShift = TimeSpan.FromHours(3);
-        private int minutesElapsed = 0;
-        string key = "385340523:AAFPdWdVpE_oI4gLn8Z0XCb2_q-zaVVzP24";
-        public BackgroundWorker bw;
-        private List<ApplicationUser> users = db.Users.ToList();
+        //private int minutesElapsed = 0;
+        //string key = "385340523:AAFPdWdVpE_oI4gLn8Z0XCb2_q-zaVVzP24";
+        //public BackgroundWorker bw;
+        //private List<ApplicationUser> users = db.Users.ToList();
         //private List<Bet> allbets = db.Bets.Where(b => b.BetSTIplus == 0 & !b.IsLocked).ToList();
-        private List<Bet> allbets = new List<Bet>();
+        //private List<Bet> allbets = new List<Bet>();
             //TeleBot tBot = new TeleBot();
 
 
@@ -75,7 +75,7 @@ namespace stitalizator01
             this.bw.RunWorkerAsync();
             */
         }
-
+        /*
         async void bw_DoWork(object sender, DoWorkEventArgs e)
         {
             var worker = sender as BackgroundWorker; // получаем ссылку на класс вызвавший событие
@@ -126,18 +126,18 @@ namespace stitalizator01
                                     {
                                         string curUserName = message.Chat.Username;
                                         curUser = db.Users.Where(u => u.TelegramUserName == curUserName).FirstOrDefault();
-                                        /*
-                                        //Добавляем ChatId
-                                        if (curUser != null)
-                                        {
-                                            if (curUser.TelegramChatId == 0)
-                                            {
-                                                curUser.TelegramChatId = message.Chat.Id;
-                                                db.Entry(curUser).State = EntityState.Modified;
-                                                db.SaveChanges();
-                                            }
-                                        }
-                                        */
+                                        //
+                                        ////Добавляем ChatId
+                                        //if (curUser != null)
+                                        //{
+                                        //    if (curUser.TelegramChatId == 0)
+                                        //    {
+                                        //        curUser.TelegramChatId = message.Chat.Id;
+                                        //        db.Entry(curUser).State = EntityState.Modified;
+                                        //        db.SaveChanges();
+                                        //    }
+                                        //}
+                                        //
 
 
                                         if (message.Type == Telegram.Bot.Types.Enums.MessageType.TextMessage)
@@ -366,7 +366,7 @@ namespace stitalizator01
                 }
             }
         }
-
+        */
         private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             //Московское время

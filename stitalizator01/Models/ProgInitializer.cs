@@ -13,7 +13,7 @@ namespace stitalizator01.Models
         {
             if (context.Database.Exists())
             {
-                string x = "";
+                //string x = "";
             }
             else
             {

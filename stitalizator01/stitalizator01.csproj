@@ -312,6 +312,10 @@
     <Compile Include="Migrations\201706141922178_telegramBetId.Designer.cs">
       <DependentUpon>201706141922178_telegramBetId.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201706291137527_cs.cs" />
+    <Compile Include="Migrations\201706291137527_cs.Designer.cs">
+      <DependentUpon>201706291137527_cs.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Bet.cs" />
@@ -324,6 +328,7 @@
     <Compile Include="Models\ProgInitializer.cs" />
     <Compile Include="Models\Program.cs" />
     <Compile Include="Models\StitalizatorContext.cs" />
+    <Compile Include="Models\TelegramChannelData.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="MyStartupClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -501,6 +506,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706141922178_telegramBetId.resx">
       <DependentUpon>201706141922178_telegramBetId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706291137527_cs.resx">
+      <DependentUpon>201706291137527_cs.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

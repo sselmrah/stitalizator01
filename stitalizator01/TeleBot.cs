@@ -212,7 +212,7 @@ namespace stitalizator01
 
         }
 
-        private InlineKeyboardMarkup createKeabordFromBets(List<Bet> bets, bool includeLink = false)
+        public InlineKeyboardMarkup createKeabordFromBets(List<Bet> bets, bool includeLink = false)
         {
             InlineKeyboardMarkup kb = new InlineKeyboardMarkup();
 

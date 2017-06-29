@@ -37,7 +37,7 @@ namespace stitalizator01.Models
         public DbSet<Program> Programs { get; set; }
         public DbSet<Bet> Bets { get; set; }
         public DbSet<Period> Periods { get; set; }
-
+        public DbSet<ConversationStarter> CSs { get; set; }
 
         public static ApplicationDbContext Create()
         {
