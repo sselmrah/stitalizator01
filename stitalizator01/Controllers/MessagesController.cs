@@ -20,8 +20,9 @@ namespace stitalizator01.Controllers
         /// </summary>
         public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
         {
-            //var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+            var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
             //MvcApplication.db.Users.Where(u => u.)
+            /*
             ConversationStarter cs = new ConversationStarter();
             cs.ToId = activity.From.Id;
             cs.ToName = activity.From.Name;
@@ -30,13 +31,26 @@ namespace stitalizator01.Controllers
             cs.ServiceUrl = activity.ServiceUrl;
             cs.ChannelId = activity.ChannelId;
             cs.ConversationId = activity.Conversation.Id;
-
+            */
 
 
             if (activity.Type == ActivityTypes.Message)
             {
                 await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
-                
+                /*string text = "UserName: " + cs.ToName + ", UserId: " + cs.ToId + ", ChannelID: " + cs.ChannelId;
+                Activity reply=activity.CreateReply(text);
+                await connector.Conversations.ReplyToActivityAsync(reply);
+                */
+                if (activity.Text != null)
+                {
+                    if (activity.Text.Length >= 9)
+                    {
+                        if (activity.Text.Substring(0, 9).ToLower() == "register ")
+                        {
+
+                        }
+                    }
+                }
             }
             else
             {
@@ -73,6 +87,20 @@ namespace stitalizator01.Controllers
             }
 
             return null;
+        }
+
+        private void registerUserForChannel(Activity activity)
+        {
+            string givenUserName = activity.Text.Substring(9);
+            ConversationStarter cs = new ConversationStarter();
+            cs.ToId = activity.From.Id;
+            cs.ToName = activity.From.Name;
+            cs.FromId = activity.Recipient.Id;
+            cs.FromName = activity.Recipient.Name;
+            cs.ServiceUrl = activity.ServiceUrl;
+            cs.ChannelId = activity.ChannelId;
+            cs.ConversationId = activity.Conversation.Id;
+
         }
     }
 }
