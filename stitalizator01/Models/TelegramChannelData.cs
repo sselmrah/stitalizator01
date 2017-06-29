@@ -9,8 +9,8 @@ namespace stitalizator01.Models
     public class TelegramChannelData
     {
         [JsonProperty("method")]
-        public string method { get; set; }
+        public string method { get; internal set; }
         [JsonProperty("parameters")]
-        public TelegramParameters parameters{get;set;}
+        public TelegramParameters parameters{get; internal set;}
     }
 }

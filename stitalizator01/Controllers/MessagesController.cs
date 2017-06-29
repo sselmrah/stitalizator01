@@ -11,8 +11,8 @@ using stitalizator01.Models;
 using Newtonsoft.Json;
 
 using Telegram.Bot.Types.ReplyMarkups;
-
-
+using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace stitalizator01.Controllers
 {
@@ -44,7 +44,7 @@ namespace stitalizator01.Controllers
 
             if (activity.Type == ActivityTypes.Message)
             {
-                await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
+                //await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
                 
                 if (activity.Text != null)
                 {
@@ -60,8 +60,19 @@ namespace stitalizator01.Controllers
                         if (activity.Text == "/mybets")
                         {
                             sendUserBetsTelegram(activity);
-                            Activity reply = activity.CreateReply("!!!");
-                            connector.Conversations.ReplyToActivity(reply);
+                            //Activity reply = activity.CreateReply("!!!");
+                            //connector.Conversations.ReplyToActivity(reply);
+                        }
+                        if (activity.Text.Length>=5)
+                        {
+                            if (activity.Text.Substring(0,5)=="betId")
+                            {
+                                selectBetTelegram(activity);
+                            }
+                        }
+                        if (Regex.IsMatch(activity.Text, "^(?=.*\\d)\\d*[\\.\\,]?\\d*$"))
+                        {
+                            placeBetTelegram(activity);
                         }
                     }
                     else if (activity.ChannelId=="skype")
@@ -166,15 +177,25 @@ namespace stitalizator01.Controllers
                 DateTime curDt = DateTime.Now + MvcApplication.utcMoscowShift;
                 List<Bet> bets = getBetsByUserDay(curUser, curDt);
                 TeleBot tb = new TeleBot();
-                InlineKeyboardMarkup kb = tb.createKeabordFromBets(bets);
+                InlineKeyboardMarkup kb = tb.createKeabordFromBets(bets,true);
                 string jsonKb = JsonConvert.SerializeObject(kb);
+                string text = "";
+                if (bets.Count>0)
+                {
+                    text = "Ставки на " + curDt.ToString("dd.MM.yyyy");
+                }
+                else
+                {
+                    text = "Открытых ставок на " + curDt.ToString("dd.MM.yyyy") + " нет";
+                }
 
                 reply.ChannelData = new TelegramChannelData()
                 {
                     method = "sendMessage",
-                    parameters =
+                    parameters = new TelegramParameters()
                     {
-                        text = "Ставки на " + curDt.ToString("dd.MM.yyyy"),
+                        text = text,
+                        parse_mode = "Markdown",
                         reply_markup = jsonKb
                     }
                 };
@@ -182,6 +203,89 @@ namespace stitalizator01.Controllers
             }
         }
 
+        private void selectBetTelegram(Activity activity)
+        {
+            var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+            Activity reply = activity.CreateReply("");
+            string betId = activity.Text.Substring(6);
+            Bet b = db.Bets.Find(Convert.ToInt32(betId));
+            ApplicationUser curUser = getUserFromActivity(activity);
+            if (b.ApplicationUser == curUser)
+            {
+                curUser.TelegramBetId = Convert.ToInt32(betId);
+                db.SaveChanges();
+                string text = "Сколько ставим на \"" + b.Program.ProgTitle + "\"?";
+
+                reply.ChannelData = new TelegramChannelData()
+                {
+                    method = "sendMessage",
+                    parameters = new TelegramParameters()
+                    {
+                        text = text
+                    }
+                };
+                connector.Conversations.ReplyToActivity(reply);
+            }
+        }
+
+        private void placeBetTelegram(Activity activity)
+        {
+            var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+            Activity reply = activity.CreateReply("");
+            ApplicationUser curUser = getUserFromActivity(activity);
+            string betStr = activity.Text.Replace(',', '.');
+            if (curUser.TelegramBetId > 0)
+            {
+                Bet curBet = db.Bets.Find(curUser.TelegramBetId);
+                if (!curBet.IsLocked)
+                {
+                    float telegramBet = Convert.ToSingle(betStr, CultureInfo.InvariantCulture.NumberFormat);
+                    curBet.BetSTIplus = telegramBet;
+                    db.SaveChanges();
+                    if (curBet.BetSTIplus == telegramBet)
+                    {
+                        string text = "Принято: \n\"" + curBet.Program.ProgTitle + "\" - " + curBet.BetSTIplus.ToString();
+                        reply.ChannelData = new TelegramChannelData()
+                        {
+                            method = "sendMessage",
+                            parameters = new TelegramParameters()
+                            {
+                                text = text
+                            }
+                        };
+                        connector.Conversations.ReplyToActivity(reply);
+                    }
+                    else
+                    {
+                        string text = "Что-то пошло не так. Ставка не принята.";
+                        reply.ChannelData = new TelegramChannelData()
+                        {
+                            method = "sendMessage",
+                            parameters = new TelegramParameters()
+                            {
+                                text = text
+                            }
+                        };
+                        connector.Conversations.ReplyToActivity(reply);
+                    }
+                    curUser.TelegramBetId = 0;
+                    db.SaveChanges();
+                }
+                else
+                {
+                    string text = "Ставка \"" + curBet.Program.ProgTitle + "\" заблокирована. Поставить не удалось.";
+                    reply.ChannelData = new TelegramChannelData()
+                    {
+                        method = "sendMessage",
+                        parameters = new TelegramParameters()
+                        {
+                            text = text
+                        }
+                    };
+                    connector.Conversations.ReplyToActivity(reply);
+                }
+            }
+        }
 
         private ApplicationUser getUserFromActivity(Activity activity)
         {

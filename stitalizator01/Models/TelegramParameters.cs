@@ -10,6 +10,9 @@ namespace stitalizator01.Models
     {
         [JsonProperty("text")]
         public string text { get; set; }
+        [JsonProperty("parse_mode")]
+        public string parse_mode{ get; set; }
+
         [JsonProperty("reply_markup")]
         public string reply_markup { get; set; }
     }
