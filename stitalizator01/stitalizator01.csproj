@@ -316,6 +316,10 @@
     <Compile Include="Migrations\201706291137527_cs.Designer.cs">
       <DependentUpon>201706291137527_cs.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201706301018541_tgbot2.cs" />
+    <Compile Include="Migrations\201706301018541_tgbot2.Designer.cs">
+      <DependentUpon>201706301018541_tgbot2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Bet.cs" />
@@ -510,6 +514,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706291137527_cs.resx">
       <DependentUpon>201706291137527_cs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706301018541_tgbot2.resx">
+      <DependentUpon>201706301018541_tgbot2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

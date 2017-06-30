@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using stitalizator01.Controllers;
 
 using System.Web.Http;
 
@@ -27,6 +28,8 @@ using Telegram.Bot.Types.ReplyMarkups;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Threading.Tasks;
+using Microsoft.Bot.Connector;
+using Newtonsoft.Json;
 
 namespace stitalizator01
 {
@@ -46,7 +49,7 @@ namespace stitalizator01
         public static ApplicationDbContext db = new ApplicationDbContext();
         public static TimeSpan utcMoscowShift = TimeSpan.FromHours(3);
         private int minutesElapsed = 0;
-        
+
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
@@ -58,7 +61,7 @@ namespace stitalizator01
             timer.Enabled = true;
             timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
         }
-       
+
         private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             //Московское время
@@ -77,20 +80,24 @@ namespace stitalizator01
 
                 }
             }
-            
+
             minutesElapsed++;
-             
+            
             if (minutesElapsed == 30)
             {
                 List<Bet> allbets = db.Bets.Where(b => b.BetSTIplus == 0 & !b.IsLocked).ToList();
                 foreach (ConversationStarter cs in db.CSs)
                 {
-                    if (cs.ChannelId=="telegram")
+                    if (cs.ChannelId == "telegram")
                     {
                         List<Bet> userBets = allbets.Where(b => b.ApplicationUser.UserName == cs.ApplicationUser.UserName).ToList();
-                        if (userBets.Where(b => b.Program.TimeStart<later).Count()>0)
+                        if (userBets.Where(b => b.Program.TimeStart < later).Count() > 0)
                         {
-                            //Дописать, возможно, добавив lastTimeWarned юзеру
+                            if (cs.LastTimeUsed < now - TimeSpan.FromHours(3))
+                            {
+                                telegramReminder(cs);
+                                cs.LastTimeUsed = now;
+                            }
                         }
                     }
                 }
@@ -98,5 +105,39 @@ namespace stitalizator01
             }
             
         }
+        
+        private void telegramReminder(ConversationStarter cs)
+        {
+            ApplicationUser curUser = cs.ApplicationUser;
+
+
+            var userAccount = new ChannelAccount(cs.ToId, cs.ToName);
+            var botAccount = new ChannelAccount(cs.FromId, cs.FromName);
+            var connector = new ConnectorClient(new Uri(cs.ServiceUrl));
+
+            Activity activity = new Activity();
+            activity.From = botAccount;
+            activity.Recipient = userAccount;
+            activity.Conversation = new ConversationAccount(id: cs.ConversationId);
+            string text = "Заканчивается прием ставок на следующие программы: ";
+
+            DateTime curDate = (DateTime.UtcNow + utcMoscowShift).Date;
+            List<Bet> bets = db.Bets.Where(b => b.ApplicationUser.UserName == curUser.UserName & b.Program.TvDate == curDate & !b.IsLocked).ToList();
+            TeleBot tb = new TeleBot();
+            InlineKeyboardMarkup kb = tb.createKeabordFromBets(bets, true);
+            string jsonKb = JsonConvert.SerializeObject(kb);
+            activity.ChannelData = new TelegramChannelData()
+            {
+                method = "sendMessage",
+                parameters = new TelegramParameters()
+                {
+                    text = text,
+                    parse_mode = "Markdown",
+                    reply_markup = jsonKb
+                }
+            };
+            connector.Conversations.SendToConversation(activity);
+        }
+        
     }
 }

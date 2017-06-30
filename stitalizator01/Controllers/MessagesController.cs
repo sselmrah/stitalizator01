@@ -120,9 +120,9 @@ namespace stitalizator01.Controllers
 
         private void registerUserForChannel(Activity activity)
         {
-            //string givenUserName = activity.Text.Substring(9);
-            //var curUser = db.Users.Where(u => u.UserName.ToLower() == givenUserName.ToLower()).FirstOrDefault();
-            ApplicationUser curUser = getUserFromActivity(activity);
+            string givenUserName = activity.Text.Substring(9);
+            var curUser = db.Users.Where(u => u.UserName.ToLower() == givenUserName.ToLower()).FirstOrDefault();
+            //ApplicationUser curUser = getUserFromActivity(activity);
             if (curUser != null)
             {
                 var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
@@ -174,7 +174,7 @@ namespace stitalizator01.Controllers
             if (curUser != null)
             {
                 Activity reply = activity.CreateReply("");
-                DateTime curDt = DateTime.Now + MvcApplication.utcMoscowShift;
+                DateTime curDt = DateTime.UtcNow + MvcApplication.utcMoscowShift;
                 List<Bet> bets = getBetsByUserDay(curUser, curDt);
                 TeleBot tb = new TeleBot();
                 InlineKeyboardMarkup kb = tb.createKeabordFromBets(bets,true);

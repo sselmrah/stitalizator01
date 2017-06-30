@@ -15,6 +15,7 @@ namespace stitalizator01.Models
         private string _serviceUrl;
         private string _channelId;
         private string _conversationId;
+        private DateTime _lastTimeUsed;
 
         public virtual ApplicationUser ApplicationUser { get; set; }
         public int ConversationStarterID { get => _conversationStarterID; set => _conversationStarterID = value; }
@@ -26,5 +27,6 @@ namespace stitalizator01.Models
         public string ServiceUrl { get => _serviceUrl; set => _serviceUrl = value; }
         public string ChannelId { get => _channelId; set => _channelId = value; }
         public string ConversationId { get => _conversationId; set => _conversationId = value; }
+        public DateTime LastTimeUsed { get => _lastTimeUsed; set => _lastTimeUsed = value; }
     }
 }
