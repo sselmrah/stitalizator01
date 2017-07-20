@@ -92,7 +92,10 @@
                             {
                                 int start = tempName.IndexOf('\"') + 1;
                                 int end = tempName.LastIndexOf('\"');
-                                tempName = tempName.Substring(start, end - start);
+                                if (end - start > 0)
+                                {
+                                    tempName = tempName.Substring(start, end - start);
+                                }
                             }
                             if (tempName.IndexOf('.') > 0)
                             {

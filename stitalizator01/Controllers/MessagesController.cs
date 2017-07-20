@@ -136,6 +136,7 @@ namespace stitalizator01.Controllers
                 cs.ChannelId = activity.ChannelId;
                 cs.ConversationId = activity.Conversation.Id;
                 cs.ApplicationUser = curUser;
+                cs.LastTimeUsed = DateTime.UtcNow - TimeSpan.FromDays(1);
 
 
                 bool found = false;

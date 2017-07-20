@@ -80,7 +80,7 @@ namespace stitalizator01
 
                 }
             }
-
+            /*
             minutesElapsed++;
             
             if (minutesElapsed == 30)
@@ -103,7 +103,7 @@ namespace stitalizator01
                 }
                 minutesElapsed = 0;
             }
-            
+            */
         }
         
         private void telegramReminder(ConversationStarter cs)
