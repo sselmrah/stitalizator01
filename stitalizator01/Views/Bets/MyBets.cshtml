@@ -20,6 +20,30 @@ else
     @Html.ActionLink("Посмотреть все непроставленные ставки", "MyBets", new { filter = "empty" })
 </p>
 
+@*
+    <p id="teleSend" data-username="amosendz">Отправить ставки в Телеграм</p>
+    <script>
+        $("#teleSend").click(function () {
+            curObj = event.target;
+            var userName = curObj.getAttribute("data-username");
+            console.log("username: " + userName);
+            $.ajax({
+                type: 'GET',
+                cache: false,
+                data: {
+                    userName: userName
+                },
+                url: '/api/Messages/manualTeleSend',
+                success: function (data) {
+                    console.log("result:" + data);
+                }
+            });
+        });
+    </script>
+*@
+
+
+
 
 
 

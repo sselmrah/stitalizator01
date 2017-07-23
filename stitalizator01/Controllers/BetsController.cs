@@ -10,6 +10,7 @@ using stitalizator01.Models;
 
 using System.Net.Mail;
 using System.Threading.Tasks;
+using Microsoft.Bot.Connector;
 
 namespace stitalizator01.Controllers
 {
@@ -213,6 +214,58 @@ namespace stitalizator01.Controllers
             return PartialView(bets);
         }
 
+        [HttpGet]
+        public ActionResult manualTeleSend(string userName)
+        {
+            DateTime now = DateTime.UtcNow+TimeSpan.FromHours(3);
+            List<Bet> allbets = db.Bets.Where(b => b.ApplicationUser.TelegramUserName == userName & b.Program.TvDate==now.Date).ToList();
+            string allbetsstr = allbets.Count().ToString()+"; ";
+            List<ConversationStarter> css = db.CSs.ToList();
+            
+            if (css.Count() > 0)
+            {
+                foreach (ConversationStarter cs in css)
+                {
+                    if (cs.ChannelId == "telegram" & cs.ApplicationUser.TelegramUserName == userName)
+                    {
+                        ApplicationUser curUser = cs.ApplicationUser;
+
+
+                        var userAccount = new ChannelAccount(cs.ToId, cs.ToName);
+                        var botAccount = new ChannelAccount(cs.FromId, cs.FromName);
+                        var connector = new ConnectorClient(new Uri(cs.ServiceUrl));
+
+                        Activity activity = new Activity();
+                        activity.From = botAccount;
+                        activity.Recipient = userAccount;
+                        activity.Conversation = new ConversationAccount(id: cs.ConversationId);
+                        activity.Id = "1";
+                        
+                        string text = "Нужно сделать ставки!";
+                        activity.ChannelData = new TelegramChannelData()
+                        {
+                            method = "sendMessage",
+                            parameters = new TelegramParameters()
+                            {
+                                text = text
+                            }
+                        };
+                        allbetsstr += activity.Recipient.Name.ToString()+"-"+activity.Recipient.Id.ToString() + ". ";
+                        try
+                        {
+                            //connector.Conversations.ReplyToActivity(activity);
+                            connector.Conversations.SendToConversation(activity);
+                        }
+                        catch (Exception ex)
+                        {
+                            allbetsstr = ex.Message;
+                        }
+                    }
+                }
+            }
+            
+            return Content(allbetsstr);
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -335,6 +388,8 @@ namespace stitalizator01.Controllers
             }
             return period;
         }
+
+
 
         public ActionResult HomePageBets()
         {

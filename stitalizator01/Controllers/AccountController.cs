@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using stitalizator01.Models;
+using System.Web.Security;
 
 namespace stitalizator01.Controllers
 {
@@ -79,6 +80,23 @@ namespace stitalizator01.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                    //!!!
+                    //create the authentication ticket
+                    var authTicket = new FormsAuthenticationTicket(
+                      1,
+                      model.UserName,  //user id
+                      DateTime.Now,
+                      DateTime.Now.AddDays(30),  // expiry
+                      true,  //true to remember
+                      "", //roles 
+                      "/"
+                    );
+                    HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(authTicket));
+                    Response.Cookies.Add(cookie);
+                    //!!!
+                    //alternative
+                    //FormsAuthentication.SetAuthCookie(model.UserName, model.RememberMe); // <- true/false
+
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
