@@ -67,7 +67,7 @@ namespace stitalizator01.Controllers
                         }
                         else if (activity.Text == "test")
                         {
-                            manualTeleSend("amosendz",activity);
+                            manualTeleSend("amosendz", activity);
                         }
                         if (activity.Text.Length>=5)
                         {
@@ -294,43 +294,49 @@ namespace stitalizator01.Controllers
             }
         }
 
+        
+        //public void telegramReminder(ConversationStarter cs)
+        //{
+        //    ApplicationUser curUser = cs.ApplicationUser;
+        //    DateTime curDt = (DateTime.UtcNow + MvcApplication.utcMoscowShift).Date;
 
-        public void telegramReminder(ConversationStarter cs)
-        {
-            ApplicationUser curUser = cs.ApplicationUser;
+        //    var userAccount = new ChannelAccount(cs.ToId, cs.ToName);
+        //    var botAccount = new ChannelAccount(cs.FromId, cs.FromName);
+        //    var connector = new ConnectorClient(new Uri(cs.ServiceUrl));
 
+        //    Activity activity = new Activity();
+        //    activity.Type = ActivityTypes.Message;
+        //    activity.Id = "1";
+        //    activity.From = botAccount;
+        //    activity.Recipient = userAccount;
+        //    activity.Conversation = new ConversationAccount(id: cs.ConversationId);
+        //    string text = "Заканчивается прием ставок на следующие программы: ";
 
-            var userAccount = new ChannelAccount(cs.ToId, cs.ToName);
-            var botAccount = new ChannelAccount(cs.FromId, cs.FromName);
-            var connector = new ConnectorClient(new Uri(cs.ServiceUrl));
-
-            Activity activity = new Activity();
-            activity.Type = ActivityTypes.Message;
-            activity.Id = "1";
-            activity.From = botAccount;
-            activity.Recipient = userAccount;
-            activity.Conversation = new ConversationAccount(id: cs.ConversationId);
-            string text = "Заканчивается прием ставок на следующие программы: ";
-
-            DateTime curDate = (DateTime.UtcNow + MvcApplication.utcMoscowShift).Date;
-            List<Bet> bets = db.Bets.Where(b => b.ApplicationUser.UserName == curUser.UserName & b.Program.TvDate == curDate).ToList(); //& !b.IsLocked).ToList();
-            TeleBot tb = new TeleBot();
-            InlineKeyboardMarkup kb = tb.createKeabordFromBets(bets, true);
-            string jsonKb = JsonConvert.SerializeObject(kb);
-            activity.ChannelData = new TelegramChannelData()
-            {
-                method = "sendMessage",
-                parameters = new TelegramParameters()
-                {
-                    text = text,
-                    parse_mode = "Markdown",
-                    reply_markup = jsonKb
-                }
-            };
-            connector.Conversations.SendToConversation(activity);
-        }
+        //    DateTime curDate = (DateTime.UtcNow + MvcApplication.utcMoscowShift).Date;
+        //    List<Bet> bets = getBetsByUserDay(curUser, curDt);
+        //    TeleBot tb = new TeleBot();
+        //    InlineKeyboardMarkup kb = tb.createKeabordFromBets(bets,true);
+            
+        //    //List<Bet> bets = db.Bets.Where(b => b.ApplicationUser.UserName == curUser.UserName & b.Program.TvDate == curDate).ToList(); //& !b.IsLocked).ToList();
+        //    //TeleBot tb = new TeleBot();
+        //    //InlineKeyboardMarkup kb = tb.createKeabordFromBets(bets, true);
 
 
+        //    string jsonKb = JsonConvert.SerializeObject(kb);
+        //    activity.ChannelData = new TelegramChannelData()
+        //    {
+        //        method = "sendMessage",
+        //        parameters = new TelegramParameters()
+        //        {
+        //            text = text,
+        //            parse_mode = "Markdown",
+        //            reply_markup = jsonKb
+        //        }
+        //    };
+        //    connector.Conversations.SendToConversation(activity);
+        //}
+
+            
 
         public void manualTeleSend(string userName, Activity mainActivity)
         {
@@ -392,9 +398,9 @@ namespace stitalizator01.Controllers
                         }
                     }
                 }
-            }
-            
+            }   
         }
+
         private ApplicationUser getUserFromActivity(Activity activity)
         {
             ApplicationUser curUser = null;

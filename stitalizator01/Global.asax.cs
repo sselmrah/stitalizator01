@@ -84,38 +84,38 @@ namespace stitalizator01
 
             //minutesElapsed++;
 
-            if (minutesElapsed == 5)
-            {
-                //List<Bet> allbets = db.Bets.Where(b => b.BetSTIplus == 0 & !b.IsLocked).ToList();
-                List<ConversationStarter> css = db.CSs.ToList();
+            //if (minutesElapsed == 5)
+            //{
+            //    //List<Bet> allbets = db.Bets.Where(b => b.BetSTIplus == 0 & !b.IsLocked).ToList();
+            //    List<ConversationStarter> css = db.CSs.ToList();
 
-                if (css.Count() > 0)
-                {
-                    foreach (ConversationStarter cs in css)
-                    {
-                        if (cs.ChannelId == "telegram" & cs.ApplicationUser.TelegramUserName == "amosendz")
-                        {
-                            Activity a = new Activity();
-                            stitalizator01.Controllers.MessagesController c = new stitalizator01.Controllers.MessagesController();
-                            c.manualTeleSend("amosendz", a);
-                            //c.telegramReminder(cs);
-                            //manualTeleSend(cs.ApplicationUser.TelegramUserName);
+            //    if (css.Count() > 0)
+            //    {
+            //        foreach (ConversationStarter cs in css)
+            //        {
+            //            if (cs.ChannelId == "telegram" & cs.ApplicationUser.TelegramUserName == "amosendz")
+            //            {
+            //                Activity a = new Activity();
+            //                stitalizator01.Controllers.MessagesController c = new stitalizator01.Controllers.MessagesController();
+            //                c.manualTeleSend("amosendz", a);
+            //                //c.telegramReminder(cs);
+            //                //manualTeleSend(cs.ApplicationUser.TelegramUserName);
 
-                            //List<Bet> userBets = allbets.Where(b => b.ApplicationUser.UserName == cs.ApplicationUser.UserName).ToList();
-                            //if (userBets.Where(b => b.Program.TimeStart < later).Count() > 0)
-                            //{
-                            //    if (cs.LastTimeUsed < now - TimeSpan.FromHours(3))
-                            //    {
-                            //        basicTelegramReminder(cs);
-                            //        cs.LastTimeUsed = now;
-                            //        db.SaveChanges(); //Добавлено
-                            //    }
-                            //}
-                        }
-                    }
-                }
-                minutesElapsed = 0;
-            }
+            //                //List<Bet> userBets = allbets.Where(b => b.ApplicationUser.UserName == cs.ApplicationUser.UserName).ToList();
+            //                //if (userBets.Where(b => b.Program.TimeStart < later).Count() > 0)
+            //                //{
+            //                //    if (cs.LastTimeUsed < now - TimeSpan.FromHours(3))
+            //                //    {
+            //                //        basicTelegramReminder(cs);
+            //                //        cs.LastTimeUsed = now;
+            //                //        db.SaveChanges(); //Добавлено
+            //                //    }
+            //                //}
+            //            }
+            //        }
+            //    }
+            //    minutesElapsed = 0;
+            //}
 
         }
 
