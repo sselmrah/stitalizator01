@@ -5,8 +5,10 @@
 <div id="indexLogoDiv" class="jumbotron">
 </div>
 *@
-@Html.Action("WhiteBoardHomepage","Bets")
 
+<div id="whiteBoardContainer">
+    @*Html.Action("WhiteBoardHomepage","Bets")*@
+</div>
 <div class="row">
     <div class="col-md-4">    
         <h2>Актуальные ставки</h2>            
@@ -24,3 +26,53 @@
     </div>
 </div>
 
+<script>
+    $(document).ready(function () {
+        var targetName = "whiteBoardContainer";
+        var curParent = document.getElementById(targetName);
+        $.ajax({
+            url: 'Bets/WhiteBoardHomepage',
+            type: 'POST',
+            data: {
+                periodId: 0
+            },
+            beforeSend: function () {
+                curParent.innerHTML = "<div style=\"height: 900px; width:100%; margin:0\"><img id=\"whiteBoardPreloader\" src=\"/Content/Img/preloader-01.gif\" style=\"margin-left: auto; margin-right: auto; display: block;\"/><div>";
+            },
+            success: function (msg) {
+                curParent.innerHTML = msg;
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log(XMLHttpRequest.responseText);
+            }
+        });
+    });
+
+
+    function switchWhiteBoard(periodId, direction, meta) {
+    var targetName = "whiteBoardContainer";
+    var curParent = document.getElementById(targetName);
+    document.getElementById('whiteBoardTitle').innerHTML = "<img id=\"whiteBoardPreloader\" src=\"/Content/Img/preloader-01.gif\" />";
+    //document.getElementById('whiteBoardPreloader').style.display = "block";
+
+    $.ajax({
+        url: 'Bets/SwitchWhiteBoardHomepage',
+        type: 'POST',
+        data: {
+        periodId: periodId,
+            direction: direction
+        },
+        success: function (msg) {
+        curParent.innerHTML = msg;
+    },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+        console.log(XMLHttpRequest.responseText);
+        }
+    });
+
+}
+
+
+
+
+</script>

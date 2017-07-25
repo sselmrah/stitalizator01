@@ -202,13 +202,15 @@
     </table>
     <div style="clear:both;"></div>
 
+@*
 
 
 <script>
     function switchWhiteBoard(periodId, direction, meta) {
         var targetName = "whiteBoardContainer";
         var curParent = document.getElementById(targetName);
-
+        document.getElementById('whiteBoardTitle').innerHTML = "<img id=\"whiteBoardPreloader\" src=\"/Content/Img/preloader-01.gif\" />";
+        //document.getElementById('whiteBoardPreloader').style.display = "block";
 
         $.ajax({
             url: 'Bets/SwitchWhiteBoardHomepage',
@@ -227,3 +229,5 @@
 
     }
 </script>
+
+*@
