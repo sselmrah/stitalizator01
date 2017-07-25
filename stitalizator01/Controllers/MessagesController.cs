@@ -27,6 +27,7 @@ namespace stitalizator01.Controllers
         /// </summary>
         /// 
         ApplicationDbContext db = MvcApplication.db;
+        
 
         public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
         {
@@ -340,15 +341,15 @@ namespace stitalizator01.Controllers
 
         public void manualTeleSend(string userName, Activity mainActivity)
         {
-            DateTime now = DateTime.UtcNow + TimeSpan.FromHours(3);
-            List<Bet> allbets = db.Bets.Where(b => b.ApplicationUser.TelegramUserName == userName & b.Program.TvDate == now.Date).ToList();
+            DateTime now = DateTime.UtcNow + MvcApplication.utcMoscowShift;
+            List<Bet> allbets = db.Bets.Where(b => b.ApplicationUser.TelegramUserName == userName & b.Program.TvDate == now.Date & b.BetSTIplus == 0 & !b.IsLocked ).ToList();
             string allbetsstr = allbets.Count().ToString() + "; ";
             List<ConversationStarter> css = db.CSs.ToList();
 
             if (css.Count() > 0)
             {
                 foreach (ConversationStarter cs in css)
-                {
+                { 
                     if (cs.ChannelId == "telegram" & cs.ApplicationUser.TelegramUserName == userName)
                     {
                         ApplicationUser curUser = cs.ApplicationUser;
@@ -366,14 +367,29 @@ namespace stitalizator01.Controllers
                         activity.Id = "1";
 
                         string text = "Нужно сделать ставки!";
+                        TeleBot tb = new TeleBot();
+                        InlineKeyboardMarkup kb = tb.createKeabordFromBets(allbets, true);
+                        string jsonKb = JsonConvert.SerializeObject(kb);
                         activity.ChannelData = new TelegramChannelData()
                         {
                             method = "sendMessage",
                             parameters = new TelegramParameters()
                             {
-                                text = text
+                                text = text,
+                                parse_mode = "Markdown",
+                                reply_markup = jsonKb
                             }
                         };
+
+
+                        //activity.ChannelData = new TelegramChannelData()
+                        //{
+                        //    method = "sendMessage",
+                        //    parameters = new TelegramParameters()
+                        //    {
+                        //        text = text
+                        //    }
+                        //};
                         allbetsstr += activity.Recipient.Name.ToString() + "-" + activity.Recipient.Id.ToString() + ". ";
                         try
                         {
@@ -400,6 +416,43 @@ namespace stitalizator01.Controllers
                 }
             }   
         }
+
+        
+        private void basicTelegramReminder(ConversationStarter cs)
+        {
+            ApplicationUser curUser = cs.ApplicationUser;
+
+
+            var userAccount = new ChannelAccount(cs.ToId, cs.ToName);
+            var botAccount = new ChannelAccount(cs.FromId, cs.FromName);
+            var connector = new ConnectorClient(new Uri(cs.ServiceUrl));
+
+            Activity activity = new Activity();
+            activity.Type = ActivityTypes.Message;
+            activity.From = botAccount;
+            activity.Recipient = userAccount;
+            activity.Conversation = new ConversationAccount(id: cs.ConversationId);
+            activity.Id = "1";
+            string text = "Нужно сделать ставки!";
+
+            DateTime curDate = (DateTime.UtcNow + MvcApplication.utcMoscowShift).Date;
+            List<Bet> bets = db.Bets.Where(b => b.ApplicationUser.UserName == curUser.UserName & b.Program.TvDate == curDate & !b.IsLocked).ToList();
+            TeleBot tb = new TeleBot();
+            InlineKeyboardMarkup kb = tb.createKeabordFromBets(bets, true);
+            string jsonKb = JsonConvert.SerializeObject(kb);
+            activity.ChannelData = new TelegramChannelData()
+            {
+                method = "sendMessage",
+                parameters = new TelegramParameters()
+                {
+                    text = text,
+                    parse_mode = "Markdown",
+                    reply_markup = jsonKb
+                }
+            };
+            connector.Conversations.SendToConversation(activity);
+        }
+        
 
         private ApplicationUser getUserFromActivity(Activity activity)
         {

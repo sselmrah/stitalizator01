@@ -67,7 +67,7 @@ namespace stitalizator01
         {
             //Московское время
             DateTime now = DateTime.UtcNow + utcMoscowShift;
-            DateTime later = now + TimeSpan.FromMinutes(30);
+            DateTime later = now + TimeSpan.FromMinutes(60);
             var expiredList = db.Bets.Where(b => b.Program.TimeStart < now & !b.IsLocked);
             if (expiredList != null)
             {
@@ -82,112 +82,110 @@ namespace stitalizator01
                 }
             }
 
-            //minutesElapsed++;
+            minutesElapsed++;
 
-            //if (minutesElapsed == 5)
-            //{
-            //    //List<Bet> allbets = db.Bets.Where(b => b.BetSTIplus == 0 & !b.IsLocked).ToList();
-            //    List<ConversationStarter> css = db.CSs.ToList();
+            if (minutesElapsed == 30)
+            {
+                List<Bet> allbets = db.Bets.Where(b => b.BetSTIplus == 0 & !b.IsLocked).ToList();
+                List<ConversationStarter> css = db.CSs.ToList();
 
-            //    if (css.Count() > 0)
-            //    {
-            //        foreach (ConversationStarter cs in css)
-            //        {
-            //            if (cs.ChannelId == "telegram" & cs.ApplicationUser.TelegramUserName == "amosendz")
-            //            {
-            //                Activity a = new Activity();
-            //                stitalizator01.Controllers.MessagesController c = new stitalizator01.Controllers.MessagesController();
-            //                c.manualTeleSend("amosendz", a);
-            //                //c.telegramReminder(cs);
-            //                //manualTeleSend(cs.ApplicationUser.TelegramUserName);
+                if (css.Count() > 0)
+                {
+                    foreach (ConversationStarter cs in css)
+                    {
+                        if (cs.ChannelId == "telegram")
+                        {
+                            Activity a = new Activity();
+                            stitalizator01.Controllers.MessagesController c = new stitalizator01.Controllers.MessagesController();
+                            
 
-            //                //List<Bet> userBets = allbets.Where(b => b.ApplicationUser.UserName == cs.ApplicationUser.UserName).ToList();
-            //                //if (userBets.Where(b => b.Program.TimeStart < later).Count() > 0)
-            //                //{
-            //                //    if (cs.LastTimeUsed < now - TimeSpan.FromHours(3))
-            //                //    {
-            //                //        basicTelegramReminder(cs);
-            //                //        cs.LastTimeUsed = now;
-            //                //        db.SaveChanges(); //Добавлено
-            //                //    }
-            //                //}
-            //            }
-            //        }
-            //    }
-            //    minutesElapsed = 0;
-            //}
+                            List<Bet> userBets = allbets.Where(b => b.ApplicationUser.UserName == cs.ApplicationUser.UserName).ToList();
+                            if (userBets.Where(b => b.Program.TimeStart <= later).Count() > 0)
+                            {
+                                //if (cs.LastTimeUsed <= now - TimeSpan.FromHours(3))
+                                //{
+                                    c.manualTeleSend(cs.ApplicationUser.TelegramUserName, a);
+                                    //cs.LastTimeUsed = now;
+                                    //db.SaveChanges(); //Добавлено
+                                //}
+                            }
+                        }
+                    }
+                }
+                minutesElapsed = 0;
+            }
 
         }
 
         
-        private void telegramReminder(ConversationStarter cs)
-        {
-            ApplicationUser curUser = cs.ApplicationUser;
+        //private void telegramReminder(ConversationStarter cs)
+        //{
+        //    ApplicationUser curUser = cs.ApplicationUser;
 
 
-            var userAccount = new ChannelAccount(cs.ToId, cs.ToName);
-            var botAccount = new ChannelAccount(cs.FromId, cs.FromName);
-            var connector = new ConnectorClient(new Uri(cs.ServiceUrl));
+        //    var userAccount = new ChannelAccount(cs.ToId, cs.ToName);
+        //    var botAccount = new ChannelAccount(cs.FromId, cs.FromName);
+        //    var connector = new ConnectorClient(new Uri(cs.ServiceUrl));
 
-            Activity activity = new Activity();
-            activity.Type = ActivityTypes.Message;
-            activity.Id = "1";
-            activity.From = botAccount;
-            activity.Recipient = userAccount;
-            activity.Conversation = new ConversationAccount(id: cs.ConversationId);
-            string text = "Заканчивается прием ставок на следующие программы: ";
+        //    Activity activity = new Activity();
+        //    activity.Type = ActivityTypes.Message;
+        //    activity.Id = "1";
+        //    activity.From = botAccount;
+        //    activity.Recipient = userAccount;
+        //    activity.Conversation = new ConversationAccount(id: cs.ConversationId);
+        //    string text = "Заканчивается прием ставок на следующие программы: ";
 
-            DateTime curDate = (DateTime.UtcNow + utcMoscowShift).Date;
-            List<Bet> bets = db.Bets.Where(b => b.ApplicationUser.UserName == curUser.UserName & b.Program.TvDate == curDate & !b.IsLocked).ToList();
-            TeleBot tb = new TeleBot();
-            InlineKeyboardMarkup kb = tb.createKeabordFromBets(bets, true);
-            string jsonKb = JsonConvert.SerializeObject(kb);
-            activity.ChannelData = new TelegramChannelData()
-            {
-                method = "sendMessage",
-                parameters = new TelegramParameters()
-                {
-                    text = text,
-                    parse_mode = "Markdown",
-                    reply_markup = jsonKb
-                }
-            };
-            connector.Conversations.SendToConversation(activity);
-        }
+        //    DateTime curDate = (DateTime.UtcNow + utcMoscowShift).Date;
+        //    List<Bet> bets = db.Bets.Where(b => b.ApplicationUser.UserName == curUser.UserName & b.Program.TvDate == curDate & !b.IsLocked).ToList();
+        //    TeleBot tb = new TeleBot();
+        //    InlineKeyboardMarkup kb = tb.createKeabordFromBets(bets, true);
+        //    string jsonKb = JsonConvert.SerializeObject(kb);
+        //    activity.ChannelData = new TelegramChannelData()
+        //    {
+        //        method = "sendMessage",
+        //        parameters = new TelegramParameters()
+        //        {
+        //            text = text,
+        //            parse_mode = "Markdown",
+        //            reply_markup = jsonKb
+        //        }
+        //    };
+        //    connector.Conversations.SendToConversation(activity);
+        //}
 
-        public void basicTelegramReminder(ConversationStarter cs)
-        {
-            ApplicationUser curUser = cs.ApplicationUser;
+        //public void basicTelegramReminder(ConversationStarter cs)
+        //{
+        //    ApplicationUser curUser = cs.ApplicationUser;
 
 
-            var userAccount = new ChannelAccount(cs.ToId, cs.ToName);
-            var botAccount = new ChannelAccount(cs.FromId, cs.FromName);
-            var connector = new ConnectorClient(new Uri(cs.ServiceUrl));
+        //    var userAccount = new ChannelAccount(cs.ToId, cs.ToName);
+        //    var botAccount = new ChannelAccount(cs.FromId, cs.FromName);
+        //    var connector = new ConnectorClient(new Uri(cs.ServiceUrl));
 
-            Activity activity = new Activity();
-            activity.From = botAccount;
-            activity.Recipient = userAccount;
-            activity.Conversation = new ConversationAccount(id: cs.ConversationId);
-            activity.Id = "1";
-            string text = "Нужно сделать ставки!";
+        //    Activity activity = new Activity();
+        //    activity.From = botAccount;
+        //    activity.Recipient = userAccount;
+        //    activity.Conversation = new ConversationAccount(id: cs.ConversationId);
+        //    activity.Id = "1";
+        //    string text = "Нужно сделать ставки!";
 
-            //DateTime curDate = (DateTime.UtcNow + utcMoscowShift).Date;
-            //List<Bet> bets = db.Bets.Where(b => b.ApplicationUser.UserName == curUser.UserName & b.Program.TvDate == curDate & !b.IsLocked).ToList();
-            //TeleBot tb = new TeleBot();
-            //InlineKeyboardMarkup kb = tb.createKeabordFromBets(bets, true);
-            //string jsonKb = JsonConvert.SerializeObject(kb);
-            activity.ChannelData = new TelegramChannelData()
-            {
-                method = "sendMessage",
-                parameters = new TelegramParameters()
-                {
-                    text = text//,
-                    //parse_mode = "Markdown",
-                    //reply_markup = jsonKb
-                }
-            };
-            connector.Conversations.SendToConversation(activity);
-        }
+        //    //DateTime curDate = (DateTime.UtcNow + utcMoscowShift).Date;
+        //    //List<Bet> bets = db.Bets.Where(b => b.ApplicationUser.UserName == curUser.UserName & b.Program.TvDate == curDate & !b.IsLocked).ToList();
+        //    //TeleBot tb = new TeleBot();
+        //    //InlineKeyboardMarkup kb = tb.createKeabordFromBets(bets, true);
+        //    //string jsonKb = JsonConvert.SerializeObject(kb);
+        //    activity.ChannelData = new TelegramChannelData()
+        //    {
+        //        method = "sendMessage",
+        //        parameters = new TelegramParameters()
+        //        {
+        //            text = text//,
+        //            //parse_mode = "Markdown",
+        //            //reply_markup = jsonKb
+        //        }
+        //    };
+        //    connector.Conversations.SendToConversation(activity);
+        //}
 
     }
 
