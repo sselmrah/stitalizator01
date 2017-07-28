@@ -233,7 +233,7 @@ namespace stitalizator01
             if (includeLink)
             {
                 InlineKeyboardButton curButton = new InlineKeyboardButton(text: "Перейти на сайт");
-                curButton.Url = "http://stitalizator.azurewebsites.net";
+                curButton.Url = "https://stitalizator.azurewebsites.net";
                 InlineKeyboardButton[] row = new InlineKeyboardButton[1];
                 row[0] = curButton;
                 rows.Add(row);

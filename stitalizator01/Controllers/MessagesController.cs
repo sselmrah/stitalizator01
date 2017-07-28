@@ -16,6 +16,8 @@ using System.Globalization;
 using System.Web;
 using System.Web.Mvc;
 
+
+
 namespace stitalizator01.Controllers
 {
     [BotAuthentication]
@@ -27,7 +29,7 @@ namespace stitalizator01.Controllers
         /// </summary>
         /// 
         ApplicationDbContext db = MvcApplication.db;
-        
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger("MessagesController.cs");
 
         public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
         {
@@ -66,11 +68,20 @@ namespace stitalizator01.Controllers
                             //Activity reply = activity.CreateReply("!!!");
                             //connector.Conversations.ReplyToActivity(reply);
                         }
-                        else if (activity.Text == "test")
+                        else if (activity.Text.ToLower() == "test")
                         {
-                            manualTeleSend("amosendz", activity);
+                            DateTime now = (DateTime.UtcNow + MvcApplication.utcMoscowShift).Date;
+                            try
+                            {
+                                List<Bet> allbets = db.Bets.Where(b => b.ApplicationUser.TelegramUserName == "amosendz" & b.Program.TvDate == now & b.BetSTIplus == 0 & !b.IsLocked).ToList();
+                                manualTeleSend("amosendz", activity, allbets);
+                            }
+                            catch (Exception ex)
+                            {
+                                log.Error("Something went wrong with manual reminder test.", ex);
+                            }
                         }
-                        if (activity.Text.Length>=5)
+                        else if (activity.Text.Length>=5)
                         {
                             if (activity.Text.Substring(0,5)=="betId")
                             {
@@ -262,6 +273,7 @@ namespace stitalizator01.Controllers
                             }
                         };
                         connector.Conversations.ReplyToActivity(reply);
+                        log.Info(String.Format("User {0} has placed a bet {1} for program {3} using Telegram", curUser.UserName, curBet.BetSTIplus, curBet.Program.ProgTitle));
                     }
                     else
                     {
@@ -275,6 +287,7 @@ namespace stitalizator01.Controllers
                             }
                         };
                         connector.Conversations.ReplyToActivity(reply);
+                        log.Info(String.Format("User {0} FAILED to place a bet {1} for program {3} using Telegram for obscure reasons", curUser.UserName, curBet.BetSTIplus, curBet.Program.ProgTitle));
                     }
                     curUser.TelegramBetId = 0;
                     db.SaveChanges();
@@ -291,16 +304,16 @@ namespace stitalizator01.Controllers
                         }
                     };
                     connector.Conversations.ReplyToActivity(reply);
+                    log.Info(String.Format("User {0} FAILED to place the LOCKED bet {1} for program {3} using Telegram as it was LOCKED", curUser.UserName, curBet.BetSTIplus, curBet.Program.ProgTitle));
                 }
             }
         }
 
         
-        public void manualTeleSend(string userName, Activity mainActivity)
+        public void manualTeleSend(string userName, Activity mainActivity,List<Bet> allbets)
         {
             DateTime now = DateTime.UtcNow + MvcApplication.utcMoscowShift;
-            List<Bet> allbets = db.Bets.Where(b => b.ApplicationUser.TelegramUserName == userName & b.Program.TvDate == now.Date & b.BetSTIplus == 0 & !b.IsLocked ).ToList();
-            string allbetsstr = allbets.Count().ToString() + "; ";
+            string allbetsstr = "";// allbets.Count().ToString() + "; ";
             List<ConversationStarter> css = db.CSs.ToList();
 
             if (css.Count() > 0)
@@ -314,7 +327,11 @@ namespace stitalizator01.Controllers
 
                         var userAccount = new ChannelAccount(cs.ToId, cs.ToName);
                         var botAccount = new ChannelAccount(cs.FromId, cs.FromName);
-                        var connector = new ConnectorClient(new Uri(cs.ServiceUrl));
+
+                        MicrosoftAppCredentials.TrustServiceUrl(cs.ServiceUrl, DateTime.UtcNow.AddDays(7));
+                        var account = new MicrosoftAppCredentials("ed8d437a-c850-4738-a15f-534457ad8716", "jYAUUmDx1zWwfv3L1BpmOeR");
+                        var connector = new ConnectorClient(new Uri(cs.ServiceUrl),account);
+
 
                         Activity activity = new Activity();
                         activity.From = botAccount;
@@ -345,19 +362,22 @@ namespace stitalizator01.Controllers
                         }
                         catch (Exception ex)
                         {
-                            allbetsstr = "The error is: "+ex.Message;
-                            var connector2 = new ConnectorClient(new Uri(mainActivity.ServiceUrl));
-                            Activity reply = mainActivity.CreateReply("");
-                            
-                            reply.ChannelData = new TelegramChannelData()
+                            if (cs.ApplicationUser.TelegramUserName == "amosendz")
                             {
-                                method = "sendMessage",
-                                parameters = new TelegramParameters()
+                                allbetsstr = "The error is: " + ex.Message;
+                                var connector2 = new ConnectorClient(new Uri(mainActivity.ServiceUrl), account);
+                                Activity reply = mainActivity.CreateReply("");
+
+                                reply.ChannelData = new TelegramChannelData()
                                 {
-                                    text = allbetsstr
-                                }
-                            };
-                            connector2.Conversations.ReplyToActivity(reply);
+                                    method = "sendMessage",
+                                    parameters = new TelegramParameters()
+                                    {
+                                        text = allbetsstr
+                                    }
+                                };
+                                connector2.Conversations.ReplyToActivity(reply);
+                            }
                         }
                     }
                 }

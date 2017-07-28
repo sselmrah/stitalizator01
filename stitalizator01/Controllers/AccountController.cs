@@ -82,20 +82,20 @@ namespace stitalizator01.Controllers
                 case SignInStatus.Success:
                     //!!!
                     //create the authentication ticket
-                    var authTicket = new FormsAuthenticationTicket(
-                      1,
-                      model.UserName,  //user id
-                      DateTime.Now,
-                      DateTime.Now.AddDays(30),  // expiry
-                      true,  //true to remember
-                      "", //roles 
-                      "/"
-                    );
-                    HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(authTicket));
-                    Response.Cookies.Add(cookie);
+                    //var authTicket = new FormsAuthenticationTicket(
+                    //  1,
+                    //  model.UserName,  //user id
+                    //  DateTime.Now,
+                    //  DateTime.Now.AddDays(30),  // expiry
+                    //  true,  //true to remember
+                    //  "", //roles 
+                    //  "/"
+                    //);
+                    //HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(authTicket));
+                    //Response.Cookies.Add(cookie);
                     //!!!
                     //alternative
-                    //FormsAuthentication.SetAuthCookie(model.UserName, model.RememberMe); // <- true/false
+                    FormsAuthentication.SetAuthCookie(model.UserName, model.RememberMe); // <- true/false
 
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
