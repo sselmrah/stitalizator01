@@ -76,7 +76,7 @@ namespace stitalizator01
             if (minutesElapsed >= 30)
             {
                 log.Info("30 minutes elapsed.");
-                List<Bet> allbets = db.Bets.Where(b => b.BetSTIplus == 0 & !b.IsLocked).ToList();
+                List<Bet> allbets = db.Bets.Where(b => b.BetSTIplus == 0 & !b.IsLocked & b.Program.TvDate==now.Date).ToList();
                 List<ConversationStarter> css = db.CSs.ToList();
 
                 if (css.Count() > 0)

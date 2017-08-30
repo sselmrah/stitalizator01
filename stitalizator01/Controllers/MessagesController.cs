@@ -29,7 +29,7 @@ namespace stitalizator01.Controllers
         /// </summary>
         /// 
         ApplicationDbContext db = MvcApplication.db;
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger("MessagesController.cs");
+        //private static readonly log4net.ILog logM = log4net.LogManager.GetLogger("MessagesController.cs");
 
         public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
         {
@@ -78,7 +78,7 @@ namespace stitalizator01.Controllers
                             }
                             catch (Exception ex)
                             {
-                                log.Error("Something went wrong with manual reminder test.", ex);
+                                //logM.Error("Something went wrong with manual reminder test.", ex);
                             }
                         }
                         else if (activity.Text.Length>=5)
@@ -273,7 +273,7 @@ namespace stitalizator01.Controllers
                             }
                         };
                         connector.Conversations.ReplyToActivity(reply);
-                        log.Info(String.Format("User {0} has placed a bet {1} for program {3} using Telegram", curUser.UserName, curBet.BetSTIplus, curBet.Program.ProgTitle));
+                        //logM.Info(String.Format("User {0} has placed a bet {1} for program {3} using Telegram", curUser.UserName, curBet.BetSTIplus, curBet.Program.ProgTitle));
                     }
                     else
                     {
@@ -287,7 +287,7 @@ namespace stitalizator01.Controllers
                             }
                         };
                         connector.Conversations.ReplyToActivity(reply);
-                        log.Info(String.Format("User {0} FAILED to place a bet {1} for program {3} using Telegram for obscure reasons", curUser.UserName, curBet.BetSTIplus, curBet.Program.ProgTitle));
+                        //logM.Info(String.Format("User {0} FAILED to place a bet {1} for program {3} using Telegram for obscure reasons", curUser.UserName, curBet.BetSTIplus, curBet.Program.ProgTitle));
                     }
                     curUser.TelegramBetId = 0;
                     db.SaveChanges();
@@ -304,7 +304,7 @@ namespace stitalizator01.Controllers
                         }
                     };
                     connector.Conversations.ReplyToActivity(reply);
-                    log.Info(String.Format("User {0} FAILED to place the LOCKED bet {1} for program {3} using Telegram as it was LOCKED", curUser.UserName, curBet.BetSTIplus, curBet.Program.ProgTitle));
+                    //logM.Info(String.Format("User {0} FAILED to place the LOCKED bet {1} for program {3} using Telegram as it was LOCKED", curUser.UserName, curBet.BetSTIplus, curBet.Program.ProgTitle));
                 }
             }
         }

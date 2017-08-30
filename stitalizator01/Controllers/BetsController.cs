@@ -17,7 +17,7 @@ namespace stitalizator01.Controllers
     public class BetsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger("BetsController.cs");
+        //private static readonly log4net.ILog log = log4net.LogManager.GetLogger("BetsController.cs");
 
         [HttpGet]
         public ActionResult MyBets(string filter = "allbydate", string date = "01.01.1900")
@@ -286,9 +286,8 @@ namespace stitalizator01.Controllers
                     db.Entry(bet).State = EntityState.Modified;
                 }
                 db.SaveChanges();
-                
+                //log.Info(String.Format("User {0} has placed a bet {1} for program {3} using mybets page", bet.ApplicationUser.UserName, bet.BetSTIplus, bet.Program.ProgTitle));
                 return Content("bet updated");
-                log.Info(String.Format("User {0} has placed a bet {1} for program {3} using mybets page", bet.ApplicationUser.UserName, bet.BetSTIplus, bet.Program.ProgTitle));
                 //return RedirectToAction("MyBets");
             }
             ViewBag.ProgramID = new SelectList(db.Programs, "ProgramID", "ProgTitle", bet.ProgramID);
@@ -321,7 +320,7 @@ namespace stitalizator01.Controllers
                     db.Entry(b).State = EntityState.Modified;
                 }
                 db.SaveChanges();
-                log.Info(String.Format("User {0} has placed a bet {1} for program {3} using homepage form", bet.ApplicationUser.UserName, bet.BetSTIplus, bet.Program.ProgTitle));
+                //log.Info(String.Format("User {0} has placed a bet {1} for program {3} using homepage form", bet.ApplicationUser.UserName, bet.BetSTIplus, bet.Program.ProgTitle));
             }
             
             //Program program = db.Programs.Find(bet.ProgramID);
