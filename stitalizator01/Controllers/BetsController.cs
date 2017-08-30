@@ -17,7 +17,7 @@ namespace stitalizator01.Controllers
     public class BetsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-        //private static readonly log4net.ILog log = log4net.LogManager.GetLogger("BetsController.cs");
+        private static readonly log4net.ILog logB = log4net.LogManager.GetLogger("BetsController.cs");
 
         [HttpGet]
         public ActionResult MyBets(string filter = "allbydate", string date = "01.01.1900")
@@ -287,6 +287,9 @@ namespace stitalizator01.Controllers
                 }
                 db.SaveChanges();
                 //log.Info(String.Format("User {0} has placed a bet {1} for program {3} using mybets page", bet.ApplicationUser.UserName, bet.BetSTIplus, bet.Program.ProgTitle));
+                string msg = "";
+                msg = "User " + bet.ApplicationUser.UserName + " has placed a bet " + bet.BetSTIplus + " for program " + bet.Program.ProgTitle + " using mybets page";
+                logB.Info(msg);  
                 return Content("bet updated");
                 //return RedirectToAction("MyBets");
             }
@@ -322,7 +325,9 @@ namespace stitalizator01.Controllers
                 db.SaveChanges();
                 //log.Info(String.Format("User {0} has placed a bet {1} for program {3} using homepage form", bet.ApplicationUser.UserName, bet.BetSTIplus, bet.Program.ProgTitle));
             }
-            
+            string msg = "";
+            msg = "User " + bet.ApplicationUser.UserName + " has placed a bet " + bet.BetSTIplus + " for program " + bet.Program.ProgTitle + " using homepage form";
+            logB.Info(msg);
             //Program program = db.Programs.Find(bet.ProgramID);
             //return RedirectToAction("MyBets");
             return Content(bet.Program.IsHorse.ToString());

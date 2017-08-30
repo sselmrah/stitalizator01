@@ -27,7 +27,7 @@ namespace stitalizator01
         public static ApplicationDbContext db = new ApplicationDbContext();
         public static TimeSpan utcMoscowShift = TimeSpan.FromHours(3);
         private int minutesElapsed = 0;
-        //private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        //public static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger("Global.asax");
 
 
