@@ -414,6 +414,7 @@ namespace stitalizator01.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut();
+            FormsAuthentication.SignOut();
             return RedirectToAction("Index", "Home");
         }
 

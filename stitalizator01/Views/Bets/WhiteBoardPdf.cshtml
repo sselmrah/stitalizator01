@@ -12,8 +12,9 @@
     int tempRes = Model.Select(b => b.Program.ProgramID).Distinct().Count();
     if (tempRes<15) { addCols = 15 - tempRes; }
 }
-@Styles.Render("~/Content/Site.css")
-@Styles.Render("~/Content/Bootstrap.css")
+<link href="../Content/Site.css" rel="stylesheet" />
+<link href="../Content/Bootstrap.css" rel="stylesheet" />
+
 <div id="whiteBoardContainer">
     <div id="whiteBoardHeader">
         <div style="width:10%; float:left">
@@ -77,11 +78,7 @@
                 }
 
             </tr>
-
-
-
             <tr>
-
                 @{
 
                     foreach (IGrouping<int, stitalizator01.Models.Bet> bet in progsList)
@@ -117,12 +114,6 @@
                     {
                         <td></td>
                     }
-
-
-
-
-
-
                     foreach (IGrouping<string, stitalizator01.Models.Bet> userBets in usersList)
                     {
                     <tr>
@@ -177,8 +168,7 @@
                                 }
                             </tr>
                 }
-
-
+            </tr>
             </table>
 
 
@@ -204,33 +194,3 @@
         </table>
         <div style="clear:both;"></div>
     </div>
-
-@*
-
-<script>
-    function switchWhiteBoard(periodId, direction, meta) {
-        var targetName = "whiteBoardContainer";
-        var curParent = document.getElementById(targetName);
-        document.getElementById('whiteBoardTitle').innerHTML = "<img id=\"whiteBoardPreloader\" src=\"/Content/Img/preloader-01.gif\" />";
-        //document.getElementById('whiteBoardPreloader').style.display = "block";
-
-        $.ajax({
-            url: 'Bets/SwitchWhiteBoardHomepage',
-            type: 'POST',
-            data: {
-                periodId: periodId,
-                direction: direction
-            },
-            success: function (msg) {
-               curParent.innerHTML = msg;
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                console.log(XMLHttpRequest.responseText);
-            }
-        });
-
-    }
-</script>
-
-
-*@

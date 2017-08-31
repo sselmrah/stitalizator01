@@ -10,10 +10,13 @@ namespace stitalizator01.Controllers
     
     public class HomeController : Controller
     {
+        private static readonly log4net.ILog logH = log4net.LogManager.GetLogger("HomeController.cs");
+        [AllowAnonymous]
         public ActionResult Index()
         {
             if (User.Identity.IsAuthenticated)
             {
+                logH.Info("User " + User.Identity.Name + " has opened Index page");
                 return View();
             }
             else

@@ -14,7 +14,7 @@ using Microsoft.Bot.Connector;
 
 namespace stitalizator01.Controllers
 {
-    public class BetsController : Controller
+    public class BetsController : CustomController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private static readonly log4net.ILog logB = log4net.LogManager.GetLogger("BetsController.cs");
@@ -155,7 +155,40 @@ namespace stitalizator01.Controllers
             ViewBag.periodDescription = curPeriod.PeriodDescription;
             return PartialView(bets);
         }
+        public ActionResult WhiteBoardPdf(int periodId = 0)
+        {
+            Period curPeriod = new Period();
+            List<Period> periods = db.Periods.Where(p => !p.IsMetaPeriod).OrderBy(p => p.BegDate).ToList();
+            if (periodId == 0)
+            {
+                DateTime tempDt = DateTime.UtcNow;
+                if (tempDt.DayOfWeek == DayOfWeek.Monday) { tempDt = tempDt - TimeSpan.FromDays(1); }
+                curPeriod = getPeriodByDate(tempDt, false);
+            }
+            else
+            {
+                curPeriod = db.Periods.Where(p => p.PeriodID == periodId).FirstOrDefault();
+            }
+            List<Bet> bets = db.Bets.Where(b => (b.ApplicationUser.UserName != "Admin") & (b.Program.TvDate >= curPeriod.BegDate) & (b.Program.TvDate <= curPeriod.EndDate)).OrderBy(b => b.ApplicationUser.UserName).ThenBy(b => b.Program.TvDate).ThenByDescending(b => b.Program.ChannelCode.Length).ThenBy(b => b.Program.TimeStart).ToList();
 
+
+            bool last = false;
+            bool first = false;
+            if (periods.LastOrDefault() == curPeriod)
+            {
+                last = true;
+            }
+            if (periods.FirstOrDefault() == curPeriod)
+            {
+                first = true;
+            }
+
+            ViewBag.last = last;
+            ViewBag.first = first;
+            ViewBag.periodId = curPeriod.PeriodID;
+            ViewBag.periodDescription = curPeriod.PeriodDescription;
+            return Pdf(bets);
+        }
         public ActionResult SwitchWhiteBoardHomepage(int periodId, string direction)
         {
             Period curPeriod = new Period();
@@ -307,6 +340,7 @@ namespace stitalizator01.Controllers
             Bet bet = db.Bets.Find(id);
             db.Entry(bet).State = EntityState.Modified;
             bet.BetSTIplus = float.Parse(BetSTIplus);
+            bet.TimeStamp = DateTime.UtcNow + MvcApplication.utcMoscowShift;
             db.SaveChanges();
             isHorse(bet);
             if (bet.Program.ShareStiPlus>0)

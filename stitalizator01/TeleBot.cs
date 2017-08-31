@@ -29,7 +29,7 @@ namespace stitalizator01
         ApplicationDbContext db = new ApplicationDbContext();
         public static TimeSpan utcMoscowShift = TimeSpan.FromHours(3);
         private static string key = "385340523:AAFPdWdVpE_oI4gLn8Z0XCb2_q-zaVVzP24";
-        public static System.Timers.Timer timer = new System.Timers.Timer(1000);
+        //public static System.Timers.Timer timer = new System.Timers.Timer(1000);
         private Telegram.Bot.TelegramBotClient Bot = new Telegram.Bot.TelegramBotClient(key);
         private int offset = 0; // отступ по сообщениям
         private List<ApplicationUser> users = new List<ApplicationUser>();
@@ -42,11 +42,11 @@ namespace stitalizator01
             try
             {
                 await Bot.SetWebhookAsync("");
-                users = db.Users.ToList();
-                allbets = db.Bets.Where(b => b.BetSTIplus == 0 & !b.IsLocked).ToList();
+                //users = db.Users.ToList();
+                //allbets = db.Bets.Where(b => b.BetSTIplus == 0 & !b.IsLocked).ToList();
 
-                timer.Enabled = true;
-                timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
+                //timer.Enabled = true;
+                //timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
             }
             catch
             {
@@ -224,7 +224,7 @@ namespace stitalizator01
                 InlineKeyboardButton curButton = new InlineKeyboardButton();
                 string curValue = "";
                 if (b.BetSTIplus > 0) { curValue = " - " + b.BetSTIplus.ToString(); }
-                curButton.Text = b.Program.ProgTitle + " (" + b.Program.ChannelCode + ", " + b.Program.TimeStart.ToString("HH:mm") + ")" + curValue;
+                curButton.Text = b.Program.ProgTitle.Replace("Премьера. ","") + " (" + b.Program.ChannelCode + ", " + b.Program.TimeStart.ToString("HH:mm") + ")" + curValue;
                 curButton.CallbackData = "betId_" + b.BetID.ToString();
                 InlineKeyboardButton[] row = new InlineKeyboardButton[1];
                 row[0] = curButton;
