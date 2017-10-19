@@ -13,14 +13,13 @@ using System.Xml.Xsl;
 using System.Xml.XPath;
 using System.Text;
 
-
 namespace stitalizator01.Controllers
 {
     
     public class ProgramsController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();                           
-            
+        private ApplicationDbContext db = new ApplicationDbContext();
+        private static readonly log4net.ILog logP = log4net.LogManager.GetLogger("ProgramsController.cs");
 
         [HttpGet]
         public ActionResult Index(string date = "today")
@@ -37,6 +36,11 @@ namespace stitalizator01.Controllers
             List<Program> todayProgList = new List<Program>();
             ViewBag.curDate = curDay.ToString("yyyy-MM-dd");
             todayProgList = db.Programs.Where(o => o.TvDate == curDay.Date).ToList();
+            string msg = "";
+            msg = "User " + System.Web.HttpContext.Current.User.Identity.Name + " has opened Programs/Index page";
+            logP.Info(msg);
+            
+
             return View(todayProgList);
         }
 
@@ -69,6 +73,9 @@ namespace stitalizator01.Controllers
             }
             //todayProgList = db.Programs.Where(o => o.TvDate == curDay.Date).ToList();
             //return View(todayProgList);
+            string msg = "";
+            msg = "User " + System.Web.HttpContext.Current.User.Identity.Name + " has opened Programs/ProgsByDate page for "+ curDay.ToString("dd.MM.yyyy");
+            logP.Info(msg);
             return RedirectToAction("Index", new { date = curDay.ToString("dd.MM.yyyy") });
         }
 
@@ -98,6 +105,9 @@ namespace stitalizator01.Controllers
                 db.Programs.RemoveRange(listToRemove);
                 db.SaveChanges();
             }
+            string msg = "";
+            msg = "User " + System.Web.HttpContext.Current.User.Identity.Name + " has cleared unused programs";
+            logP.Info(msg);
             return RedirectToAction("Index");
         }
 
@@ -144,7 +154,9 @@ namespace stitalizator01.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
+            string msg = "";
+            msg = "User " + System.Web.HttpContext.Current.User.Identity.Name + " has created program "+ program.ProgTitle;
+            logP.Info(msg);
             return View(program);
         }
 
@@ -178,6 +190,9 @@ namespace stitalizator01.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+            string msg = "";
+            msg = "User " + System.Web.HttpContext.Current.User.Identity.Name + " has edited program "+program.ProgTitle;
+            logP.Info(msg);
             return View(program);
         }
         
@@ -189,6 +204,7 @@ namespace stitalizator01.Controllers
             List<ApplicationUser> users = db.Users.ToList();
             List<Bet> bets = db.Bets.Where(b => b.Program.ProgramID == curProg.ProgramID).ToList();
             List<ApplicationUser> curUsers = new List<ApplicationUser>();
+            int counter = 0;
             foreach (Bet b in bets)
             {
                 if (!curUsers.Contains(b.ApplicationUser))
@@ -208,10 +224,14 @@ namespace stitalizator01.Controllers
                         curBet.TimeStamp = DateTime.UtcNow + MvcApplication.utcMoscowShift;
                         curBet.ApplicationUser = u;
                         db.Bets.Add(curBet);
+                        counter++;
                     }
                 }
             }
             db.SaveChanges();
+            string msg = "";
+            msg = "User " + System.Web.HttpContext.Current.User.Identity.Name + " has added a program "+curProg.ProgTitle+" to "+counter.ToString()+" users' bets";
+            logP.Info(msg);
             return Content("Added bets");
         }
     
@@ -247,7 +267,10 @@ namespace stitalizator01.Controllers
                 db.Bets.RemoveRange(x);                
 
             }
-            db.SaveChanges();            
+            db.SaveChanges();
+            string msg = "";
+            msg = "User " + System.Web.HttpContext.Current.User.Identity.Name + " changed program's " + curProg.ProgTitle + " bet state to " + curProg.IsBet.ToString();
+            logP.Info(msg);
             return PartialView(curProg);
         }
 
@@ -301,6 +324,9 @@ namespace stitalizator01.Controllers
             }
 
             db.SaveChanges();
+            string msg = "";
+            msg = "User " + System.Web.HttpContext.Current.User.Identity.Name + " has entered a result of "+ShareStiPlus.ToString() +" to program " + program.ProgTitle;
+            logP.Info(msg);
             return Content(program.ProgTitle + ":" + program.ShareStiPlus);
         }
 
@@ -342,6 +368,9 @@ namespace stitalizator01.Controllers
                 }
 
                 db.SaveChanges();
+                string msg = "";
+                msg = "User " + System.Web.HttpContext.Current.User.Identity.Name + " has entered a result of " + program.ShareStiPlus.ToString() + " to program " + program.ProgTitle;
+                logP.Info(msg);
                 //return RedirectToAction("Index");
             }
 
@@ -391,6 +420,7 @@ namespace stitalizator01.Controllers
             {
                 return HttpNotFound();
             }
+
             return View(program);
         }
 
@@ -406,6 +436,9 @@ namespace stitalizator01.Controllers
                 updateScoresGambled(program.TvDate, false, program.IsHorse);
             }
             db.SaveChanges();
+            string msg = "";
+            msg = "User " + System.Web.HttpContext.Current.User.Identity.Name + " has deleted program " + program.ProgTitle;
+            logP.Info(msg);
             return RedirectToAction("Index");
         }
 
@@ -508,7 +541,9 @@ namespace stitalizator01.Controllers
                 }
                 db.Programs.AddRange(filteredProgList);
                 db.SaveChanges();
-                
+                string msg = "";
+                msg = "User " + System.Web.HttpContext.Current.User.Identity.Name + " has updated schedule for " + dateStr;
+                logP.Info(msg);
                 //lines = list.ToArray();
             }
 
