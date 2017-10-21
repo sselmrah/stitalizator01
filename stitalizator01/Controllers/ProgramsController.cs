@@ -294,9 +294,12 @@ namespace stitalizator01.Controllers
         public ActionResult enterSingleResult(string ProgramID, string ShareStiPlus)
         {
             int prId = Convert.ToInt32(ProgramID);
-            Program program = db.Programs.Where(p => p.ProgramID == prId).FirstOrDefault();
-            program.ShareStiPlus = Convert.ToDouble(ShareStiPlus.Replace(".",","));            
+            //21.10.17 switched next two lines
+            //Program program = db.Programs.Where(p => p.ProgramID == prId).FirstOrDefault();
+            Program program = db.Programs.Find(prId);
+            program.ShareStiPlus = Convert.ToDouble(ShareStiPlus.Replace(".",","));
             db.Entry(program).State = EntityState.Modified;
+            db.SaveChanges(); //added 21.10.17
             var betsList = db.Bets.Where(b => b.Program.ProgramID == program.ProgramID);
             foreach (Bet bet in betsList)
             {
@@ -305,6 +308,7 @@ namespace stitalizator01.Controllers
                 bet.ScoreOLS = calculateScoreOLS(bet.BetSTIplus, (float)bet.Program.ShareStiPlus);
                 db.Entry(bet).State = EntityState.Modified;
             }
+            db.SaveChanges(); //added 21.10.17
             List<Period> periodsList = db.Periods.Where(p => (p.BegDate <= program.TvDate & program.TvDate <= p.EndDate)).ToList();
 
             foreach (Period period in periodsList)
@@ -327,7 +331,7 @@ namespace stitalizator01.Controllers
             string msg = "";
             msg = "User " + System.Web.HttpContext.Current.User.Identity.Name + " has entered a result of "+ShareStiPlus.ToString() +" to program " + program.ProgTitle;
             logP.Info(msg);
-            return Content(program.ProgTitle + ":" + program.ShareStiPlus);
+            return Content(program.ProgTitle + ": " + program.ShareStiPlus);
         }
 
 
