@@ -310,7 +310,9 @@ namespace stitalizator01.Controllers
             }
             db.SaveChanges(); //added 21.10.17
             List<Period> periodsList = db.Periods.Where(p => (p.BegDate <= program.TvDate & program.TvDate <= p.EndDate)).ToList();
-
+            /*
+            //This code is probably slowing down the entire application
+            //disabled 22.10.17
             foreach (Period period in periodsList)
             {
                 var userResults = db.Bets.Where(bet => (bet.Program.TvDate >= period.BegDate & bet.Program.TvDate <= period.EndDate))
@@ -326,8 +328,9 @@ namespace stitalizator01.Controllers
 
                 period.ApplicationUser = userResults.First().PersonId;
             }
-
             db.SaveChanges();
+            */
+
             string msg = "";
             msg = "User " + System.Web.HttpContext.Current.User.Identity.Name + " has entered a result of "+ShareStiPlus.ToString() +" to program " + program.ProgTitle;
             logP.Info(msg);
