@@ -15,7 +15,7 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Web;
 using System.Web.Mvc;
-
+using System.Data.Entity;
 
 namespace stitalizator01.Controllers
 {
@@ -261,6 +261,7 @@ namespace stitalizator01.Controllers
                     float telegramBet = Convert.ToSingle(betStr, CultureInfo.InvariantCulture.NumberFormat);
                     curBet.BetSTIplus = telegramBet;
                     db.SaveChanges();
+                    isHorse(curBet); //Добавлено 24.10.17 + 2 метода внизу
                     if (curBet.BetSTIplus == telegramBet)
                     {
                         string text = "Принято: \n\"" + curBet.Program.ProgTitle + "\" - " + curBet.BetSTIplus.ToString();
@@ -447,6 +448,66 @@ namespace stitalizator01.Controllers
             curDate = curDate.Date;
             List<Bet> bets = db.Bets.Where(b => b.ApplicationUser.UserName == curUser.UserName & b.Program.TvDate == curDate & !b.IsLocked).ToList();
             return bets;
+        }
+
+        private void isHorse(Bet bet)
+        {
+            var bets = db.Bets.Where(b => b.ProgramID == bet.ProgramID).FirstOrDefault();
+
+            if (bets != null)
+            {
+                var tempRes = db.Bets.Where(b => (b.ProgramID == bet.ProgramID) & (b.BetSTIplus > 0));
+                double maxBet = 0;
+                double minBet = 0;
+                if (tempRes.Count() > 0)
+                {
+                    //double maxBet = db.Bets.Where(b => (b.Program.ProgramID == bet.Program.ProgramID) & (b.BetSTIplus > 0)).Max(b => b.BetSTIplus);
+                    //double minBet = db.Bets.Where(b => (b.Program.ProgramID == bet.Program.ProgramID) & (b.BetSTIplus > 0)).Min(b => b.BetSTIplus);
+                    minBet = tempRes.Min(b => b.BetSTIplus);
+                    maxBet = tempRes.Max(b => b.BetSTIplus);
+                }
+                Program program = db.Programs.Find(bet.ProgramID);
+                Period curPeriod = getPeriodByDate(program.TvDate, false);
+                if (Math.Abs(maxBet - minBet) >= 5)
+                {
+                    //Увеличиваем количество очков в розыгрыше при добавлении лошадки
+                    if (!program.IsHorse)
+                    {
+                        curPeriod.ScoresGambled += 3;
+                        db.Entry(curPeriod).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
+                    program.IsHorse = true;
+                    db.Entry(program).State = EntityState.Modified;
+                    db.SaveChanges();
+                    //var programs = db.Bets.Select(b => {b.IsHorse})
+                    //collection.Select(c => { c.PropertyToSet = value; return c; }).ToList();
+                }
+                else
+                {
+                    //Уменьшаем количество очков в розыгрыше при удалении лошадки
+                    if (program.IsHorse)
+                    {
+                        curPeriod.ScoresGambled -= 3;
+                        db.Entry(curPeriod).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
+                    program.IsHorse = false;
+                    db.Entry(program).State = EntityState.Modified;
+                    db.SaveChanges();
+                }
+            }
+        }
+
+        private Period getPeriodByDate(DateTime dt, bool metaPeriod = false)
+        {
+            Period period = new Period();
+            period = db.Periods.Where(p => (p.BegDate <= dt.Date) & (p.EndDate >= dt.Date) & (p.IsMetaPeriod == metaPeriod)).FirstOrDefault();
+            if (period == null)
+            {
+                period = db.Periods.Where(p => (p.IsMetaPeriod == metaPeriod)).FirstOrDefault();
+            }
+            return period;
         }
 
     }

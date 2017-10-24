@@ -370,7 +370,6 @@ namespace stitalizator01.Controllers
 
         private void isHorse(Bet bet)
         {
-            
             var bets = db.Bets.Where(b => b.ProgramID == bet.ProgramID).FirstOrDefault();
             
             if (bets != null)                
