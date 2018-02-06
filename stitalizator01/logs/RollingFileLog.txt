@@ -21,3 +21,55 @@
 31.08.2017 14:34:04 [Global.asax] INFO - Application Started
 31.08.2017 14:47:55 [Global.asax] INFO - Application Started
 31.08.2017 14:47:58 [HomeController.cs] INFO - User user5 has opened Index page
+06.02.2018 13:31:05 [Global.asax] INFO - Application Started
+06.02.2018 13:32:39 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 13:35:35 [Global.asax] INFO - Application Started
+06.02.2018 13:35:35 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 13:40:04 [Global.asax] INFO - Application Started
+06.02.2018 13:40:04 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 13:44:57 [Global.asax] INFO - Application Started
+06.02.2018 13:44:57 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 13:46:59 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 13:47:03 [ProgramsController.cs] INFO - User user8 has opened Programs/Index page
+06.02.2018 13:47:14 [ProgramsController.cs] INFO - User user8 has updated schedule for 06.02.2018
+06.02.2018 13:47:14 [ProgramsController.cs] INFO - User user8 has opened Programs/ProgsByDate page for 06.02.2018
+06.02.2018 13:47:14 [ProgramsController.cs] INFO - User user8 has opened Programs/Index page
+06.02.2018 13:47:15 [ProgramsController.cs] INFO - User user8 has opened Programs/Index page
+06.02.2018 13:47:17 [ProgramsController.cs] INFO - User user8 changed program's Пусть говорят bet state to True
+06.02.2018 13:47:18 [ProgramsController.cs] INFO - User user8 changed program's Премьера. "Чужая дочь" bet state to True
+06.02.2018 13:47:19 [ProgramsController.cs] INFO - User user8 changed program's Время bet state to True
+06.02.2018 13:47:22 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 13:47:27 [BetsController.cs] INFO - User user8 has placed a bet 1 for program Пусть говорят using homepage form
+06.02.2018 13:47:28 [BetsController.cs] INFO - User user8 has placed a bet 2 for program Время using homepage form
+06.02.2018 13:47:30 [BetsController.cs] INFO - User user8 has placed a bet 3 for program Премьера. "Чужая дочь" using homepage form
+06.02.2018 13:47:31 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 13:47:44 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 13:48:53 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 13:49:20 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 13:49:49 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 13:49:50 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 14:00:50 [Global.asax] INFO - Application Started
+06.02.2018 14:00:51 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 14:02:21 [Global.asax] INFO - Application Started
+06.02.2018 14:02:21 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 14:10:06 [Global.asax] INFO - Application Started
+06.02.2018 14:10:09 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 14:39:50 [Global.asax] INFO - Application Started
+06.02.2018 14:39:51 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 14:47:37 [Global.asax] INFO - Application Started
+06.02.2018 14:47:41 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 15:09:58 [Global.asax] INFO - Application Started
+06.02.2018 15:09:59 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 15:12:55 [Global.asax] INFO - Application Started
+06.02.2018 15:12:56 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 15:15:09 [Global.asax] INFO - Application Started
+06.02.2018 15:15:09 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 15:21:06 [Global.asax] INFO - Application Started
+06.02.2018 15:21:07 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 15:26:47 [Global.asax] INFO - Application Started
+06.02.2018 15:26:47 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 15:34:17 [Global.asax] INFO - Application Started
+06.02.2018 15:34:18 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 15:34:23 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 15:34:47 [HomeController.cs] INFO - User user8 has opened Index page
+06.02.2018 15:37:59 [HomeController.cs] INFO - User user8 has opened Index page

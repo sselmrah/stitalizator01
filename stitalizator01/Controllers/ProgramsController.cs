@@ -216,7 +216,7 @@ namespace stitalizator01.Controllers
             {
                 if (!curUsers.Contains(u))
                 {
-                    if (u.UserName != "Admin")
+                    if (u.UserName != "Admin" & u.UserName !="Виктория")
                     {
                         Bet curBet = new Bet();
                         curBet.ProgramID = curProg.ProgramID;
@@ -249,7 +249,7 @@ namespace stitalizator01.Controllers
                 updateScoresGambled(curProg.TvDate, true, curProg.IsHorse); 
                 foreach (ApplicationUser user in db.Users)
                 {
-                    if (user.UserName != "admin")
+                    if (user.UserName != "admin" & user.UserName !="Виктория")
                     {
                         Bet curBet = new Bet();
                         curBet.ProgramID = curProg.ProgramID;

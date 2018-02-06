@@ -1,0 +1,95 @@
+﻿@model IEnumerable<stitalizator01.Models.CatalogueEntry>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Timing)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Repeat)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TVDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Dow)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BegTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Sti)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Dm)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Dr)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProducerCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SellerCode)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Timing)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Repeat)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TVDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Dow)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BegTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sti)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Dm)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Dr)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProducerCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SellerCode)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.CatalogueEntryID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.CatalogueEntryID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.CatalogueEntryID })
+            </td>
+        </tr>
+    }
+
+</table>

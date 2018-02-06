@@ -249,6 +249,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BetsController.cs" />
+    <Compile Include="Controllers\CatalogueEntriesController.cs" />
     <Compile Include="Controllers\ChannelsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -333,9 +334,18 @@
     <Compile Include="Migrations\201706301018541_tgbot2.Designer.cs">
       <DependentUpon>201706301018541_tgbot2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201802061334330_catalogueEntries.cs" />
+    <Compile Include="Migrations\201802061334330_catalogueEntries.Designer.cs">
+      <DependentUpon>201802061334330_catalogueEntries.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802061359288_catEntriesAppDb.cs" />
+    <Compile Include="Migrations\201802061359288_catEntriesAppDb.Designer.cs">
+      <DependentUpon>201802061359288_catEntriesAppDb.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Bet.cs" />
+    <Compile Include="Models\CatalogueEntry.cs" />
     <Compile Include="Models\Channel.cs" />
     <Compile Include="Models\ConversationStarter.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -371,6 +381,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="fonts\marker_font01.ttf" />
+    <Content Include="Content\cat20180130.csv" />
     <None Include="Properties\PublishProfiles\aws.pubxml" />
     <None Include="Properties\PublishProfiles\stitalizator - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\stitalizator.pubxml" />
@@ -469,6 +480,12 @@
     <Content Include="Views\Bets\WhiteBoardHomepage.cshtml" />
     <Content Include="Views\Bets\SwitchWhiteBoardHomepage.cshtml" />
     <Content Include="Views\Bets\WhiteBoardPdf.cshtml" />
+    <Content Include="Views\CatalogueEntries\Create.cshtml" />
+    <Content Include="Views\CatalogueEntries\Delete.cshtml" />
+    <Content Include="Views\CatalogueEntries\Details.cshtml" />
+    <Content Include="Views\CatalogueEntries\Edit.cshtml" />
+    <Content Include="Views\CatalogueEntries\Index.cshtml" />
+    <Content Include="Views\CatalogueEntries\advSearch.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\Api\" />
@@ -532,6 +549,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706301018541_tgbot2.resx">
       <DependentUpon>201706301018541_tgbot2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802061334330_catalogueEntries.resx">
+      <DependentUpon>201802061334330_catalogueEntries.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802061359288_catEntriesAppDb.resx">
+      <DependentUpon>201802061359288_catEntriesAppDb.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

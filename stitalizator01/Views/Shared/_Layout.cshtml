@@ -35,7 +35,15 @@
                     <li>@Html.ActionLink("Роли", "Index", "Role")</li>
                     @*<li><a id="mailLi" onclick="mailClick(event)">"MailTest"</a></li>*@
 }
-                    
+                    @if (this.User.Identity.Name == "user8"| this.User.Identity.Name == "Толя" | this.User.Identity.Name == "Виктория")
+                    {
+                        <li>
+                            @using (Html.BeginForm("advSearch", "CatalogueEntries", FormMethod.Post, new { target = "_blank" }))
+                            {
+                                @Html.TextBox("Title", "Поиск", new { onclick = "Clear();" });
+                            }
+                        </li>
+                    }
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

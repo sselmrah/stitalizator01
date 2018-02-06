@@ -16,11 +16,13 @@ namespace stitalizator01.Models
         public DbSet<Program> Programs { get; set; }
         public DbSet<Bet> Bets { get; set; }
         public DbSet<Period> Periods { get; set;}
-
+        public DbSet<CatalogueEntry> CatalogueEntries { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
             //base.OnModelCreating(modelBuilder);
         }
+
+
     }
 }

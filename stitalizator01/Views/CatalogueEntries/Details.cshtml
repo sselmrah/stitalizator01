@@ -1,0 +1,107 @@
+﻿@model stitalizator01.Models.CatalogueEntry
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>CatalogueEntry</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Timing)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Timing)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Repeat)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Repeat)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TVDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TVDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Dow)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Dow)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BegTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BegTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Sti)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Sti)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Dm)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Dm)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Dr)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Dr)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ProducerCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProducerCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SellerCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SellerCode)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.CatalogueEntryID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
