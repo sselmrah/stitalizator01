@@ -23,7 +23,16 @@ textarea {
     max-width: 280px;
 }
 
-
+#Title {
+    align-self: center;
+    background-color: #333333;
+    border: 1px solid #808080;
+    padding-bottom: 0;
+    padding-left: 5px;
+    margin-top: 13px;
+    color: #999999;
+    vertical-align: middle;
+}
 
 #overlayDiv {
     top: 0; 

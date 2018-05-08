@@ -31,13 +31,31 @@ namespace stitalizator01.Controllers
             return View(db.CatalogueEntries.Where(c => c.Title.Contains(Title)).ToList());
         }
 
+        public ActionResult ClearCat()
+        {
+            while (db.CatalogueEntries.Count()>0)
+            { 
+                db.CatalogueEntries.Remove(db.CatalogueEntries.First());
+                db.SaveChanges();
+            }
+            return View("Index");
+        }
+
         public ActionResult ImportCat()
         {
-            db.CatalogueEntries.RemoveRange(db.CatalogueEntries);
+            //db.CatalogueEntries.RemoveRange(db.CatalogueEntries);
 
             List<CatalogueEntry> ces = new List<CatalogueEntry>();
 
             int i = 0;
+            try
+            {
+                i=db.CatalogueEntries.Count();
+            }
+            catch
+            {
+
+            }
             using (var reader = new StreamReader(Path.Combine(HttpContext.ApplicationInstance.Server.MapPath("~/Content"), "cat20180130.csv"), Encoding.UTF8))
             {
                 reader.ReadLine();
@@ -48,13 +66,20 @@ namespace stitalizator01.Controllers
 
                     if (i > 0)
                     {
-
+                        
                         CatalogueEntry curCE = new CatalogueEntry();
                         var line = reader.ReadLine();
-                        var values = line.Split(';');
+                        var values = line.Split('\t');
                         if (values.Length > 10)
                         {
-                            curCE.CatalogueEntryID = i;
+                            try
+                            {
+                                curCE.CatalogueEntryID = Convert.ToInt32(values[0]);
+                            }
+                            catch
+                            {
+
+                            }
                             try
                             {
                                 curCE.Timing = Convert.ToDateTime(values[1]);
@@ -102,8 +127,11 @@ namespace stitalizator01.Controllers
                             try
                             { curCE.SellerCode = Convert.ToInt16(values[10]); }
                             catch { }
-                            db.CatalogueEntries.Add(curCE);
-                            db.SaveChanges();
+                            if (i > curCE.CatalogueEntryID)
+                            {
+                                db.CatalogueEntries.Add(curCE);
+                                db.SaveChanges();
+                            }
                             //ces.Add(curCE);
                             
                         
@@ -117,7 +145,7 @@ namespace stitalizator01.Controllers
             //db.SaveChanges();
             //db.CatalogueEntries.AddRange(ces);
 
-            return View();
+            return View("Index");
         }
 
         // GET: CatalogueEntries/Details/5

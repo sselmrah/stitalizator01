@@ -53,6 +53,21 @@ namespace stitalizator01
 
                 }
             }
+            if (!roleManager.RoleExists("Serednyachok01"))
+            {
+                var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
+                role.Name = "Bot";
+                roleManager.Create(role);
+                var user = new ApplicationUser();
+                user.UserName = "Serednyachok01";
+                user.Email = "stitalizator@gmail.com";
+                string userPWD = "945549";
+                var chkUser = UserManager.Create(user, userPWD);
+                if (chkUser.Succeeded)
+                {
+                    var result1 = UserManager.AddToRole(user.Id, "Bot");
+                }
+            }
 
             // creating Creating Manager role    
             if (!roleManager.RoleExists("User"))

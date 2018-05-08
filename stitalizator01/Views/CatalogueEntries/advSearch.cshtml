@@ -19,7 +19,7 @@
             @Html.DisplayNameFor(model => model.Title)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Repeat)
+            @*Html.DisplayNameFor(model => model.Repeat)*@
         </th>
         <th>
             @Html.DisplayNameFor(model => model.TVDate)
@@ -45,7 +45,7 @@
         <th>
             @Html.DisplayNameFor(model => model.SellerCode)
         </th>
-        <th></th>
+        @*<th></th>*@
     </tr>
 
     @foreach (var item in Model)
@@ -58,7 +58,7 @@
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Repeat)
+                @*Html.DisplayFor(modelItem => item.Repeat)*@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.TVDate)
@@ -84,11 +84,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.SellerCode)
             </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.CatalogueEntryID }) |
-                @Html.ActionLink("Details", "Details", new { id = item.CatalogueEntryID }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.CatalogueEntryID })
-            </td>
+          @*  <td>
+        @Html.ActionLink("Edit", "Edit", new { id = item.CatalogueEntryID }) |
+        @Html.ActionLink("Details", "Details", new { id = item.CatalogueEntryID }) |
+        @Html.ActionLink("Delete", "Delete", new { id = item.CatalogueEntryID })
+    </td>
+        *@
         </tr>
     }
 
