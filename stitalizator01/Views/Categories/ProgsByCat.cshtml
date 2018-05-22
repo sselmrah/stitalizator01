@@ -1,0 +1,53 @@
+﻿@model IEnumerable<stitalizator01.Models.Program>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ProgTitle)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TvDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProgCat)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Cat1.CatName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Cat2.CatName)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ProgTitle)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TvDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ProgCat)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Cat1.CatName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Cat2.CatName)
+        </td>
+        <td>
+            
+        </td>
+    </tr>
+}
+
+</table>

@@ -25,6 +25,9 @@ namespace stitalizator01.Models
         private string _progCat;
         private bool _isBet;
         private bool _isHorse;
+        private Category _cat1;
+        private Category _cat2;
+
 
         public bool IsHorse
         {
@@ -124,9 +127,7 @@ namespace stitalizator01.Models
             set { _shareRus18 = value; }
         }
 
-
-
-
-
+        public Category Cat1 { get => _cat1; set => _cat1 = value; }
+        public Category Cat2 { get => _cat2; set => _cat2 = value; }
     }
 }

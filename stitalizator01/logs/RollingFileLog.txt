@@ -74,3 +74,131 @@
 06.02.2018 15:34:47 [HomeController.cs] INFO - User user8 has opened Index page
 06.02.2018 15:37:59 [HomeController.cs] INFO - User user8 has opened Index page
 05.05.2018 19:03:10 [Global.asax] INFO - Application Started
+15.05.2018 10:19:18 [Global.asax] INFO - Application Started
+15.05.2018 10:19:34 [HomeController.cs] INFO - User admin has opened Index page
+15.05.2018 10:29:41 [Global.asax] INFO - Application Started
+15.05.2018 10:31:14 [Global.asax] INFO - Application Started
+15.05.2018 10:31:26 [HomeController.cs] INFO - User admin has opened Index page
+15.05.2018 10:32:00 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 10:32:34 [ProgramsController.cs] INFO - User admin has updated schedule for 15.05.2018
+15.05.2018 10:32:34 [ProgramsController.cs] INFO - User admin has opened Programs/ProgsByDate page for 15.05.2018
+15.05.2018 10:32:34 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 10:32:34 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 10:39:37 [Global.asax] INFO - Application Started
+15.05.2018 10:39:37 [HomeController.cs] INFO - User admin has opened Index page
+15.05.2018 10:41:27 [Global.asax] INFO - Application Started
+15.05.2018 10:41:27 [HomeController.cs] INFO - User admin has opened Index page
+15.05.2018 10:46:37 [Global.asax] INFO - Application Started
+15.05.2018 10:46:39 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 10:54:26 [Global.asax] INFO - Application Started
+15.05.2018 10:54:27 [HomeController.cs] INFO - User admin has opened Index page
+15.05.2018 10:56:11 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 10:58:02 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 10:58:35 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 10:59:00 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 10:59:56 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 11:00:42 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 11:01:27 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 11:02:41 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 11:06:29 [Global.asax] INFO - Application Started
+15.05.2018 11:06:30 [HomeController.cs] INFO - User admin has opened Index page
+15.05.2018 11:36:51 [Global.asax] INFO - Application Started
+15.05.2018 11:36:53 [HomeController.cs] INFO - User admin has opened Index page
+15.05.2018 11:40:19 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 11:41:24 [Global.asax] INFO - Application Started
+15.05.2018 11:41:25 [HomeController.cs] INFO - User admin has opened Index page
+15.05.2018 11:43:03 [Global.asax] INFO - Application Started
+15.05.2018 11:43:03 [HomeController.cs] INFO - User admin has opened Index page
+15.05.2018 11:52:32 [Global.asax] INFO - Application Started
+15.05.2018 11:52:32 [HomeController.cs] INFO - User admin has opened Index page
+15.05.2018 11:53:03 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 12:00:18 [Global.asax] INFO - Application Started
+15.05.2018 12:00:18 [HomeController.cs] INFO - User admin has opened Index page
+15.05.2018 12:04:00 [Global.asax] INFO - Application Started
+15.05.2018 12:04:00 [HomeController.cs] INFO - User admin has opened Index page
+15.05.2018 12:08:30 [Global.asax] INFO - Application Started
+15.05.2018 12:08:30 [HomeController.cs] INFO - User admin has opened Index page
+15.05.2018 12:12:22 [Global.asax] INFO - Application Started
+15.05.2018 12:12:22 [HomeController.cs] INFO - User admin has opened Index page
+15.05.2018 12:16:58 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 12:17:42 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 12:17:51 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 12:18:20 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 12:18:27 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 12:19:50 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 12:22:51 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 12:33:25 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 12:42:15 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+15.05.2018 12:43:43 [Global.asax] INFO - Application Started
+15.05.2018 12:43:43 [HomeController.cs] INFO - User admin has opened Index page
+15.05.2018 13:13:43 [Global.asax] INFO - 30 minutes elapsed.
+16.05.2018 13:33:31 [Global.asax] INFO - Application Started
+16.05.2018 13:33:35 [HomeController.cs] INFO - User admin has opened Index page
+16.05.2018 13:35:13 [Global.asax] INFO - Application Started
+16.05.2018 13:35:14 [HomeController.cs] INFO - User admin has opened Index page
+17.05.2018 10:59:27 [Global.asax] INFO - Application Started
+17.05.2018 11:11:17 [Global.asax] INFO - Application Started
+17.05.2018 11:11:18 [HomeController.cs] INFO - User admin has opened Index page
+17.05.2018 11:15:06 [Global.asax] INFO - Application Started
+17.05.2018 11:15:07 [HomeController.cs] INFO - User admin has opened Index page
+17.05.2018 11:17:50 [Global.asax] INFO - Application Started
+17.05.2018 11:17:51 [HomeController.cs] INFO - User admin has opened Index page
+17.05.2018 11:19:10 [Global.asax] INFO - Application Started
+17.05.2018 11:19:11 [HomeController.cs] INFO - User admin has opened Index page
+17.05.2018 11:24:06 [Global.asax] INFO - Application Started
+17.05.2018 11:24:07 [HomeController.cs] INFO - User admin has opened Index page
+17.05.2018 11:34:45 [Global.asax] INFO - Application Started
+17.05.2018 11:34:46 [HomeController.cs] INFO - User admin has opened Index page
+17.05.2018 11:37:01 [Global.asax] INFO - Application Started
+17.05.2018 11:37:02 [HomeController.cs] INFO - User admin has opened Index page
+17.05.2018 11:49:04 [Global.asax] INFO - Application Started
+17.05.2018 11:49:05 [HomeController.cs] INFO - User admin has opened Index page
+21.05.2018 12:46:21 [Global.asax] INFO - Application Started
+21.05.2018 12:46:38 [HomeController.cs] INFO - User admin has opened Index page
+21.05.2018 12:50:00 [Global.asax] INFO - Application Started
+21.05.2018 12:50:01 [HomeController.cs] INFO - User admin has opened Index page
+21.05.2018 12:51:37 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+21.05.2018 13:05:59 [Global.asax] INFO - Application Started
+21.05.2018 13:06:03 [HomeController.cs] INFO - User admin has opened Index page
+21.05.2018 13:24:54 [Global.asax] INFO - Application Started
+21.05.2018 13:24:55 [HomeController.cs] INFO - User admin has opened Index page
+21.05.2018 13:26:50 [Global.asax] INFO - Application Started
+21.05.2018 13:26:51 [HomeController.cs] INFO - User admin has opened Index page
+21.05.2018 13:30:58 [Global.asax] INFO - Application Started
+21.05.2018 13:30:59 [HomeController.cs] INFO - User admin has opened Index page
+21.05.2018 13:51:54 [Global.asax] INFO - Application Started
+21.05.2018 13:51:55 [HomeController.cs] INFO - User admin has opened Index page
+21.05.2018 13:53:12 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+21.05.2018 13:55:36 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+21.05.2018 13:56:02 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+21.05.2018 13:57:20 [ProgramsController.cs] INFO - User admin has updated schedule for 21.05.2018
+21.05.2018 13:57:49 [ProgramsController.cs] INFO - User admin has updated schedule for 21.05.2018
+21.05.2018 13:58:46 [ProgramsController.cs] INFO - User admin has updated schedule for 21.05.2018
+21.05.2018 13:58:52 [ProgramsController.cs] INFO - User admin has updated schedule for 21.05.2018
+21.05.2018 13:58:52 [ProgramsController.cs] INFO - User admin has opened Programs/ProgsByDate page for 21.05.2018
+21.05.2018 13:58:52 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+21.05.2018 13:58:53 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+21.05.2018 14:08:11 [ProgramsController.cs] INFO - User admin has cleared unused programs
+21.05.2018 14:08:11 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+21.05.2018 14:08:11 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+21.05.2018 14:08:24 [ProgramsController.cs] INFO - User admin has updated schedule for 21.05.2018
+21.05.2018 14:08:24 [ProgramsController.cs] INFO - User admin has opened Programs/ProgsByDate page for 21.05.2018
+21.05.2018 14:08:24 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+21.05.2018 14:08:25 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+21.05.2018 14:08:31 [ProgramsController.cs] INFO - User admin has cleared unused programs
+21.05.2018 14:08:31 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+21.05.2018 14:08:31 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+21.05.2018 14:10:00 [Global.asax] INFO - Application Started
+21.05.2018 14:10:00 [HomeController.cs] INFO - User admin has opened Index page
+21.05.2018 14:10:52 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+21.05.2018 14:11:31 [ProgramsController.cs] INFO - User admin has updated schedule for 21.05.2018
+21.05.2018 14:11:40 [ProgramsController.cs] INFO - User admin has updated schedule for 21.05.2018
+21.05.2018 14:11:45 [ProgramsController.cs] INFO - User admin has updated schedule for 21.05.2018
+21.05.2018 14:11:50 [ProgramsController.cs] INFO - User admin has updated schedule for 21.05.2018
+21.05.2018 14:11:50 [ProgramsController.cs] INFO - User admin has opened Programs/ProgsByDate page for 21.05.2018
+21.05.2018 14:11:50 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+21.05.2018 14:11:51 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+21.05.2018 14:40:00 [Global.asax] INFO - 30 minutes elapsed.
+21.05.2018 15:10:00 [Global.asax] INFO - 30 minutes elapsed.
+21.05.2018 15:13:18 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+21.05.2018 15:24:20 [Global.asax] INFO - Application Started

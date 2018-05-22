@@ -502,9 +502,76 @@ namespace stitalizator01.Controllers
                                 curProg.TimeEnd = DateTime.Parse(dt.ToString("dd.MM.yyyy") + " " + curProgString[1].Trim());
                                 curProg.ProgTitle = curProgString[2].Trim();
                                 curProg.ProgCat = curProgString[3].Trim();
+                                string[] curCatString = curProgString[3].Trim().Split(';');
+                                if (curCatString.Count()>0)
+                                {
+                                    int num = 0;
+                                    foreach (string c in curCatString)
+                                    {
+                                        num++;
+                                        string curCatName = c.Trim();
+                                        Category newCat = new Category();
+                                        newCat.CatName = curCatName;
+                                        newCat.CatNum = num;
+                                        if (!db.Categories.Any(x=> x.CatName==curCatName && x.CatNum==num))
+                                        {
+                                            db.Categories.Add(newCat);
+                                            db.SaveChanges();
+                                        }
+                                        
+                                    }
+                                }
                                 curProg.TvDate = dt.Date;
                                 curProg.ChannelCode = curChannelName;
-                                progList.Add(curProg);
+                                //add categories here
+                                if (curProg.ProgCat != null)
+                                {
+
+                                    Category newCat1 = new Category();
+                                    Category newCat2 = new Category();
+                                    if (curCatString.Count() > 0)
+                                    {
+                                        int num = 0;
+                                        foreach (string c in curCatString)
+                                        {
+                                            string curCatName = curCatString[num];
+
+
+                                            if (num == 0)
+                                            {
+                                                if (db.Categories.Where(x => x.CatName == curCatName.Trim()).FirstOrDefault() != null)
+                                                {
+                                                    curProg.Cat1 = db.Categories.Where(x => x.CatName == curCatName.Trim() && x.CatNum == 1).FirstOrDefault();
+                                                }
+                                                else
+                                                {
+                                                    newCat1.CatName = curCatString[num].Trim();
+                                                    newCat1.CatNum = 1;
+                                                    curProg.Cat1 = newCat1;
+                                                }
+
+                                            }
+                                            else
+                                            {
+                                                if (db.Categories.Where(x => x.CatName == curCatName.Trim()).FirstOrDefault() != null)
+                                                {
+                                                    curProg.Cat2 = db.Categories.Where(x => x.CatName == curCatName.Trim() && x.CatNum == 2).FirstOrDefault();
+                                                }
+                                                else
+                                                {
+                                                    newCat2.CatName = curCatString[num].Trim();
+                                                    newCat2.CatNum = 2;
+                                                    curProg.Cat2 = newCat2;
+                                                }
+                                            }
+
+                                            num++;
+                                        }
+                                    }
+                                    //
+                                }
+
+                                    progList.Add(curProg);
                             }
                         }
                         else

@@ -72,6 +72,12 @@
             @Html.DisplayNameFor(model => model.ProgCat)
         </th>
         <th>
+            @Html.DisplayNameFor(model => model.Cat1)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Cat2)
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.ShareStiPlus)
         </th>
 
@@ -81,6 +87,8 @@
 @foreach (var model in Model) {    
     string tempBet = model.ShareStiPlus.ToString().Replace(",", ".");
     int curProgId = model.ProgramID;
+    string cat1 = (model.Cat1 == null) ? "none" : model.Cat1.CatName;
+
     <tr>
         <td>
         @using (Html.BeginForm("UpdateBet", "Programs", new { id = model.ProgramID}))
@@ -116,6 +124,12 @@
         </td>
         <td class="visible-lg">
             @Html.DisplayFor(modelItem => model.ProgCat)
+        </td>
+        <td class="visible-lg">
+            @cat1
+        </td>
+        <td class="visible-lg">
+            @Html.DisplayFor(modelItem => model.Cat2.CatName)
         </td>
         <td>                      
             <input class="input-lg" id="@curProgId" type="number" min="0" max="100" value="@tempBet" step="0.1" onchange="updateProgResult(@curProgId)" />   

@@ -250,6 +250,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BetsController.cs" />
     <Compile Include="Controllers\CatalogueEntriesController.cs" />
+    <Compile Include="Controllers\CategoriesController.cs" />
     <Compile Include="Controllers\ChannelsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -342,10 +343,19 @@
     <Compile Include="Migrations\201802061359288_catEntriesAppDb.Designer.cs">
       <DependentUpon>201802061359288_catEntriesAppDb.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201805151030329_categories_added.cs" />
+    <Compile Include="Migrations\201805151030329_categories_added.Designer.cs">
+      <DependentUpon>201805151030329_categories_added.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201805151040479_programs_categories_added.cs" />
+    <Compile Include="Migrations\201805151040479_programs_categories_added.Designer.cs">
+      <DependentUpon>201805151040479_programs_categories_added.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Bet.cs" />
     <Compile Include="Models\CatalogueEntry.cs" />
+    <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Channel.cs" />
     <Compile Include="Models\ConversationStarter.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -365,6 +375,10 @@
     <Compile Include="TeleBot.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\stitDB.mdf" />
+    <Content Include="App_Data\stitDB_log.ldf">
+      <DependentUpon>stitDB.mdf</DependentUpon>
+    </Content>
     <Content Include="App_Data\Temp\horseIcon.png" />
     <Content Include="Content\Img\chOneLogoSquare.png" />
     <Content Include="Content\Img\horseIcon.png" />
@@ -486,6 +500,12 @@
     <Content Include="Views\CatalogueEntries\Edit.cshtml" />
     <Content Include="Views\CatalogueEntries\Index.cshtml" />
     <Content Include="Views\CatalogueEntries\advSearch.cshtml" />
+    <Content Include="Views\Categories\Create.cshtml" />
+    <Content Include="Views\Categories\Delete.cshtml" />
+    <Content Include="Views\Categories\Details.cshtml" />
+    <Content Include="Views\Categories\Edit.cshtml" />
+    <Content Include="Views\Categories\Index.cshtml" />
+    <Content Include="Views\Categories\ProgsByCat.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\Api\" />
@@ -555,6 +575,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201802061359288_catEntriesAppDb.resx">
       <DependentUpon>201802061359288_catEntriesAppDb.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805151030329_categories_added.resx">
+      <DependentUpon>201805151030329_categories_added.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805151040479_programs_categories_added.resx">
+      <DependentUpon>201805151040479_programs_categories_added.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
