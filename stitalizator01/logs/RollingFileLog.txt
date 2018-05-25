@@ -202,3 +202,11 @@
 21.05.2018 15:10:00 [Global.asax] INFO - 30 minutes elapsed.
 21.05.2018 15:13:18 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
 21.05.2018 15:24:20 [Global.asax] INFO - Application Started
+22.05.2018 12:57:48 [Global.asax] INFO - Application Started
+22.05.2018 12:58:16 [HomeController.cs] INFO - User admin has opened Index page
+25.05.2018 13:56:11 [Global.asax] INFO - Application Started
+25.05.2018 13:56:44 [HomeController.cs] INFO - User admin has opened Index page
+25.05.2018 13:57:50 [Global.asax] INFO - Application Started
+25.05.2018 13:57:59 [HomeController.cs] INFO - User admin has opened Index page
+25.05.2018 14:00:52 [Global.asax] INFO - Application Started
+25.05.2018 14:02:08 [HomeController.cs] INFO - User admin has opened Index page

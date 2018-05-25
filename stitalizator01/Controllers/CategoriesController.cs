@@ -235,8 +235,16 @@ namespace stitalizator01.Controllers
                             num++;
                         }
                     }
+
                     db.Entry(prog).State = EntityState.Modified;
-                    //db.SaveChanges();
+                    try
+                    {
+                        db.SaveChanges();
+                    }
+                    catch
+                    {
+
+                    }
                 }
 
             }
