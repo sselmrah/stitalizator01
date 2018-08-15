@@ -1,0 +1,957 @@
+﻿
+@{
+    //ViewBag.Title = "getWeek";
+    Layout = "~/Views/Shared/_Layout_scripts.cshtml";
+}
+
+@{
+
+    //ViewBag.Title = Model.Note;
+    //int weekNumInt = Convert.ToInt32(ViewBag.WeekId);
+    string dayVariantList = "";
+    string chButtonClass = "channelSideButtons";
+
+}
+
+
+@*<div class="papers">*@
+    @*<div class="row weekPickerContainer">
+        <div class="col-lg-1 visible-lg"></div>
+        <div class="col-lg-1 weekPickerArrow visible-lg">
+            <a href="@Url.Action("getWeek", "Weeks", new { week_num = (weekNumInt-1).ToString()}, null)">
+                <span class="weekPickerIcon glyphicon glyphicon-backward" style="color:black; float:right"></span>
+            </a>
+        </div>
+        <div id="weekSelectContainer" class="col-lg-8">@{Html.RenderAction("SelectCategory", "Weeks", new { curWeekRef = Model.Ref });}</div>
+        <div class="col-lg-1 weekPickerArrow visible-lg">
+            <a href="@Url.Action("getWeek", "Weeks", new { week_num = (weekNumInt+1).ToString()}, null)">
+                <span class="weekPickerIcon glyphicon glyphicon-forward" style="color:black"></span>
+            </a>
+        </div>
+        <div class="col-lg-1 visible-lg"></div>
+    </div>
+    <div class="row visible-lg">
+        <div class="col-lg-9"></div>
+        <div class="col-lg-2">
+            <p id="timestampDiv">@DateTime.Now.ToString("dd/MM/yyyy") @DateTime.Now.ToString("HH:mm:ss")</p>
+        </div>
+        <div class="col-lg-1"></div>
+    </div>*@
+    <div class="row week_bg">
+        <div class="col-lg-1 visible-lg noPadding">
+           @*@{Html.RenderAction("DrawTimeScale", "Day", new { left = true, channelCode = 10 });}*@
+             
+            <div class="timescaleWrapper">
+                @{
+                    var left = true;
+                    string rulerClass = "";
+                    string marginClass = "";
+                    string textAlignClass = "";
+
+                    if (left)
+                    {
+                        rulerClass = "float: right; border-right: solid black 1px;";
+                        marginClass = "margin-left: 10px";
+                        textAlignClass = "text-align: right";
+                    }
+                    else
+                    {
+                        rulerClass = "float: left; border-left: solid black 1px;";
+                        marginClass = "margin-right: 10px; text-align: left";
+                        textAlignClass = "text-align: left";
+                    }
+
+                    var startHour = 5;
+                    var shift = (5 - (10 - 10)) * 2;
+
+                    if (10 != 10 & 10 > 0)
+                    {
+                        startHour -= shift;
+                    }
+
+                    if (startHour < 0)
+                    {
+                        startHour += 24;
+                    }
+
+
+                    int curHour;
+                    string curHourStr;
+
+
+                }
+
+                <div class="rulerDrawn" style="@rulerClass">
+                    @{
+                        for (int h = 0; h < 26; h++)
+                        {
+                            curHour = startHour + h;
+                            if (curHour >= 24)
+                            {
+                                curHour -= 24;
+                            }
+                            curHourStr = curHour.ToString();
+                            if (curHourStr.Length == 1)
+                            {
+                                curHourStr = "0" + curHourStr;
+                            }
+
+                            <div class="longBlock" style="@textAlignClass">@curHourStr</div>
+                            <div class="shortBlock" style="@marginClass"></div>
+                            <div class="shortBlock" style="@marginClass"></div>
+                            <div class="longBlock" style="@textAlignClass"></div>
+                            <div class="shortBlock" style="@marginClass"></div>
+                            <div class="shortBlock" style="@marginClass"></div>
+                        }
+                    }
+                </div>
+            </div>
+
+
+
+        </div>
+        @{
+            var i = 0;
+            double dayRectWidth = 100.0 / 7 - 0.00001;
+            string dayRectWidthStr = dayRectWidth.ToString("#.########").Replace(",", ".") + "%";
+        }
+        <div id="daysDiv" class="col-lg-10 noPadding">
+            @for (int j = 0; j < 7; j++)
+            {
+
+                <div id="dayid_@j" class="dayrect" data-chcode="1" data-tvdate="13.08.2018" data-varnum="1" ondrop="drop(event)" ondragover="allowDrop(event)" style="width: @dayRectWidthStr;">
+                    @{
+                        //Layout = null;
+                        string day_num = "1";
+                        int chanCode = 10;
+                        DateTime dt = DateTime.Now.Date;
+                    }
+
+                    <div id="dow@(day_num)" class="dow-div">День @(j+1)</div>
+                    <div id="date@(day_num)" class="date-div"></div>
+                    <div id="var1" class="varCode-div" data-varnum="1"></div>
+                    <div id="shapka@(day_num)" class="shapka-div">
+                        <span style="white-space:pre-line"></span>
+                    </div>
+
+
+                    <!--Efirs-->
+
+                    @for (int e = 0; e < 21; e++)
+                    {
+                        string modelRef = "elementid_"+j.ToString()+e.ToString();
+                        double position;
+                        //120 - Стандартный отступ на шапки
+                        position = 120;
+                        int begHour = 0;
+                        int begMinute = 0;
+                        string pureDurStr = "";
+                        string durStr = "";
+                        TimeSpan timing = TimeSpan.FromMinutes(0);
+                        bool isNews = false;
+                        DateTime begTime;
+                        DateTime endTime;
+                        string anr = "";
+                        string infoString = "";
+                        int r = 0;
+                        int rp = 0;
+                        int a = 0;
+                        int ap = 0;
+
+                        string classNews = "";
+                        string classHighlight = "";
+                        string ageCat = "";
+                        string classZapas = "";
+                        string fontSize;
+                        fontSize = "font-size: 8pt";
+
+                        if (e == 0)
+                        {
+                            anr = "Новости";
+                            if (j < 5)
+                            {
+                                begHour = 9;
+                            }
+                            else
+                            {
+                                begHour = 10;
+                            }
+                            begMinute = 0;
+                            pureDurStr = "15";
+                            durStr = "15";
+                            timing = TimeSpan.FromMinutes(15);
+                            isNews = true;
+                            fontSize = "font-size: 6pt";
+                            infoString += timing.ToString("mm").Trim();
+                        }
+                        if (e == 1)
+                        {
+                            anr = "Новости";
+                            begHour = 12;
+                            begMinute = 0;
+                            durStr = "15";
+                            timing = TimeSpan.FromMinutes(15);
+                            isNews = true;
+                            fontSize = "font-size: 6pt";
+                            infoString += timing.ToString("mm").Trim();
+                        }
+                        if (e == 2 & j<6)
+                        {
+                            anr = "Вечерние новости";
+                            begHour = 18;
+                            begMinute = 0;
+
+                            if (j != 5)
+                            {
+                                r = 4;
+                                rp = 1;
+                                timing = TimeSpan.FromMinutes(22);
+                            }
+                            else
+                            {
+                                timing = TimeSpan.FromMinutes(15);
+                            }
+                            infoString += timing.ToString("mm").Trim();
+                            durStr = (timing + TimeSpan.FromMinutes(r)).ToString("mm");
+                            isNews = true;
+                            fontSize = "font-size: 6pt";
+                        }
+                        if (e == 3)
+                        {
+                            anr = "\"Время\"";
+                            begHour = 21;
+                            begMinute = 0;
+                            if (j < 5)
+                            {
+                                timing = TimeSpan.FromMinutes(35);
+                            }
+                            if (j==5)
+                            {
+                                timing = TimeSpan.FromMinutes(20);
+                            }
+                            if (j == 6)
+                            {
+                                anr = "\"Воскресное время\"";
+                                timing = TimeSpan.FromMinutes(84);
+                                r = 6;
+                                rp = 2;
+                            }
+                            if ((timing + TimeSpan.FromMinutes(r)).TotalMinutes >= 60)
+                            {
+                                durStr = (timing + TimeSpan.FromMinutes(r)).ToString(@"h\:mm");
+                                infoString += timing.ToString(@"h\:mm").Trim();
+                            }
+                            else
+                            {
+                                durStr = (timing + TimeSpan.FromMinutes(r)).ToString("mm");
+                                infoString += timing.ToString("mm").Trim();
+                            }
+                            isNews = true;
+                            fontSize = "font-size: 6pt";
+                        }
+                        if (e == 4 & j<5)
+                        {
+
+                            anr = "\"Модный приговор\"";
+                            begHour = 9;
+                            begMinute = 50;
+                            r = 9;
+                            rp = 3;
+                            a = 3;
+                            timing = TimeSpan.FromMinutes(52);
+                            if ((timing + TimeSpan.FromMinutes(r) + TimeSpan.FromMinutes(a)).TotalMinutes >= 60)
+                            {
+                                durStr = (timing + TimeSpan.FromMinutes(r) + TimeSpan.FromMinutes(a)).ToString(@"h\:mm");
+                                infoString += timing.ToString(@"h\:mm").Trim();
+                            }
+                            else
+                            {
+                                durStr = (timing + TimeSpan.FromMinutes(r) + TimeSpan.FromMinutes(a)).ToString("mm");
+                                infoString += timing.ToString("mm").Trim();
+                            }
+                            isNews = false;
+                            fontSize = "font-size: 6pt";
+                        }
+                        if (e == 5 & j < 5)
+                        {
+
+                            anr = "\"Жить здорово!\"";
+                            begHour = 10;
+                            begMinute = 55;
+                            r = 9;
+                            rp = 3;
+                            a = 3;
+                            timing = TimeSpan.FromMinutes(52);
+                            isNews = false;
+                            fontSize = "font-size: 6pt";
+                        }
+                        if (e == 6 & j < 5)
+                        {
+
+                            anr = "\"Время покажет\"";
+                            begHour = 12;
+                            begMinute = 15;
+                            r = 26;
+                            rp = 8;
+                            a = 6;
+                            timing = TimeSpan.FromMinutes(132);
+                            isNews = false;
+                            fontSize = "font-size: 6pt";
+                        }
+                        if (e == 7 & j < 5)
+                        {
+
+                            anr = "Новости";
+                            begHour = 15;
+                            begMinute = 00;
+                            r = 0;
+                            rp = 0;
+                            a = 0;
+                            timing = TimeSpan.FromMinutes(15);
+                            isNews = true;
+                            fontSize = "font-size: 6pt";
+                        }
+                        if (e == 8 & j < 5)
+                        {
+
+                            anr = "\"Давай поженимся!\"";
+                            begHour = 15;
+                            begMinute = 15;
+                            r = 8;
+                            rp = 2;
+                            a = 0;
+                            timing = TimeSpan.FromMinutes(43);
+                            isNews = false;
+                            fontSize = "font-size: 6pt";
+                        }
+                        if (e == 9 & j < 5)
+                        {
+
+                            anr = "\"Мужское / Женское\"";
+                            begHour = 16;
+                            begMinute = 00;
+                            r = 9;
+                            rp = 3;
+                            a = 0;
+                            timing = TimeSpan.FromMinutes(43);
+                            isNews = false;
+                            fontSize = "font-size: 6pt";
+                        }
+                        if (e == 10 & j < 5)
+                        {
+
+                            anr = "\"Время покажет\"";
+                            begHour = 17;
+                            begMinute = 00;
+                            r = 9;
+                            rp = 3;
+                            a = 2;
+                            timing = TimeSpan.FromMinutes(50);
+                            isNews = false;
+                            fontSize = "font-size: 6pt";
+                        }
+                        if (e == 11 & j < 5)
+                        {
+
+                            anr = "\"Видели видео?\"";
+                            begHour = 18;
+                            begMinute = 25;
+                            r = 4;
+                            rp = 1;
+                            a = 0;
+                            timing = TimeSpan.FromMinutes(35);
+                            isNews = false;
+                            fontSize = "font-size: 6pt";
+                        }
+                        if (e == 12 & j < 5)
+                        {
+
+                            anr = "\"На самом деле\"";
+                            begHour = 19;
+                            begMinute = 00;
+                            r = 8;
+                            rp = 2;
+                            a = 1;
+                            timing = TimeSpan.FromMinutes(44);
+                            isNews = false;
+                            fontSize = "font-size: 6pt";
+                        }
+                        if (e == 13 & j < 5)
+                        {
+
+                            anr = "\"Пусть говорят\"";
+                            begHour = 20;
+                            begMinute = 00;
+                            r = 9;
+                            rp = 3;
+                            a = 2;
+                            timing = TimeSpan.FromMinutes(50);
+                            isNews = false;
+                            fontSize = "font-size: 6pt";
+                        }
+                        if (e == 14 & j < 4)
+                        {
+
+                            anr = "Многосерийный фильм";
+                            begHour = 21;
+                            begMinute = 35;
+                            r = 16;
+                            rp = 4;
+                            a = 5;
+                            timing = TimeSpan.FromMinutes(104);
+                            isNews = false;
+                            fontSize = "font-size: 6pt";
+                        }
+                        if (e == 15 & j == 4)
+                        {
+
+                            anr = "\"Голос\"";
+                            begHour = 21;
+                            begMinute = 30;
+                            r = 16;
+                            rp = 4;
+                            a = 5;
+                            timing = TimeSpan.FromMinutes(100);
+                            isNews = false;
+                            fontSize = "font-size: 6pt";
+                        }
+                        if (e == 16 & j == 4)
+                        {
+
+                            anr = "\"ВЕЧЕРНИЙ УРГАНТ\"";
+                            begHour = 23;
+                            begMinute = 25;
+                            r = 9;
+                            rp = 3;
+                            a = 2;
+                            timing = TimeSpan.FromMinutes(60);
+                            isNews = false;
+                            fontSize = "font-size: 6pt";
+                        }
+                        if (e == 17 & j ==5)
+                        {
+
+                            anr = "Документальный формат";
+                            begHour = 10;
+                            begMinute = 15;
+                            r = 9;
+                            rp = 3;
+                            a = 2;
+                            timing = TimeSpan.FromMinutes(46);
+                            isNews = false;
+                            fontSize = "font-size: 6pt";
+                        }
+                        if (e == 18 & j ==5)
+                        {
+
+                            anr = "\"Теория заговора\"";
+                            begHour = 11;
+                            begMinute = 10;
+                            r = 8;
+                            rp = 2;
+                            a = 0;
+                            timing = TimeSpan.FromMinutes(39);
+                            isNews = false;
+                            fontSize = "font-size: 6pt";
+                        }
+                        if (e == 19 & j == 6)
+                        {
+
+                            anr = "Документальный формат";
+                            begHour = 10;
+                            begMinute = 15;
+                            r = 9;
+                            rp = 3;
+                            a = 2;
+                            timing = TimeSpan.FromMinutes(50);
+                            isNews = false;
+                            fontSize = "font-size: 6pt";
+                        }
+                        if (e == 20 & j == 6)
+                        {
+
+                            anr = "\"Честное слово\"";
+                            begHour = 11;
+                            begMinute = 15;
+                            r = 8;
+                            rp = 2;
+                            a = 2;
+                            timing = TimeSpan.FromMinutes(35);
+                            isNews = false;
+                            fontSize = "font-size: 6pt";
+                        }
+                        if ((timing + TimeSpan.FromMinutes(r) + TimeSpan.FromMinutes(a)).TotalMinutes >= 60)
+                        {
+                            durStr = (timing + TimeSpan.FromMinutes(r) + TimeSpan.FromMinutes(a)).ToString(@"h\:mm");
+                        }
+                        else
+                        {
+                            durStr = (timing + TimeSpan.FromMinutes(r) + TimeSpan.FromMinutes(a)).ToString("mm");
+                        }
+                        if (timing.TotalMinutes>=60)
+                        {
+                            infoString = timing.ToString(@"h\:mm").Trim();
+                        }
+                        else
+                        {
+                            infoString = timing.ToString("mm").Trim();
+                        }
+                        begTime = DateTime.UtcNow.Date;
+                        begTime += TimeSpan.FromDays(j);
+                        begTime += TimeSpan.FromHours(begHour);
+                        begTime += TimeSpan.FromMinutes(begMinute);
+                        endTime = begTime + timing;
+
+
+                        if (r > 0) { infoString += " + " + r.ToString() + "Р(" + rp.ToString() +")"; };
+                        if (a > 0) { infoString += " + " + a.ToString() + "А"; };
+
+                        position += (begHour - 5) * 60 + begMinute;
+
+
+                        string strPos;
+                        string str_height = "";
+                        strPos = "top: " + position.ToString() + "px";
+                        str_height = "height:" + (timing.TotalMinutes + r + a).ToString() + "px;";
+                        string titleClassString = "title-div";
+
+                        string classReserv = "";
+
+                        if (isNews==true) { classNews = "news"; };
+                        if (timing.TotalMinutes>0)
+                        { 
+                            <div draggable="false" id="@modelRef" class="prog @classHighlight @classNews @classReserv @classZapas" style="left:0; @str_height @strPos" ondragstart="dragStart(event)" ondblclick="    dblclick(event)" onclick="    prog_click(event)" oncontextmenu="prog_rclick(event)">
+                                <div id="timing_@modelRef" class=" timing-div" style="@fontSize" draggable="false">
+                                    @begTime.ToString("H:mm") - @endTime.ToString("H:mm") (@durStr)
+                                </div>
+                                    <div class="@titleClassString" style="@fontSize" draggable="false">
+                                        <span style="white-space:pre-line">
+                                                @anr.ToUpper()
+                                        </span>
+                                    </div>
+                                
+                                <div id="infostring_@modelRef" class="info-div" style="@fontSize" draggable="false">
+                                    [@infoString] (00000)
+                                </div>
+                            </div>
+
+                            <div class="profile-hover">
+                                <span>@begTime.ToString("H:mm") - @endTime.ToString("H:mm") (@durStr)</span>
+                                <br />
+                                <span>
+                                    @anr.ToUpper();
+                                </span>
+                                <br />
+                                <span>[@infoString] (00000)</span>
+                            </div>
+                        }
+                    }
+
+
+
+
+                    <!--END OF EFIRS-->
+
+
+                    @*@foreach (chopper1.ws1c.EfirType efir in Model.Efirs)
+                    {
+                        if (efir.Timing >= 60 * 5)
+                        {
+                            Html.RenderAction("ConstructEfir", "Efir", new { curEfir = efir, curDay = dt, chCode = chanCode });
+                        }
+                    }*@
+
+
+
+                </div>
+                            i += 1;
+                        }
+        </div>
+        @*@{
+            dayVariantList = dayVariantList.Substring(0, dayVariantList.Length - 1);
+        }*@
+        <div class="col-lg-1 visible-lg noPadding">
+            @*@{Html.RenderAction("DrawTimeScale", "Day", new { left = false, channelCode = 10 });}*@
+            <div class="timescaleWrapper">
+                @{
+                     left = false;
+                     rulerClass = "";
+                     marginClass = "";
+                     textAlignClass = "";
+
+                    if (left)
+                    {
+                        rulerClass = "float: right; border-right: solid black 1px;";
+                        marginClass = "margin-left: 10px";
+                        textAlignClass = "text-align: right";
+                    }
+                    else
+                    {
+                        rulerClass = "float: left; border-left: solid black 1px;";
+                        marginClass = "margin-right: 10px; text-align: left";
+                        textAlignClass = "text-align: left";
+                    }
+
+                     startHour = 5;
+                     shift = (5 - (10 - 10)) * 2;
+
+                    if (10 != 10 & 10 > 0)
+                    {
+                        startHour -= shift;
+                    }
+
+                    if (startHour < 0)
+                    {
+                        startHour += 24;
+                    }
+
+
+  
+
+                }
+
+                <div class="rulerDrawn" style="@rulerClass">
+                    @{
+                        for (int h = 0; h < 26; h++)
+                        {
+                            curHour = startHour + h;
+                            if (curHour >= 24)
+                            {
+                                curHour -= 24;
+                            }
+                            curHourStr = curHour.ToString();
+                            if (curHourStr.Length == 1)
+                            {
+                                curHourStr = "0" + curHourStr;
+                            }
+
+                            <div class="longBlock" style="@textAlignClass">@curHourStr</div>
+                            <div class="shortBlock" style="@marginClass"></div>
+                            <div class="shortBlock" style="@marginClass"></div>
+                            <div class="longBlock" style="@textAlignClass"></div>
+                            <div class="shortBlock" style="@marginClass"></div>
+                            <div class="shortBlock" style="@marginClass"></div>
+                        }
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+@*</div>*@
+
+
+@*<div id="progFlyoutHandle">
+    <span class="glyphicon glyphicon-transfer"></span>
+</div>
+<div id="progFlyout">
+
+</div>*@
+
+
+
+@section scripts {
+    @*<script src="~/Scripts/jquery-2.0.0.min.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.2.0.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>*@
+
+
+    <script>
+        var menu = document.getElementById("context-menu");
+        var menuState = 0;
+        var active = "context-menu--active";
+        var menuPosition;
+        var menuPositionX;
+        var menuPositionY;
+        var menuWidth;
+        var menuHeight;
+        var windowWidth;
+        var windowHeight;
+        var clickCoords;
+        var clickCoordsX;
+        var clickCoordsY;
+
+        var dayRects = document.getElementsByClassName("dayrect");
+
+        for (var i = 0, len = dayRects.length; i < len; i++) {
+            var dayRect = dayRects[i];
+            contextMenuListener(dayRect);
+        };
+
+
+        var dateDivs = document.getElementsByClassName("date-div");
+        var dowDivs = document.getElementsByClassName("dow-div");
+        for (var i = 0, len = dateDivs.length; i < len; i++) {
+            var dateDiv = dateDivs[i];
+            dateDowListener(dateDiv);
+            var dowDiv = dowDivs[i];
+            dateDowListener(dowDiv);
+        }
+
+
+        clickListener();
+        //resizeListener();
+        /*
+        document.getElementsByClassName('dayrect').addEventListener('contextmenu', function (ev) {
+            ev.preventDefault();
+            toggleMenuOn();
+            return false;
+        }, false);
+        */
+
+        function dateDowListener(el) {
+            el.addEventListener("normalmenu", function (e) {
+                console.log("!");
+                e.stopPropagation();
+            }
+        )};
+
+        function contextMenuListener(el) {
+            el.addEventListener("contextmenu", function (e) {
+                e.preventDefault();
+                console.log("!!!");
+                document.getElementById("context-menu-dayCaption").innerHTML = el.getAttribute("data-tvdate") + " (" + el.getAttribute("data-varnum") + ")";
+                document.getElementById("context-menu-progCaption").innerHTML = rClickProgName;
+                var newHref = "/AdvSearch/PerformAdvSearch?Title=" + rClickProgName;
+                document.getElementById('context-menu-link-shareProg').setAttribute('href', newHref);
+                var newDate = el.getAttribute("data-tvdate").substr(6, 4) + "-" + el.getAttribute("data-tvdate").substr(3, 2) + "-" + el.getAttribute("data-tvdate").substr(0, 2);
+                newHref = "/Weeks/Broadcast?bdate=" + newDate + "\&variantNum=" + el.getAttribute("data-varnum");
+                document.getElementById('context-menu-link-orb').setAttribute('href', newHref);
+                newHref = "/Weeks/Ratings?bdate=" + newDate;
+                document.getElementById('context-menu-link-shareDay').setAttribute('href', newHref);
+
+                toggleMenuOn();
+                positionMenu(e);
+            });
+        }
+        function clickListener() {
+            document.addEventListener("click", function (e) {
+                //console.log("doc.click");
+                var button = e.which || e.button;
+                //console.log("button: " + button);
+                if (button === 1) {
+                    if (menuState == 0) {
+                        var tempDays = document.getElementsByClassName("dayrectTemp");
+                        for (var i = 0; i < tempDays.length; i++) {
+                            tempDays[i].style.display = "none";
+                        }
+                    }
+                    toggleMenuOff();
+
+                    //console.log("Menu-off");
+                }
+
+            });
+        }
+
+
+
+        function toggleMenuOn() {
+            if (menuState !== 1) {
+                menuState = 1;
+
+                menu.classList.add(active);
+                //console.log("MenuOn: "+menu.classList);
+            }
+        }
+
+        function toggleMenuOff() {
+            if (menuState !== 0) {
+                menuState = 0;
+                menu.classList.remove(active);
+            }
+        }
+
+        function getPosition(e) {
+            var posx = 0;
+            var posy = 0;
+
+            if (!e) var e = window.event;
+
+            if (e.pageX || e.pageY) {
+                posx = e.pageX;
+                posy = e.pageY;
+            } else if (e.clientX || e.clientY) {
+                posx = e.clientX + document.body.scrollLeft +
+                                   document.documentElement.scrollLeft;
+                posy = e.clientY + document.body.scrollTop +
+                                   document.documentElement.scrollTop;
+            }
+
+            return {
+                x: posx,
+                y: posy
+            }
+        }
+
+        function positionMenu(e) {
+            //console.log("ok so far");
+            /*
+            clickCoords = getPosition(e);
+            clickCoordsX = clickCoords.x;
+            clickCoordsY = clickCoords.y;
+
+
+
+            menuWidth = menu.offsetWidth + 4;
+            menuHeight = menu.offsetHeight + 4;
+            windowWidth = window.innerWidth;
+            windowHeight = window.innerHeight;
+
+
+            if ((windowWidth - clickCoordsX) < menuWidth) {
+                menu.style.left = windowWidth - menuWidth + "px";
+            } else {
+                menu.style.left = clickCoordsX + "px";
+                console.log("width ok");
+            }
+
+            if ((windowHeight - clickCoordsY) < menuHeight) {
+                menu.style.top = windowHeight - menuHeight + "px";
+                console.log("windowHeight: " + windowHeight);
+                console.log("clickCoordsY: " + clickCoordsY);
+                console.log("menuHeight: " + menuHeight);
+                console.log("menu.style.top: " + menu.style.top);
+            } else {
+                menu.style.top = clickCoordsY + "px";
+                console.log("height ok");
+            }
+            */
+
+            menuPosition = getPosition(e);
+            menuPositionX = menuPosition.x + "px";
+            menuPositionY = menuPosition.y + "px";
+
+            menu.style.left = menuPositionX;
+            menu.style.top = menuPositionY;
+
+        }
+
+        function resizeListener() {
+            window.onresize = function (e) {
+                toggleMenuOff();
+            };
+        }
+
+
+
+        $("#progFlyoutHandle").click(function (evt) {
+
+            if (document.getElementById("progFlyout").style.right == "-200px") {
+                $.ajax({
+                    type: 'GET',
+                    cache: false,
+                    url: '/Day/ConstructZapas',
+                    success: function (data) {
+
+                        document.getElementById('progFlyout').innerHTML = data;
+                        //console.log(document.getElementById('progFlyout').innerHTML);
+                        $("#progFlyoutHandle").animate({ right: "200px" }, 500);
+                        $("#progFlyout").animate({ right: "0" }, 500);
+                    }
+                });
+            }
+            else
+            {
+                document.getElementById('progFlyout').innerHTML = "";
+                $("#progFlyoutHandle").animate({ right: "0" }, 500);
+                $("#progFlyout").animate({ right: "-200px" }, 500);
+            }
+        });
+
+  
+        @*
+            var url = '@Url.Action("Download", "Weeks")';
+            $.post(url, { dayVariantList: dayVariantList, repType: "raskladka" },
+            function () {
+            });
+            *@
+
+
+
+        //console.log("RTF OK!");
+        @*dUpdate.server.print(dayVariantList, repType, weekId, false, true, false);*@
+
+    //});
+    </script>
+
+    @*<script>
+
+
+
+        $(function () {
+            var dUpdate = $.connection.dayUpdate;
+            var xmlhttp;
+            xmlhttp = new XMLHttpRequest();
+
+
+            dUpdate.client.broadcastMessage = function (tvdayref, varNum, serverTime) {
+                console.log(serverTime);
+                if (tvdayref != "") {
+                    var xmlhttp;
+                    xmlhttp = new XMLHttpRequest();
+
+                    xmlhttp.onreadystatechange = function () {
+                        if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+                            console.log(tvdayref + '-' + serverTime);
+                            if (xmlhttp.status == 200) {
+
+                                if (document.getElementById(tvdayref).getAttribute("data-varnum") == varNum) {
+                                    document.getElementById(tvdayref).innerHTML = xmlhttp.responseText;
+                                    console.log("VariantNum Updated: "+document.getElementById(tvdayref).getAttribute("data-varnum"));
+                                }
+                                else
+                                {
+                                    console.log("Variant not found");
+                                }
+
+
+                                //document.getElementById(tvdayref).innerHTML = xmlhttp.responseText;
+                                //document.getElementById("timestampDiv").innerHTML = serverTime;
+
+
+                            }
+                            else if (xmlhttp.status == 400) {
+                                console.log(xmlhttp.statusText);
+                            }
+                            else {
+                                console.log(xmlhttp.statusText);
+                                console.log(xmlhttp.responseText);
+                            }
+                        }
+                    }
+                    xmlhttp.open("POST", "UpdateDayWeek", true);
+                    xmlhttp.setRequestHeader("dayID", tvdayref);
+                    xmlhttp.setRequestHeader("varNum", varNum);
+                    xmlhttp.send(tvdayref);
+                }
+            };
+
+            /*Added 22/06/16*/
+            $.connection.hub.disconnected(function () {
+                console.log("reconnected at " + Date.now());
+                setTimeout(function () {
+                    $.connection.hub.start();
+                }, 5000); // Restart connection after 5 seconds.
+            });
+
+
+            $.connection.hub.start().done(function () {
+                var allDayRects1 = document.getElementsByClassName("dayrect");
+                for (var i = 0; i < allDayRects1.length; i++) {
+                    dUpdate.server.subscribe(allDayRects1.item(i).id);
+                }
+                setInterval(function () {
+                    var allDayRects2 = document.getElementsByClassName("dayrect");
+                    for (var i = 0; i < allDayRects2.length; i++) {
+                        if (allDayRects1.item(i).id != allDayRects2.item(i).id) {
+                            dUpdate.server.subscribe(allDayRects2.item(i).id);
+                        }
+                    }
+                    allDayRects1 = allDayRects2;
+                }, 3000);
+            });
+        });
+    </script>*@
+}

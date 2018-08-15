@@ -25,6 +25,11 @@ namespace stitalizator01.Controllers
             }
         }
 
+        public ActionResult getWeek()
+        {
+            return View();
+        }
+
         [AllowAnonymous]
         public ActionResult BlockScreen()
         {

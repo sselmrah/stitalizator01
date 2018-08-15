@@ -380,6 +380,7 @@
       <DependentUpon>stitDB.mdf</DependentUpon>
     </Content>
     <Content Include="App_Data\Temp\horseIcon.png" />
+    <Content Include="Content\chopper.css" />
     <Content Include="Content\Img\chOneLogoSquare.png" />
     <Content Include="Content\Img\horseIcon.png" />
     <Content Include="Content\Img\preloader-01.gif" />
@@ -506,6 +507,8 @@
     <Content Include="Views\Categories\Edit.cshtml" />
     <Content Include="Views\Categories\Index.cshtml" />
     <Content Include="Views\Categories\ProgsByCat.cshtml" />
+    <Content Include="Views\Shared\_Layout_scripts.cshtml" />
+    <Content Include="Views\Home\getWeek.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\Api\" />

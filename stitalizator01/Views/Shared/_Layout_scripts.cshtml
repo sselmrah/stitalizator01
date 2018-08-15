@@ -1,0 +1,1272 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Ститализатор</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js")
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    <link href="~/Content/chopper.css" rel="stylesheet" />
+</head>
+<body>
+    
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Ститализатор", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+
+
+    <li>
+        @using (Html.BeginForm("advSearch", "CatalogueEntries", FormMethod.Post, new { target = "_blank" }))
+        {
+            @Html.TextBox("Title", "Поиск", new { onclick = "Clear();" });
+        }
+    </li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid body-content">
+        <div class="topSideButtons">
+            <div id="" class="sideButtons"></div>
+            <div id="swapUp" class='sideButtons' onclick="progSwapUp(event)"><span class='glyphicon glyphicon-random'></span></div>
+            <div id="moveUp" class='sideButtons' onclick="progMoveUp(event)"><span class='glyphicon glyphicon-arrow-up'></span></div>
+            <div id="fill" class='sideButtons'><span class='glyphicon glyphicon-resize-full'></span></div>
+            <div id="moveDown" class='sideButtons' onclick="progMoveDown(event)"><span class='glyphicon glyphicon-arrow-down'></span></div>
+            <div id="swapDown" class='sideButtons bottomButton' onclick="progSwapDown(event)"><span class='glyphicon glyphicon-random'></span></div>
+            <div id="titleButton" class='sideButtons' onclick="titleEdit(event)"><span class='glyphicon glyphicon-font'></span></div>
+            <div id="begButton" class='sideButtons'>
+                <div style="font-size:x-small; height:20px;text-align:center">
+                    Начало
+                </div>
+                <div style="font-size:x-large">
+                    <span id="begSpanHours" onmousewheel="adMinsWheel(event)"></span><span id="delimSpan">:</span><span id="begSpanMinutes" onmousewheel="adMinsWheel(event)"></span>
+                </div>
+            </div>
+            <div id="timingButton" class='sideButtons'>
+                <div style="font-size:x-small; height:20px;text-align:center">
+                    Хронометраж
+                </div>
+                <div style="font-size:x-large">
+                    <span id="timingSpanHours" onmousewheel="adMinsWheel(event)"></span><span id="delimSpan">:</span><span id="timingSpanMinutes" onmousewheel="adMinsWheel(event)"></span>
+                </div>
+            </div>
+            <div id="calcAd" class='sideButtons' onclick="progCalcAd(event)">
+                <div style="font-size:x-small; height:20px;text-align:center">
+                    Реклама
+                </div>
+                <div style="font-size:x-large">
+                    <span id="adMinsSpan" onmousewheel="adMinsWheel(event)"></span><span id="rLabelSpan">Р(</span><span id="adPointsSpan" onmousewheel="adMinsWheel(event)"></span><span id="bracketSpan">)</span>
+                </div>
+            </div>
+            <div id="calcAnons" class='sideButtons bottomButton'>
+                <div style="font-size:x-small; height:20px;text-align:center">
+                    Анонсы
+                </div>
+                <div style="font-size:x-large">
+                    <span id="aMinsSpan" onmousewheel="adMinsWheel(event)"></span><span id="aLabelSpan">А(</span><span id="aPointsSpan" onmousewheel="adMinsWheel(event)"></span><span id="bracketSpan">)</span>
+                </div>
+            </div>
+            <div id="timeInput" class='sideButtons'>
+                <input name="chron" type="time" id="chronoPicker" class="" value="" onchange="" />
+            </div>
+            @*<div id="copyZapas" class='sideButtons' onclick="copyProg(event)"><i class="fa fa-copy fa-2x" aria-hidden="true"></i></div>
+    <div id="cutToZapas" class='sideButtons' onclick="cutToZapas(event)"><i class="fa fa-cut fa-2x" aria-hidden="true"></i></div>*@
+            <div id="deleteProg" class='sideButtons' onclick="deleteProg(event)"><span class='glyphicon glyphicon-trash'></span></div>
+
+        </div>
+        <div class="container body-content" id="body-content">
+            <div id="overlayDiv">
+            </div>
+            @RenderBody()
+
+            <hr />
+            <footer>
+                <p>&copy; @DateTime.Now.Year - Ститализатор</p>
+            </footer>
+        </div>
+
+        @Scripts.Render("~/bundles/bootstrap")
+        @RenderSection("scripts", required: false)
+        <script>
+        function mailClick(event)
+        {
+            console.log("here");
+            $.ajax({
+                url: 'Bets/Contact',
+                type: 'POST',
+                data: {
+
+                },
+                success: function (msg) {
+                    console.log(msg);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.log(XMLHttpRequest.responseText);
+                }
+            });
+        }
+        function Clear() {
+            document.getElementById("Title").value = "";
+        }
+
+
+        var offset_data;
+        var dragged_id;
+
+
+        function adMinsWheel(event) {
+            var curProgId = $(".selected").attr('id');
+            var curInfoString = document.getElementById("infostring_" + document.getElementsByClassName("selected")[0].id);
+            var curBegString = document.getElementById("timing_" + document.getElementsByClassName("selected")[0].id).innerHTML;
+            var curTiming = document.getElementById("timing_" + document.getElementsByClassName("selected")[0].id);
+            var delta = event.wheelDelta;
+            var curAd;
+            var curA;
+            var curPoints;
+            var curTime;
+            var curTimingMinutes;
+            var curTimingHours;
+            var hours;
+            var minutes;
+            var r;
+            var t;
+            var a;
+
+            switch (event.target.id) {
+                case "adMinsSpan":
+                    if (delta > 0) {
+                        curAd = parseInt(event.target.innerText) + 1;
+                        document.getElementsByClassName("selected")[0].style.height = parseInt(document.getElementsByClassName("selected")[0].style.height) + 1 + "px";
+                    }
+                    else {
+                        curAd = parseInt(event.target.innerText) - 1;
+                        document.getElementsByClassName("selected")[0].style.height = parseInt(document.getElementsByClassName("selected")[0].style.height) - 1 + "px";
+                    }
+                    event.target.innerText = curAd;
+                    hours = Math.floor(getTimingFromInfoString(curInfoString.innerHTML) / 60);
+                    minutes = getTimingFromInfoString(curInfoString.innerHTML) % 60;
+                    r = curAd;
+                    t = getRPointsFromInfoString(curInfoString.innerHTML);
+                    a = getAFromInfoString(curInfoString.innerHTML);
+                    curInfoString.innerHTML = createNewInfoString(hours, minutes, r, t, a);
+                    break;
+                case "adPointsSpan":
+                    if (delta > 0) {
+                        curPoints = parseInt(event.target.innerText) + 1;
+                    }
+                    else {
+                        curPoints = parseInt(event.target.innerText) - 1;
+                    }
+                    event.target.innerText = curPoints;
+                    hours = Math.floor(getTimingFromInfoString(curInfoString.innerHTML) / 60);
+                    minutes = getTimingFromInfoString(curInfoString.innerHTML) % 60;
+                    r = getRFromInfoString(curInfoString.innerHTML);
+                    t = curPoints;
+                    a = getAFromInfoString(curInfoString.innerHTML);
+                    curInfoString.innerHTML = createNewInfoString(hours, minutes, r, t, a);
+                    break;
+                case "aMinsSpan":
+                    if (delta > 0) {
+                        curA = parseInt(event.target.innerText) + 1;
+                        document.getElementsByClassName("selected")[0].style.height = parseInt(document.getElementsByClassName("selected")[0].style.height) + 1 + "px";
+                    }
+                    else {
+                        curA = parseInt(event.target.innerText) - 1;
+                        document.getElementsByClassName("selected")[0].style.height = parseInt(document.getElementsByClassName("selected")[0].style.height) - 1 + "px";
+                    }
+                    event.target.innerText = curA;
+                    hours = Math.floor(getTimingFromInfoString(curInfoString.innerHTML) / 60);
+                    minutes = getTimingFromInfoString(curInfoString.innerHTML) % 60;
+                    r = getRFromInfoString(curInfoString.innerHTML);
+                    t = getRPointsFromInfoString(curInfoString.innerHTML);
+                    a = curA;
+                    curInfoString.innerHTML = createNewInfoString(hours, minutes, r, t, a);
+                    break;
+                case "timingSpanMinutes":
+                    hours = Math.floor(getTimingFromInfoString(curInfoString.innerHTML) / 60);
+                    minutes = getTimingFromInfoString(curInfoString.innerHTML) % 60;
+                    if (delta > 0) {
+                        document.getElementsByClassName("selected")[0].style.height = parseInt(document.getElementsByClassName("selected")[0].style.height) + 1 + "px";
+
+                        minutes += 1;
+                        if (minutes == 60) {
+                            minutes = 0;
+                            hours += 1;
+                        }
+                    }
+                    else {
+                        document.getElementsByClassName("selected")[0].style.height = parseInt(document.getElementsByClassName("selected")[0].style.height) - 1 + "px";
+
+                        minutes -= 1;
+                        if (minutes == -1 && hours > 0) {
+                            minutes = 59;
+                            hours -= 1;
+                        }
+                        if (minutes == -1 && hours == 0) {
+                            minutes = 0;
+                        }
+                    }
+                    curTimingMinutes = minutes;
+                    curTimingHours = hours;
+                    r = getRFromInfoString(curInfoString.innerHTML);
+                    t = getRPointsFromInfoString(curInfoString.innerHTML);
+                    a = getAFromInfoString(curInfoString.innerHTML);
+                    event.target.innerText = curTimingMinutes;
+                    document.getElementById("timingSpanHours").innerText = curTimingHours;
+                    curInfoString.innerHTML = createNewInfoString(hours, minutes, r, t, a);
+                    break;
+                case "timingSpanHours":
+                    hours = Math.floor(getTimingFromInfoString(curInfoString.innerHTML) / 60);
+                    minutes = getTimingFromInfoString(curInfoString.innerHTML) % 60;
+                    if (delta > 0) {
+                        document.getElementsByClassName("selected")[0].style.height = parseInt(document.getElementsByClassName("selected")[0].style.height) + 60 + "px";
+                        curTimingHours = parseInt(event.target.innerText) + 1;
+                        hours += 1;
+                    }
+                    else {
+                        if (hours > 0) {
+                            document.getElementsByClassName("selected")[0].style.height = parseInt(document.getElementsByClassName("selected")[0].style.height) - 60 + "px";
+                            curTimingHours = parseInt(event.target.innerText) - 1;
+                            hours -= 1;
+                        }
+                    }
+                    r = getRFromInfoString(curInfoString.innerHTML);
+                    t = getRPointsFromInfoString(curInfoString.innerHTML);
+                    a = getAFromInfoString(curInfoString.innerHTML);
+                    event.target.innerText = curTimingHours;
+                    curInfoString.innerHTML = createNewInfoString(hours, minutes, r, t, a);
+                    break;
+                case "begSpanMinutes":
+                    curTime = getBegFromTimingString(curBegString);
+                    hours = parseInt(curTime.substring(0, curTime.indexOf(":")));
+                    minutes = parseInt(curTime.substring(curTime.indexOf(":") + 1, curTime.indexOf(":") + 3));
+                    if (delta > 0) {
+                        document.getElementsByClassName("selected")[0].style.top = parseInt(document.getElementsByClassName("selected")[0].style.top) + 1 + "px";
+                        minutes += 1;
+                        if (minutes == 60) {
+                            minutes = 0;
+                            hours += 1;
+                        }
+                    }
+                    else {
+                        document.getElementsByClassName("selected")[0].style.top = parseInt(document.getElementsByClassName("selected")[0].style.top) - 1 + "px";
+
+                        minutes -= 1;
+                        if (minutes == -1 && hours > 0) {
+                            minutes = 59;
+                            hours -= 1;
+                        }
+                        if (minutes == -1 && hours == 0) {
+                            minutes = 0;
+                        }
+                    }
+                    curBegMinutes = minutes;
+                    curBegHours = hours;
+                    /*
+                    r = getRFromInfoString(curInfoString.innerHTML);
+                    t = getRPointsFromInfoString(curInfoString.innerHTML);
+                    a = getAFromInfoString(curInfoString.innerHTML);
+                    */
+                    var curBegMinutesStr = curBegMinutes.toString();
+                    while (curBegMinutesStr.length < 2) { curBegMinutesStr = "0" + curBegMinutesStr };
+                    event.target.innerText = curBegMinutesStr;
+                    document.getElementById("begSpanHours").innerText = curBegHours;
+                    break;
+                case "begSpanHours":
+                    curTime = getBegFromTimingString(curBegString);
+                    hours = parseInt(curTime.substring(0, curTime.indexOf(":")));
+                    minutes = parseInt(curTime.substring(curTime.indexOf(":") + 1, curTime.indexOf(":") + 3));
+                    if (delta > 0) {
+                        document.getElementsByClassName("selected")[0].style.top = parseInt(document.getElementsByClassName("selected")[0].style.top) + 60 + "px";
+                        curBegHours = parseInt(event.target.innerText) + 1;
+                        hours += 1;
+                    }
+                    else {
+                        if (hours > 0) {
+                            document.getElementsByClassName("selected")[0].style.top = parseInt(document.getElementsByClassName("selected")[0].style.top) - 60 + "px";
+                            curBegHours = parseInt(event.target.innerText) - 1;
+                            hours -= 1;
+                        }
+                    }
+                    /*
+                    r = getRFromInfoString(curInfoString.innerHTML);
+                    t = getRPointsFromInfoString(curInfoString.innerHTML);
+                    a = getAFromInfoString(curInfoString.innerHTML);
+                    */
+                    event.target.innerText = curBegHours;
+                    break;
+            }
+
+
+            curTiming.innerHTML = getTimeByPosition(document.getElementsByClassName("selected")[0].offsetTop, document.getElementsByClassName("selected")[0].offsetHeight);
+            updateHover(curProgId);
+
+            event.preventDefault();
+        }
+
+
+        /*
+        function prog_wheel(event) {
+            var curTiming = document.getElementById("timing_" + event.target.id);
+            var curInfoString = document.getElementById("infostring_" + event.target.id);
+            var delta = event.wheelDelta;
+            if (!event.ctrlKey) {
+                if (delta > 0) {
+                    event.target.style.top = parseInt(event.target.style.top) + 1 + "px";
+                }
+                else {
+                    event.target.style.top = parseInt(event.target.style.top) - 1 + "px";
+                }
+            }
+            else
+            {
+                if (delta > 0) {
+                    event.target.style.height = parseInt(event.target.style.height) + 1 + "px";
+                }
+                else {
+                    event.target.style.height = parseInt(event.target.style.height) - 1 + "px";
+                }
+
+                curInfoString.innerHTML = getNewTiming(curInfoString.innerHTML, delta);
+            }
+            curTiming.innerHTML = getTimeByPosition(event.target.offsetTop, event.target.offsetHeight);
+
+
+
+            //curInfoString.innerHTML = getTimeByPosition(event.target.offsetTop, event.target.offsetHeight);
+
+
+
+            event.preventDefault();
+        }
+        */
+
+        function getAFromInfoString(infoString) {
+            //a rounded to minutes
+            var a;
+
+
+            var tempRes;
+            var seconds = 0;
+
+            if (infoString.indexOf("+") > 0) {
+                if (infoString.indexOf("А") > 0) {
+                    var pos = infoString.indexOf("А");
+                    var len = 0;
+                    while (infoString[pos - 1] != " ") {
+                        pos -= 1;
+                        len += 1;
+                    }
+                    tempRes = infoString.substring(pos, pos + len);
+                    seconds += minutesToSeconds(tempRes);
+                }
+                var minutes = Math.round(seconds / 60);
+                a = minutes;
+            }
+            else {
+                a = 0;
+            }
+
+
+
+            return a;
+        }
+        function getAPointsFromInfoString(infoString) {
+            //a rounded to minutes
+            var points = 0;
+
+
+            var tempRes;
+
+            if (infoString.indexOf("+") > 0) {
+                if (infoString.indexOf("А(") > 0) {
+                    var pos = infoString.indexOf("(А") + 2;
+                    var len = 0;
+                    while (infoString[pos + 1] != ")") {
+                        pos += 1;
+                        len += 1;
+                    }
+                    tempRes = infoString.substring(infoString.indexOf("А(") + 2 + 1, infoString.indexOf("А(") + 2 + 1 + len);
+                    points = tempRes;
+                }
+                else {
+                    points = 0;
+                }
+            }
+
+
+
+
+
+
+            return points;
+        }
+
+
+        function getRFromInfoString(infoString) {
+            //r rounded to minutes
+            var r;
+
+            var adTypes = ["Р", "Р99", "СР", "П", "В"];
+            var tempRes;
+            var seconds = 0;
+            adTypes.forEach(function (item) {
+                if (infoString.indexOf("+") > 0) {
+                    if (infoString.indexOf(item) > 0) {
+                        var pos = infoString.indexOf(item);
+                        var len = 0;
+                        while (infoString[pos - 1] != " ") {
+                            pos -= 1;
+                            len += 1;
+                        }
+                        tempRes = infoString.substring(pos, pos + len);
+                        seconds += minutesToSeconds(tempRes);
+                    }
+                }
+            }, this);
+
+            var minutes = Math.round(seconds / 60);
+
+            r = minutes;
+            //console.log("r:"+ r);
+            return r;
+        }
+
+
+
+
+        function getRPointsFromInfoString(infoString) {
+            //r rounded to minutes
+            var points = 0;
+
+            var adTypes = ["Р"];
+            var tempRes;
+            adTypes.forEach(function (item) {
+                if (infoString.indexOf("+") > 0) {
+                    if (infoString.indexOf(item) > 0) {
+                        var pos = infoString.indexOf(item) + item.length;
+                        var len = 0;
+                        while (infoString[pos + 1] != ")") {
+                            pos += 1;
+                            len += 1;
+                        }
+                        tempRes = infoString.substring(infoString.indexOf(item) + item.length + 1, infoString.indexOf(item) + item.length + 1 + len);
+                        points = tempRes;
+                    }
+                }
+            }, this);
+
+
+
+
+
+            return points;
+        }
+
+        function minutesToSeconds(minSec) {
+            var seconds;
+
+            if (minSec.indexOf(":") > 0) {
+                minutes = parseInt(minSec.substring(0, minSec.indexOf(":")));
+                seconds = minutes * 60;
+                seconds += parseInt(minSec.substring(minSec.indexOf(":") + 1, minSec.indexOf(":") + 3));
+            }
+            else {
+                seconds = minSec * 60;
+            }
+
+
+            return seconds;
+        }
+
+        function getTimingFromInfoString(infoString) {
+            var hours;
+            var minutes;
+            //console.log("infoString: " + infoString);
+            if (infoString.indexOf(":") > 0) {
+                hours = parseInt(infoString.substring(infoString.indexOf("[") + 1, infoString.indexOf(":")));
+                if (hours > 23) {
+                    minutes = hours;
+                    hours = 0;
+                }
+                else {
+                    minutes = parseInt(infoString.substring(infoString.indexOf(":") + 1, infoString.indexOf(":") + 3));
+                    minutes = hours * 60 + minutes;
+                }
+            }
+            else {
+                //console.log("newMinutes: " + infoString.substring(infoString.indexOf("[") + 1, infoString.indexOf("]")));
+                if (infoString.indexOf("+") > 0) {
+                    minutes = infoString.substring(infoString.indexOf("[") + 1, infoString.indexOf("+") - 1);
+                }
+                else {
+                    minutes = infoString.substring(infoString.indexOf("[") + 1, infoString.indexOf("]"));
+                }
+
+            }
+            console.log("getTimingFromInfoString - Минуты: " + minutes);
+            return minutes;
+        }
+
+        function getFullCodeFromInfoString(infoString) {
+            var fullcode = infoString.substring(infoString.indexOf("]"), infoString.length);
+            fullcode = fullcode.substring(fullcode.indexOf("(") + 1, fullcode.indexOf(")"));
+            console.log("getFullCodeFromInfoString: " + fullcode);
+            return fullcode;
+        }
+
+        function getNewTiming(oldInfoString, deltaDir) {
+            var rClickProgName;
+            var newInfoString;
+            var oldTiming;
+            var newTiming;
+            var delta = 1;
+            if (deltaDir < 0) {
+                delta = -1;
+            }
+
+
+            if (oldInfoString.indexOf(":") > 0) {
+                var hours = oldInfoString.substring(oldInfoString.indexOf("[") + 1, oldInfoString.indexOf(":"));
+                var minutes = oldInfoString.substring(oldInfoString.indexOf(":") + 1, oldInfoString.indexOf(":") + 3);
+                oldTiming = hours + ":" + minutes;
+                console.log(oldTiming);
+                if (parseInt(minutes) + parseInt(delta) == 60 | parseInt(minutes) + parseInt(delta) == -1) {
+                    hours = parseInt(hours) + parseInt(delta);
+                    if (delta > 0) {
+                        newTiming = hours + ":00";
+                    }
+                    else {
+                        newTiming = hours + ":59";
+                    }
+                }
+                else {
+                    minutes = parseInt(minutes) + parseInt(delta)
+                    if (minutes < 10) {
+                        minutes = "0" + minutes;
+                    }
+                    newTiming = hours + ":" + minutes;
+
+                }
+                var secondSemicolon = oldInfoString.substring(oldInfoString.indexOf(":") + 1, oldInfoString.length).indexOf(":") + oldInfoString.indexOf(":") + 1;
+                if (secondSemicolon > 0 & secondSemicolon < oldInfoString.indexOf("+")) {
+                    var seconds = oldInfoString.substring(secondSemicolon, secondSemicolon + 3);
+                    oldTiming = oldTiming + seconds;
+                }
+
+                newInfoString = oldInfoString.replace(oldTiming, newTiming);
+
+
+            }
+            else {
+                oldTiming = oldInfoString.substring(1, oldInfoString.indexOf(" "));
+                console.log(oldTiming);
+                newTiming = parseInt(oldTiming) + delta;
+                if (newTiming == 60) {
+                    newTiming = "1:00";
+                }
+                if (newTiming == 0) {
+                    newTiming = "1";
+                }
+                newInfoString = oldInfoString.replace(oldTiming, newTiming);
+            }
+
+
+            return newInfoString;
+        }
+
+
+        function deleteProg(event) {
+            var curProgId = $(".selected").attr('id');
+            var curProg = document.getElementById(curProgId);
+            var curParent = curProg.parentElement;
+            var hoverProg = curProg.nextElementSibling;
+
+            if (curProg.classList.contains("zapas")) {
+                $.ajax({
+                    type: 'POST',
+                    cache: false,
+                    data: {
+                        progId: curProgId
+                    },
+                    url: '/Day/RemoveProgFromZapas',
+                    success: function (data) {
+                        console.log("zapas remove ok");
+                    }
+                });
+            }
+
+            curParent.removeChild(curProg);
+            curParent.removeChild(hoverProg);
+
+            //event.target.parentNode.insertBefore(dm, nextProg);
+
+        }
+
+        function copyProg(event) {
+            var curProgId = $(".selected").attr('id');
+            var curProg = document.getElementById(curProgId);
+            var curInfoString = document.getElementsByClassName("selected")[0].children[2].innerText;
+            var curBegString = document.getElementsByClassName("selected")[0].children[0].innerText;
+
+            var timing = getTimingFromInfoString(curInfoString);
+            var title = document.getElementsByClassName("selected")[0].children[1].innerText;
+            var code = getFullCodeFromInfoString(curInfoString);
+
+            //console.log("CopyProg. Timing: "+ timing+ ". Title: "+title+". Code: "+code);
+
+            $.ajax({
+                type: 'POST',
+                cache: false,
+                data: {
+                    title: title,
+                    pureDur: timing,
+                    fullCode: code
+                },
+                url: '/Day/AddProgToZapas',
+                success: function (data) {
+                    console.log("CopyProg: zapas ok");
+                }
+            });
+        }
+
+        function cutToZapas(event) {
+            copyProg(event);
+            deleteProg(event);
+        }
+
+        var mylatesttap;
+        function prog_click(event) {
+            var now = new Date().getTime();
+            var timesince = now - mylatesttap;
+            if ((timesince < 600) && (timesince > 0)) {
+                dblclick(event);
+            }
+            else
+            {
+                
+            
+
+
+                @*Single click deselects progs*@
+                console.log("event - click");
+                var progs = document.getElementsByClassName("prog");
+                for (var i = 0; i < progs.length; i++) {
+                    progs.item(i).classList.remove('selected');
+                    //progs.item(i).setAttribute("draggable", "false");
+                }
+                dragged_id = '';
+
+                $(".topSideButtons").animate({ opacity: "0" }, 500);
+                $(".topSideButtons").animate({ zIndex: "-1" }, 0);
+
+                @*$(".leftSideButtons").animate({ left: "-70px" }, 500);
+                $("#progFlyoutHandle").animate({ right: "0" }, 500);
+                $("#progFlyout").animate({ right: "-200px" }, 500);*@
+            }
+            mylatesttap = new Date().getTime();
+        }
+
+        function prog_rclick(event) {
+            var curProg = getProgElement(event.target);
+            //console.log("curProg.innerHTML: " + curProg.children[1].children[0].innerHTML.trim());
+            rClickProgName = progNameShortener(curProg.children[1].children[0].innerHTML.trim());
+        }
+
+
+        function getProgElement(el) {
+            var progEl;
+            if (!el.classList.contains("info-div") & !el.classList.contains("timing-div") & !el.classList.contains("title-div") & el.nodeName != "SPAN") {
+                progEl = el;
+            }
+            else {
+                if (el.nodeName != "SPAN") {
+                    progEl = el.parentNode;
+                }
+                else {
+                    progEl = el.parentNode.parentNode;
+                }
+            }
+            return progEl;
+        }
+
+        function progNameShortener(fullProgName) {
+            var shortProgName = "";
+            if (fullProgName.indexOf("ВОСКРЕСНОЕ \"ВРЕМЯ\"") >= 0) {
+                return ("ВОСКРЕСНОЕ \"ВРЕМЯ\"");
+            }
+            if (fullProgName.indexOf("\"") >= 0) {
+                shortProgName = fullProgName.substr(fullProgName.indexOf("\"") + 1);
+                //console.log("shortener1: " + shortProgName);
+                if (shortProgName.indexOf("\"") >= 0) {
+                    shortProgName = shortProgName.substr(0, shortProgName.indexOf("\""));
+                    //console.log("shortener2: " + shortProgName);
+                }
+            }
+            else {
+                if (fullProgName.length > 15) {
+                    shortProgName = fullProgName.substr(0, 14);
+                }
+            }
+            return shortProgName;
+        }
+
+        function dblclick(ev) {
+            ev.stopPropagation();
+            var progs = document.getElementsByClassName("prog");
+
+            for (var i = 0; i < progs.length; i++) {
+                progs.item(i).classList.remove('selected');
+                progs.item(i).setAttribute("draggable", 'false');
+                if (progs.item(i).id == ev.target.id) {
+                    progs.item(i).classList.add('selected');
+                    progs.item(i).setAttribute("draggable", 'true');
+                }
+            }
+
+            if (!ev.target.classList.contains("info-div") & !ev.target.classList.contains("timing-div") & !ev.target.classList.contains("title-div") & ev.target.nodeName != "SPAN") {
+                ev.target.classList.add('selected');
+                ev.target.setAttribute("draggable", true);
+            }
+            else {
+                if (ev.target.nodeName != "SPAN") {
+                    ev.target.parentNode.classList.add('selected');
+                    ev.target.parentNode.setAttribute("draggable", true);
+                    ev.target.setAttribute("draggable", false);
+                }
+                else {
+                    ev.target.parentNode.parentNode.classList.add('selected');
+                    ev.target.parentNode.parentNode.setAttribute("draggable", true);
+                    ev.target.parentNode.setAttribute("draggable", false);
+                }
+            }
+
+
+            //Makes ghostimage visible for the first drag
+            var dm;
+            dm = document.getElementsByClassName("selected")[0];
+            var hoverProg = dm.nextElementSibling;
+            var parent = dm.parentNode;
+            parent.insertBefore(dm, hoverProg);
+
+
+
+
+            var curInfoString = document.getElementsByClassName("selected")[0].children[2].innerText;
+            var curTitleString = document.getElementsByClassName("selected")[0].children[1].innerText;
+            var curBegString = document.getElementsByClassName("selected")[0].children[0].innerText;
+
+            //dm.addEventListener("mousewheel", prog_wheel, true);
+            document.getElementById("adMinsSpan").innerHTML = getRFromInfoString(curInfoString);
+            document.getElementById("adPointsSpan").innerHTML = getRPointsFromInfoString(curInfoString);
+            document.getElementById("aMinsSpan").innerHTML = getAFromInfoString(curInfoString);
+            document.getElementById("aPointsSpan").innerHTML = getAPointsFromInfoString(curInfoString);
+            document.getElementById("timingSpanHours").innerHTML = Math.floor(getTimingFromInfoString(curInfoString) / 60);
+            
+
+            var curMins = (getTimingFromInfoString(curInfoString) % 60).toString();
+            while (curMins.length < 2) curMins = "0" + curMins;
+            document.getElementById("timingSpanMinutes").innerHTML = curMins;
+            //Время начала
+            var curTime = getBegFromTimingString(curBegString);
+            document.getElementById("begSpanHours").innerHTML = curTime.substring(0, curTime.indexOf(":"));
+            document.getElementById("begSpanMinutes").innerHTML = curTime.substring(curTime.indexOf(":") + 1, curTime.indexOf(":") + 3);
+            document.getElementById("chronoPicker").value = curTime;
+
+            @*$(".leftSideButtons").animate({ left: "0" }, 100);*@
+
+            $(".topSideButtons").animate({ zIndex: "100" }, 0);
+            $(".topSideButtons").animate({ opacity: "1" }, 100);
+            dragged_id = dm.id;
+
+
+        }
+
+        function getBegFromTimingString(timingString) {
+            timingString = timingString + "";
+            var res = timingString.match(/\d+:\d+/);
+            console.log("BegTime: " + res[0]);
+            return res[0];
+        }
+
+
+
+
+        function dragStart(event) {
+            /*
+            console.log("event - drag");
+
+            event.stopPropagation();
+            */
+            var dm;
+
+            dm = document.getElementsByClassName("selected")[0];
+            console.log("dm:" + dm.id);
+
+            var style = window.getComputedStyle(dm, null);
+            event.dataTransfer.setData("text/plain",
+                (parseInt(style.getPropertyValue("left"), 10) - event.clientX) + ',' + (parseInt(style.getPropertyValue("top"), 10) - event.clientY));
+
+        }
+
+        function allowDrop(event) {
+            event.preventDefault();
+            return false;
+        }
+
+
+
+        function drop(event) {
+            event.preventDefault();
+            console.log("event - drop");
+            var offset = event.dataTransfer.getData("text/plain").split(',');
+            var dm = document.getElementById(dragged_id);
+
+            var curProgId = dm.id;
+            var hoverProg = dm.nextElementSibling;
+            var newTop = (event.clientY + parseInt(offset[1], 10));
+            var nextProg;
+            var nextProgId;
+
+            if (dm.classList.contains("zapas")) {
+                dm.classList.remove("zapas");
+                $.ajax({
+                    type: 'POST',
+                    cache: false,
+                    data: {
+                        progId: curProgId
+                    },
+                    url: '/Day/RemoveProgFromZapas',
+                    success: function (data) {
+                        console.log("zapas remove ok");
+                    }
+                });
+            }
+
+
+            if (!event.target.classList.contains("info-div") & !event.target.classList.contains("timing-div") & !event.target.classList.contains("title-div")) {
+                if (!event.target.classList.contains("prog")) {
+                    //event.target.appendChild(document.getElementById(dragged_id));
+                    nextProgId = findNextProg(event.target.id, newTop);
+                    //nextProgId = "#" + nextProgId;
+                    nextProg = document.getElementById(nextProgId);
+                    //dm.insertBefore(nextProg);
+                    event.target.insertBefore(hoverProg, nextProg);
+                    event.target.insertBefore(dm, hoverProg);
+                    //event.target.insertBefore(dm, nextProg);
+                    var x = 0;
+                }
+                else {
+                    nextProgId = findNextProg(event.target.parentNode.id, newTop);
+                    //nextProgId = "#" + nextProgId;
+                    nextProg = document.getElementById(nextProgId);
+                    //dm.insertBefore(nextProg);
+
+                    event.target.parentNode.insertBefore(hoverProg, nextProg);
+                    event.target.parentNode.insertBefore(dm, hoverProg);
+                    //event.target.parentNode.insertBefore(dm, nextProg);
+
+                    var x = 0;
+                    //event.target.parentNode.appendChild(document.getElementById(dragged_id));
+                }
+            }
+            else {
+                //event.target.parentNode.parentNode.appendChild(document.getElementById(dragged_id));
+                nextProgId = findNextProg(event.target.parentNode.parentNode.id, newTop);
+                //nextProgId = "#" + nextProgId;
+                nextProg = document.getElementById(nextProgId);
+                //dm.insertBefore(nextProg);
+
+                event.target.parentNode.parentNode.insertBefore(hoverProg, nextProg);
+                event.target.parentNode.parentNode.insertBefore(dm, hoverProg);
+                //event.target.parentNode.parentNode.insertBefore(dm, nextProg);
+                var x = 0;
+            }
+
+
+
+            dm.style.left = '0';
+            dm.style.top = (event.clientY + parseInt(offset[1], 10)) + 'px';
+
+            var dropElement = event.target;
+            var curTiming = document.getElementById("timing_" + dragged_id);
+
+
+            dm.style.width = dropElement.clientWidth;
+            curTiming.innerHTML = getTimeByPosition(dm.offsetTop, dm.offsetHeight);
+            updateHover(dm.id);
+
+
+
+
+            var curBegString = document.getElementsByClassName("selected")[0].children[0].innerText;
+            //Время начала
+            var curTime = getBegFromTimingString(curBegString);
+            document.getElementById("begSpanHours").innerHTML = curTime.substring(0, curTime.indexOf(":"));
+            document.getElementById("begSpanMinutes").innerHTML = curTime.substring(curTime.indexOf(":") + 1, curTime.indexOf(":") + 3);
+
+            return false;
+        }
+
+        function findNextProg(parentId, newTop) {
+            var nextProgId;
+            var curProg = document.getElementById(dragged_id);
+            var progs = $("#" + parentId).find('.prog');
+            var nextProg;
+
+            for (var i = 0; i < progs.length; i++) {
+
+
+                if (progs[i].offsetTop > newTop) {
+                    if (nextProg == null) {
+                        if (progs[i].id != dragged_id) {
+                            nextProg = progs[i];
+                        }
+                    }
+                    else {
+                        if (progs[i].offsetTop < nextProg.offsetTop) {
+                            if (progs[i].id != dragged_id) {
+                                nextProg = progs[i];
+                            }
+                        }
+                    }
+                }
+            }
+            nextProgId = nextProg.id;
+
+            return nextProgId;
+        }
+
+        function progMoveUp(event) {
+            var curProgId = $(".selected").attr('id');
+            var curProg = document.getElementById(curProgId);
+            var curTiming = document.getElementById("timing_" + curProgId);
+
+            var prevProgId = $(".selected").prevAll('.prog:first').attr('id');
+            var prevProg = document.getElementById(prevProgId);
+
+            var newTop = parseInt(prevProg.style.top) + parseInt(prevProg.offsetHeight);
+            curProg.style.top = newTop + 'px';
+            curTiming.innerHTML = getTimeByPosition(curProg.offsetTop, curProg.offsetHeight);
+            updateHover(curProgId);
+        }
+
+        function progMoveDown(event) {
+            var curProgId = $(".selected").attr('id');
+            var curProg = document.getElementById(curProgId);
+            var curTiming = document.getElementById("timing_" + curProgId);
+
+            var nextProgId = $(".selected").nextAll('.prog:first').attr('id');
+            var nextProg = document.getElementById(nextProgId);
+
+            var newTop = parseInt(nextProg.style.top) - parseInt(curProg.offsetHeight);
+            curProg.style.top = newTop + 'px';
+            curTiming.innerHTML = getTimeByPosition(curProg.offsetTop, curProg.offsetHeight);
+            updateHover(curProgId);
+        }
+
+
+        function progCopyToZapas(event) {
+            var curProgId = $(".selected").attr('id');
+            var curProg = document.getElementById(curProgId);
+            var curInfoString = document.getElementById("infostring_" + curProgId);
+            var curProgTitle = curProg.getElementsByClassName("title-div")[0].innerHTML;
+            var minutes = getTimingFromInfoString(curInfoString.innerHTML);
+
+            $.ajax({
+                type: 'POST',
+                cache: false,
+                data: {
+                    title: curProgTitle,
+                    pureDur: minutes.toString(),
+                    fullCode: "11111"
+                },
+                url: '/Day/AddProgToZapas',
+                success: function (data) {
+                    console.log("zapas pass ok");
+                }
+            });
+            /*
+            $.ajax({
+            type: 'POST',
+            cache: false,
+            data: curDt,
+            url: '/Day/AddDayByDate',
+            success: function (data) {
+                document.getElementById('emptyNextDay').innerHTML = data;
+                var res = $("#emptyNextDay").find(".dow-div").first().data("tvdayref");
+                $("#emptyNextDay").removeClass("dayrectAdd");
+                $("#emptyNextDay").addClass("dayrect");
+                $("#emptyNextDay").id = res;
+        }
+        });
+            */
+        }
+
+
+        function titleEdit(event) {
+            var curProgId = $(".selected").attr('id');
+            var curProg = document.getElementById(curProgId);
+            var curProgTitle = curProg.getElementsByClassName("title-div")[0].getElementsByTagName("span")[0].innerHTML;
+            var newTitle = window.prompt("Введите название программы", curProgTitle.replace("\n", "#"));
+            newTitle = newTitle.replace("#", "\n");
+            if (newTitle != null) {
+                curProg.getElementsByClassName("title-div")[0].getElementsByTagName("span")[0].innerHTML = newTitle.toUpperCase();
+            }
+            updateHover(curProgId);
+
+        }
+
+        function progCalcAd(event) {
+            var curProgId = $(".selected").attr('id');
+            var curProg = document.getElementById(curProgId);
+            var curProgTitle = curProg.getElementsByClassName("title-div")[0].innerHTML;
+            var curProgAge = "";
+            if (curProg.getElementsByClassName("age-div").length > 0) {
+                curProgAge = "(" + curProg.getElementsByClassName("age-div")[0].innerHTML + ")";
+            }
+
+            var curTiming = document.getElementById("timing_" + curProgId);
+            var curInfoString = document.getElementById("infostring_" + curProgId);
+
+            var minutes = getTimingFromInfoString(curInfoString.innerHTML);
+            //curInfoString.innerHTML = getNewTiming(curInfoString.innerHTML, delta);
+
+            var r = 0;
+            var t = 0;
+            var a = 0;
+
+            var temp_dur = minutes;
+            var odd = true;
+            while (temp_dur > 0) {
+                if (odd == true && t > 0) {
+                    r += 2;
+                    temp_dur += 2;
+                }
+                if (odd == false) {
+                    r += 2;
+                    t += 1;
+                    a += 1;
+                    temp_dur += 3;
+                }
+                odd = !odd;
+                temp_dur -= 15;
+            }
+
+            temp_dur = parseInt(minutes) + parseInt(r) + parseInt(a);
+
+            //Странная поправка на ветер
+            if (temp_dur < 120)
+                r += 2;
+            //Добавляем раз в час на анонсы для новостей часа
+            a += Math.round(temp_dur / 60);
+            //Проверяем количество точек
+            if (r - t * 4 > 0) t += 1;
+
+            //Для коротких передач делаем на 1 анонс больше, чем точек
+            while (a <= t) a += 1;
+
+            var hours = 0;
+            while (minutes >= 60) {
+                hours += 1;
+                minutes -= 60;
+            }
+
+            curInfoString.innerHTML = createNewInfoString(hours, minutes, r, t, a);
+
+            temp_dur = parseInt(hours * 60) + parseInt(minutes) + parseInt(r) + parseInt(a);
+            curProg.style.height = temp_dur + "px";
+            curTiming.innerHTML = getTimeByPosition(curProg.offsetTop, curProg.offsetHeight);
+
+            document.getElementById("adMinsSpan").innerHTML = getRFromInfoString(curInfoString.innerHTML);
+            document.getElementById("adPointsSpan").innerHTML = getRPointsFromInfoString(curInfoString.innerHTML);
+            document.getElementById("aMinsSpan").innerHTML = getAFromInfoString(curInfoString.innerHTML);
+            document.getElementById("aPointsSpan").innerHTML = getAPointsFromInfoString(curInfoString.innerHTML);
+
+
+
+            updateHover(curProgId);
+
+            event.preventDefault();
+
+        }
+
+        function createNewInfoString(hours, minutes, r, t, a) {
+            var newInfoString;
+            var minutesStr = minutes + "";
+            while (minutesStr.length < 2) { minutesStr = "0" + minutesStr; }
+
+            if (hours > 0) {
+                newInfoString = "[" + hours.toString() + ":" + minutesStr + " + " + r.toString() + "Р(" + t.toString() + ") + " + a.toString() + "А]"
+            }
+            else {
+                newInfoString = "[" + minutesStr + " + " + r.toString() + "Р(" + t.toString() + ") + " + a.toString() + "А]"
+            }
+
+            newInfoString = newInfoString.replace(" + 0Р(0)", "");
+            newInfoString = newInfoString.replace(" + 0А", "");
+
+            return newInfoString;
+        }
+
+
+        function updateHover(curProgId) {
+            var curProg = document.getElementById(curProgId);
+            var curProgTitle = curProg.getElementsByClassName("title-div")[0].innerHTML;
+            var curProgAge = "";
+            if (curProg.getElementsByClassName("age-div").length > 0) {
+                curProgAge = "(" + curProg.getElementsByClassName("age-div")[0].innerHTML + ")";
+            }
+            var curTiming = document.getElementById("timing_" + curProgId);
+            var curInfoString = document.getElementById("infostring_" + curProgId).innerHTML;
+
+            var hoverProg = curProg.nextElementSibling;
+            hoverProg.innerHTML = "<span>" + curTiming.innerHTML + "</span>" + "<br //><span>" + curProgTitle + "<b>" + curProgAge + "<//b><//span><br //><span>" + curInfoString + "<//span>";
+        }
+
+        function progSwapUp(event) {
+            var curProgId = $(".selected").attr('id');
+            var curProg = document.getElementById(curProgId);
+            var curTiming = document.getElementById("timing_" + curProgId);
+            var curProgHover = curProg.nextElementSibling;
+
+            var prevProgId = $(".selected").prevAll('.prog:first').attr('id');
+            var prevProg = document.getElementById(prevProgId);
+            var prevTiming = document.getElementById("timing_" + prevProgId);
+            var prevProgHover = prevProg.nextElementSibling;
+
+            var newCurTop = parseInt(prevProg.style.top);
+            var newPrevTop = newCurTop + parseInt(curProg.offsetHeight);
+
+            curProg.parentNode.insertBefore(curProgHover, prevProg);
+            curProg.parentNode.insertBefore(curProg, curProgHover);
+
+            curProg.style.top = newCurTop + 'px';
+            curTiming.innerHTML = getTimeByPosition(curProg.offsetTop, curProg.offsetHeight);
+            prevProg.style.top = newPrevTop + 'px';
+            prevTiming.innerHTML = getTimeByPosition(prevProg.offsetTop, prevProg.offsetHeight);
+            updateHover(curProgId);
+            updateHover(prevProgId);
+        }
+
+        function progSwapDown(event) {
+            var curProgId = $(".selected").attr('id');
+            var curProg = document.getElementById(curProgId);
+            var curTiming = document.getElementById("timing_" + curProgId);
+            var curProgHover = curProg.nextElementSibling;
+
+            var nextProgId = $(".selected").nextAll('.prog:first').attr('id');
+            var nextProg = document.getElementById(nextProgId);
+            var nextTiming = document.getElementById("timing_" + nextProgId);
+            var nextProgHover = nextProg.nextElementSibling;
+
+
+            var newNextTop = parseInt(curProg.style.top);
+            var newCurTop = newNextTop + parseInt(nextProg.offsetHeight);
+
+            curProg.parentNode.insertBefore(nextProgHover, curProg);
+            curProg.parentNode.insertBefore(nextProg, nextProgHover);
+
+            curProg.style.top = newCurTop + 'px';
+            curTiming.innerHTML = getTimeByPosition(curProg.offsetTop, curProg.offsetHeight);
+            nextProg.style.top = newNextTop + 'px';
+            nextTiming.innerHTML = getTimeByPosition(nextProg.offsetTop, nextProg.offsetHeight);
+            updateHover(curProgId);
+            updateHover(nextProgId);
+        }
+
+        function getTimeByPosition(yPos, curHeight) {
+            var timingString = "Got it!";
+            var timeInMinutes = yPos - 120;
+            var durInMinutes = curHeight;
+            var endTimeInMinutes = timeInMinutes + durInMinutes;
+
+            var hourStart = "";
+            var minuteStart = "";
+            var hourEnd = "";
+            var minuteEnd = "";
+            var hourDur = "";
+            var minuteDur = "";
+            var durStr = "";
+
+            @*Timestart *@
+            hourStart = (((timeInMinutes - timeInMinutes % 60) / 60) + 5).toString();
+            if (parseInt(hourStart) > 23) {
+                hourStart = (parseInt(hourStart) - 24).toString();
+            }
+            minuteStart = (timeInMinutes % 60).toString();
+            if (parseInt(minuteStart) < 10) {
+                minuteStart = "0" + minuteStart;
+            }
+            @*Timeend *@
+            hourEnd = (((endTimeInMinutes - endTimeInMinutes % 60) / 60) + 5).toString();
+            if (parseInt(hourEnd) > 23) {
+                hourEnd = (parseInt(hourEnd) - 24).toString();
+            }
+            minuteEnd = (endTimeInMinutes % 60).toString();
+            if (parseInt(minuteEnd) < 10) {
+                minuteEnd = "0" + minuteEnd;
+            }
+            @*Duration *@
+            hourDur = ((durInMinutes - durInMinutes % 60) / 60).toString();
+            minuteDur = (durInMinutes % 60).toString();
+            if (parseInt(minuteDur) < 10) {
+                minuteDur = "0" + minuteDur;
+            }
+            if (parseInt(hourDur) > 0) {
+                durStr = hourDur + ":" + minuteDur;
+            }
+            else {
+                durStr = minuteDur;
+            }
+
+            @*Creating string*@
+            timingString = hourStart + ":" + minuteStart + " - " + hourEnd + ":" + minuteEnd + " (" + durStr + ")";
+
+            return timingString;
+        }
+
+        function Clear() {
+            document.getElementById("Title").value = "";
+        }
+
+        function getTimeStamp() {
+            var date = new Date(Date.now());
+            var day = '' + date.getDate();
+            var month = '' + (date.getMonth() + 1);
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+            var hours = date.getHours();
+            var minutes = "0" + date.getMinutes();
+            var seconds = "0" + date.getSeconds();
+            var formattedTime = day + '.' + month + '.' + date.getFullYear() + ' ' + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+            return formattedTime;
+        }
+
+        function dayConcur(event) {
+            var curDay = document.getElementById('dayrectRus1');
+            curDay.style.display = "block";
+            console.log('dayConcur fired!');
+        }
+
+
+        </script>
+
+</body>
+
+
+
+</html>

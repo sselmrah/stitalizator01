@@ -1,0 +1,1186 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 10px;
+    padding-right: 0px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 500px;
+}
+
+.navbar-inverse {
+    background-color: #001b65 !important;
+    border: #001b65 !important;
+}
+
+
+
+.dayrect {
+    height: 1661px;
+    background: linear-gradient(slategray 1px, #fff 1px);
+    max-width: 250px;
+    background-size: 100% 60px;
+    background-position-y: 120px;
+    border: solid 0 black;
+    float: left;
+    position: relative;
+}
+
+.dayrectTemp {
+    height: 1661px;
+    background: linear-gradient(slategray 1px, lightblue 1px);
+    width: 200px;
+    max-width: 250px;
+    background-size: 100% 60px;
+    background-position-y: 120px;
+    border: solid 0 black;
+    float: left;
+    position: absolute;
+    top: 154px;
+    left: 0px;
+    display: none;
+}
+
+
+.timescaleWrapper {
+    border: solid 0 red;
+    background-color: none;
+    text-align: right;
+    height: 1660px;
+}
+
+
+.rulerDrawn {
+    width: 20px;
+    height: 1550px;
+    margin-bottom: 30px;
+    position: relative;
+    top: 120px;
+    background: white;
+    text-align: right;
+}
+
+.longBlock {
+    border-top: 1px solid black;
+    width: 100%;
+    height: 10px;
+    font-size: 7pt;
+    text-align: right;
+    margin: 0 auto;
+}
+
+.shortBlock {
+    border-top: 1px solid black;
+    width: 50%;
+    height: 10px;
+    margin: 0 auto;
+}
+
+
+
+.rulerDivLeft {
+    float: right;
+    width: 10px;
+    height: 1550px;
+    margin-bottom: 30px;
+    position: relative;
+    top: 120px;
+    background: linear-gradient(black 1px, white 1px);
+    background-size: 50% 10px;
+    border-right: solid black 1px;
+}
+
+.rulerDivRight {
+    float: left;
+    width: 10px;
+    height: 1550px;
+    margin-bottom: 30px;
+    position: relative;
+    top: 120px;
+    background: linear-gradient(black 1px, white 1px);
+    background-size: 50% 10px;
+    border-left: solid black 1px;
+}
+
+.leftMarginDiv {
+    float: right;
+    width: 10px;
+    height: 1550px;
+    position: relative;
+    top: 120px;
+    background: linear-gradient(black 1px, white 1px);
+    background-size: 50% 30px;
+    margin: 0;
+    padding: 0;
+}
+
+.rightMarginDiv {
+    float: left;
+    width: 10px;
+    height: 1550px;
+    position: relative;
+    top: 120px;
+    background: linear-gradient(black 1px, white 1px);
+    background-size: 50% 30px;
+    margin: 0;
+    padding: 0;
+}
+
+.ruler-ul {
+    height: 1550px;
+}
+
+    .ruler-ul li {
+        position: relative;
+        left: -40px;
+        padding-bottom: 48px;
+        list-style-type: none;
+        font-size: xx-small;
+    }
+
+.ruler-hour {
+    background: linear-gradient(black 1px, white 1px);
+    height: 30px;
+}
+
+.prog {
+    width: 100%;
+    margin: 0 0 0 0;
+    border: solid 1px black;
+    background: white;
+    color: black;
+    overflow: hidden;
+    position: absolute;
+    float: left;
+}
+
+.zapas {
+    position: relative !important;
+    margin-top: 10px;
+}
+
+.news {
+    background-color: lightgray;
+}
+
+.highlight {
+    background-color: lightgray;
+}
+
+.reserv {
+    background-color: lightgray;
+}
+
+.selected {
+    overflow: hidden;
+    z-index: 100000;
+    border: 2px solid blue;
+    -moz-user-select: none;
+    user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-user-drag: element;
+}
+
+
+.timing-div {
+    width: 100%;
+    text-align: center;
+    float: left;
+}
+
+.title-div {
+    width: 100%;
+    text-align: center;
+    line-height: 100%;
+}
+
+.font-bold {
+    font-weight: bold;
+}
+
+.font-italic {
+    font-style: italic;
+}
+
+.font-underline {
+    text-decoration: underline;
+}
+
+.info-div {
+    text-align: center;
+}
+
+.dow-div {
+    background-color: white;
+    border: solid 1px black;
+    height: 20px;
+    text-align: center;
+    color: black;
+}
+
+.date-div {
+    background-color: white;
+    border: solid 1px black;
+    height: 20px;
+    text-align: center;
+    color: black;
+}
+
+.shapka-div {
+    background-color: white;
+    border: solid 1px black;
+    height: 60px;
+    text-align: center;
+    float: none;
+    font-size: smaller;
+}
+
+.datepickers {
+    border: none;
+}
+/*
+#WeekID
+{    
+    width: 500px;
+    border: none;    
+    font-size:xx-large;    
+}
+    */
+#weekSelectContainer {
+    position: relative;
+    top: 10%;
+    text-align: center;
+    border: 0 solid black;
+    /*
+        float: left;
+        width: 80%;     
+    left:5%;  */
+}
+
+#svodkaTextCaption {
+    position: relative;
+    top: -50px;
+    float: left;
+    border: 1px solid black;
+    width: 80%;
+    left: 5%;
+}
+
+#my_col {
+    width: 100px;
+    height: 100px;
+    padding: 0.5em;
+    background-color: darkseagreen;
+    float: left;
+}
+
+#new {
+    height: 100px;
+    background-color: darkseagreen;
+    position: absolute;
+    top: 200px;
+}
+
+
+.weekPickerIcon {
+    font-size: 2em;
+}
+
+
+#Title {
+    align-self: center;
+    background-color: #001b65;
+    border: 1px solid #0566bb;
+    padding-bottom: 0;
+    padding-left: 5px;
+    margin-top: 13px;
+    color: #999999;
+    vertical-align: middle;
+}
+
+
+#userRightsTable {
+    width: 90%;
+    max-width: 1200px;
+}
+
+    #userRightsTable th {
+        font-size: 16px;
+        font-weight: normal;
+        color: #039;
+        padding: 10px 8px;
+        width: 200px;
+        text-align: center;
+        border-bottom: 2px solid #6678b1;
+    }
+
+    #userRightsTable td {
+        font-size: 16px;
+        width: 200px;
+        text-align: center;
+        border-bottom: 1px dotted #6678b1;
+    }
+
+
+
+#searchResultTable {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 12px;
+    background: #fff;
+    margin: 45px;
+    width: 90%;
+    max-width: 1200px;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+    #searchResultTable th {
+        font-size: 14px;
+        font-weight: normal;
+        color: #039;
+        padding: 10px 8px;
+        border-bottom: 2px solid #6678b1;
+        text-align: center;
+    }
+
+    #searchResultTable td {
+        color: #669;
+        padding: 9px 8px 0 8px;
+    }
+
+    #searchResultTable tbody tr:hover td {
+        color: #009;
+    }
+
+.titleCol td {
+    width: 200px;
+    text-align: left;
+}
+
+#timestampDiv {
+    text-align: right;
+    vertical-align: bottom;
+    line-height: 5px;
+    font-size: small;
+    margin-right: 5%;
+}
+
+.searchGroup {
+    float: left;
+    margin: 10px;
+    border-bottom: solid 1px #001b65;
+}
+
+#prodListBox {
+    height: 250px;
+}
+
+.asField #Title {
+    background-color: white;
+    color: black;
+    border: none;
+    width: 90%;
+    min-width: 400px;
+}
+
+#advSearchHidden {
+    height: 0;
+    width: 90%;
+    top: 0;
+    left: 0;
+    opacity: 1;
+    overflow: hidden;
+    vertical-align: central;
+    line-height: 25px;
+    display: inline-block;
+    -webkit-transition: all 0.5s ease-out;
+    -moz-transition: all 0.5s ease-out;
+    -o-transition: all 0.5s ease-out;
+    transition: all 0.5s ease-out;
+}
+
+    #advSearchHidden:target {
+        height: 500px;
+    }
+
+#advSearchExpand {
+    color: white;
+    font-size: xx-large;
+    margin-top: 20px;
+    margin-right: 5%;
+    margin-left: 5%;
+    width: 50px;
+    text-align: center;
+    float: left;
+}
+
+    #advSearchExpand a:link {
+        color: black;
+    }
+
+    #advSearchExpand a:visited {
+        color: black;
+    }
+
+    #advSearchExpand a:hover {
+        color: black;
+    }
+
+    #advSearchExpand a:active {
+        color: black;
+    }
+
+.asCaption {
+    vertical-align: central;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+#advSearchHidden .text-box {
+    border: none;
+}
+
+#advSearchHidden .input {
+    border: none;
+    border-bottom: solid 1px #001b65;
+}
+
+.sameWidth {
+    width: 250px;
+    float: left;
+    border: solid 0 black;
+}
+
+.searchMetaGroup {
+    width: 50%;
+    border: dashed 0 #001b65;
+    height: 500px;
+}
+
+.asGroupCaption {
+    border-bottom: solid 0 #001b65;
+    margin-left: 5px;
+}
+
+.varCode-div {
+    height: 20px;
+    background-color: white;
+    border: solid 1px black;
+    text-align: center;
+    color: black;
+}
+
+#VariantKod {
+    border: none;
+    background: none;
+}
+
+.age-div {
+    border: solid 1px black;
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    font-size: 6pt;
+    line-height: 6pt;
+    font-weight: bold;
+}
+
+.ratingsContainer {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    font-size: 8pt;
+    line-height: 8pt;
+    font-weight: bold;
+}
+
+.ratings {
+    border: solid 1px black;
+    float: left;
+    position: relative;
+    text-align: center;
+    min-width: 25px;
+}
+
+
+.weekPickerContainer {
+    height: 50px;
+    /*width: 95%;
+    text-align:center;
+    vertical-align:central;    
+    border:solid black 1px;        
+    background-color:aquamarine;
+        */
+}
+
+/*.week_bg
+{
+    width:95%;
+}*/
+
+
+.loadingContainer {
+    width: 100%;
+    text-align: center;
+}
+
+.loadingImg {
+    display: block;
+    margin: auto;
+    width: 30px;
+    height: 30px;
+}
+
+.loadingLabel {
+    width: 100%;
+    text-align: center;
+    font-weight: bolder;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 12px;
+    color: #0566bb;
+}
+
+.dayrectAdd {
+    height: 1661px;
+    background: linear-gradient(slategray 1px, aliceblue 1px);
+    max-width: 250px;
+    background-size: 100% 60px;
+    background-position-y: 120px;
+    border: solid 0 black;
+    float: left;
+    position: relative;
+    background-color: white;
+    border: dashed 3px darkgray;
+}
+
+.index_datepickers {
+    border: white 0 solid;
+    background: none;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+}
+
+input[type=date]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    display: none;
+}
+
+input[type=date]::-webkit-calendar-picker-indicator {
+    -webkit-appearance: none;
+    display: block;
+}
+/*
+[draggable] {
+  -moz-user-select: none;  
+  user-select: none;
+  -webkit-user-select: none;  
+  user-select: none;
+  
+  -webkit-user-drag: element;
+}
+  */
+
+
+.leftSideButtons {
+    position: fixed;
+    left: -75px;
+    top: 50px;
+    z-index: -1;
+    font-size: large;
+}
+
+.topSideButtons {
+    position: fixed;
+    left: 0;
+    top: 50px;
+    width: 100%;
+    background-color: #429adb;
+    opacity: 0;
+    z-index: -1;
+    font-size: large;
+}
+
+.channelSideButtons {
+    position: fixed;
+    left: 1%;
+    z-index: 100000;
+    font-size: large;
+    line-height: 60px;
+    width: 70px;
+    height: 70px;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+    vertical-align: middle;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.channelNotSelected {
+    opacity: 0.5;
+}
+
+.channelSelected {
+    opacity: 1.0;
+}
+
+#chOneButton {
+    top: 150px;
+}
+
+    #chOneButton:hover {
+        opacity: 1;
+    }
+
+#rtrButton {
+    top: 250px;
+    background-color: #0566bb;
+    /*background-color:#429adb;   */
+}
+
+    #rtrButton:hover {
+        opacity: 1;
+        /*background-color:#0566bb;*/
+    }
+
+
+#ntvButton {
+    top: 320px;
+    background-color: #37a829;
+    /*background-color:#7adb6e;*/
+}
+
+    #ntvButton:hover {
+        opacity: 1;
+        /*background-color:#37a829;*/
+    }
+
+
+
+.rightSideButtons {
+    position: fixed;
+    right: 10px;
+    top: 150px;
+    z-index: 1000000;
+    font-size: xx-large;
+}
+
+
+.sideButtons {
+    border: 0 solid red;
+    float: left;
+    line-height: 60px;
+    width: 75px;
+    height: 75px;
+    text-align: center;
+    color: white;
+    background-color: #429adb;
+    opacity: 1;
+    cursor: pointer;
+    vertical-align: middle;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.bottomButton {
+    border-right: 1px solid white;
+}
+
+.sideButtons > span {
+    display: inline-block;
+    vertical-align: middle;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.sideButtons:hover {
+    opacity: 1;
+    background-color: #0566bb;
+}
+
+.sideButtons a:link {
+    color: white;
+    text-decoration: none;
+}
+
+.sideButtons a:visited {
+    color: white;
+    text-decoration: none;
+}
+
+.sideButtons a:hover {
+    color: white;
+    text-decoration: none;
+}
+
+.sideButtons a:active {
+    color: white;
+    text-decoration: none;
+}
+
+
+#progFlyoutHandle {
+    position: fixed;
+    top: 40%;
+    right: 0;
+    width: 40px;
+    height: 100px;
+    background-color: #429adb;
+    color: white;
+    /*font-size: xx-large;    */
+    line-height: 120px;
+    padding-left: 5px;
+    cursor: pointer;
+    vertical-align: middle;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+#progFlyout {
+    position: fixed;
+    top: 20%;
+    right: -200px;
+    width: 200px;
+    height: 70%;
+    background-color: #429adb;
+    color: white;
+}
+
+
+
+
+.noPadding {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    .forPrint, .forPrint * {
+        visibility: visible;
+    }
+
+    .notForPrint, .notForPrint * {
+        display: none;
+    }
+
+    .searchResults {
+        position: absolute;
+        left: 0;
+        top: 50px;
+        border-bottom: 1px solid black;
+    }
+
+    #searchResultTable tr {
+        border-bottom: 1px solid #ddd;
+    }
+
+    #searchHeader {
+        position: absolute;
+        left: 200px;
+        top: -50px;
+    }
+}
+
+
+/*Responsive Layout*/
+/* Large desktops and laptops */
+@media (min-width: 1200px) {
+    #WeekID {
+        width: 500px;
+        border: none;
+        font-size: xx-large;
+    }
+
+    .headerPanel {
+        font-size: 8em;
+        height: 300px;
+        line-height: 300px;
+    }
+
+    .tileGroup {
+        height: 250px;
+        line-height: 240px;
+        font-size: large;
+    }
+
+    .tile {
+        height: 250px;
+        line-height: 240px;
+    }
+
+    span.glyphicon {
+        font-size: 2em;
+    }
+
+    .index_datepickers {
+        height: 100px;
+        font-size: 40pt;
+        width: 390px;
+    }
+}
+
+/* Landscape tablets and medium desktops */
+@media (min-width: 992px) and (max-width: 1199px) {
+    #WeekID {
+        width: 500px;
+        border: none;
+        font-size: xx-large;
+    }
+
+    .headerPanel {
+        font-size: 7em;
+        height: 300px;
+        line-height: 300px;
+    }
+
+    .tileGroup {
+        height: 250px;
+        line-height: 240px;
+        font-size: large;
+    }
+
+    .tile {
+        height: 250px;
+        line-height: 240px;
+    }
+
+    span.glyphicon {
+        font-size: 2em;
+    }
+
+    .index_datepickers {
+        height: 100px;
+        font-size: 30pt;
+        width: 390px;
+    }
+}
+
+/* Portrait tablets and small desktops */
+@media (min-width: 768px) and (max-width: 991px) {
+    #WeekID {
+        width: 500px;
+        border: none;
+        font-size: x-large;
+    }
+
+    .headerPanel {
+        font-size: 6em;
+        height: 300px;
+        line-height: 300px;
+    }
+
+    .tileGroup {
+        height: 250px;
+        line-height: 240px;
+        font-size: large;
+    }
+
+    .tile {
+        height: 250px;
+        line-height: 240px;
+    }
+
+    span.glyphicon {
+        font-size: 2em;
+    }
+
+    .index_datepickers {
+        height: 100px;
+        font-size: 36pt;
+        width: 340px;
+    }
+}
+
+/* Landscape phones and portrait tablets */
+@media (max-width: 767px) {
+    #WeekID {
+        width: 300px;
+        border: none;
+        font-size: large;
+    }
+
+    .headerPanel {
+        font-size: 5em;
+        height: 200px;
+        line-height: 200px;
+    }
+
+    .tileGroup {
+        height: 250px;
+        line-height: 240px;
+        font-size: large;
+    }
+
+    .tile {
+        height: 250px;
+        line-height: 240px;
+    }
+
+    span.glyphicon {
+        font-size: 2em;
+    }
+
+    .index_datepickers {
+        height: 100px;
+        font-size: 20pt;
+        width: 240px;
+    }
+}
+
+/* Portrait phones and smaller */
+@media (max-width: 480px) {
+    #WeekID {
+        width: 300px;
+        border: none;
+        font-size: large;
+    }
+
+    .headerPanel {
+        font-size: 2em;
+        height: 100px;
+        line-height: 100px;
+    }
+
+    .tileGroup {
+        height: 150px;
+        line-height: 140px;
+        font-size: small;
+    }
+
+    .tile {
+        height: 150px;
+        line-height: 140px;
+    }
+
+    span.glyphicon {
+        font-size: 1em;
+    }
+
+    .index_datepickers {
+        height: 100px;
+        font-size: 12pt;
+        width: 130px;
+    }
+}
+
+.papers, .papers:before, .papers:after {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.1), 1px 1px 3px rgba(0,0,0,0.2);
+}
+
+.papers {
+    position: relative;
+    width: 99%;
+    padding: 2em;
+    margin: 10px auto;
+}
+
+    .papers:before, .papers:after {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        -webkit-transform: rotateZ(0.5deg);
+        -o-transform: rotate(0.5deg);
+        transform: rotateZ(0.5deg);
+        z-index: -1;
+    }
+
+    .papers:after {
+        -webkit-transform: rotateZ(-0.5deg);
+        -o-transform: rotate(-0.5deg);
+        transform: rotateZ(-0.5deg);
+    }
+
+
+
+
+.context-menu {
+    display: none;
+    position: absolute;
+    z-index: 100000000000;
+}
+
+.context-menu--active {
+    display: block;
+    color: white;
+    background-color: #429adb;
+    border: 1px solid #0566bb;
+    padding: 5px;
+    opacity: 0.95;
+    width: 200px;
+    max-width: 400px;
+}
+
+.context-menu__items {
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.context-menu-caption {
+    border-bottom: 1px solid white;
+}
+
+
+.context-menu--active a:link {
+    color: white;
+}
+
+.context-menu--active a:visited {
+    color: white;
+}
+
+.context-menu--active a:hover {
+    color: white;
+}
+
+.context-menu--active a:active {
+    color: white;
+}
+
+.dayrectOrb {
+    height: 1661px;
+    background: linear-gradient(slategray 1px, aliceblue 1px);
+    background-size: 100% 60px;
+    background-position-y: 100px;
+    border-right: solid 1px black;
+    float: left;
+    position: relative;
+}
+
+
+.weekPickerContainer {
+    height: 50px;
+    /*
+    width: 95%;
+    text-align:center;
+    vertical-align:central;    
+    border:solid black 0;    
+        */
+}
+
+.weekPickerArrow {
+    position: relative;
+    top: 15%;
+    /*
+    float:left;
+    width:10%; */
+}
+
+.orbdowDiv {
+    text-align: center;
+    border: 1px solid black;
+    background-color: white;
+    height: 20px;
+    color: black;
+}
+
+.orbNameDiv {
+    float: left;
+    width: calc(100%/5);
+    border: 1px solid black;
+    text-align: center;
+    height: 20px;
+}
+
+
+
+
+.width1 {
+    width: calc((100%/5)*1);
+}
+
+.width2 {
+    width: calc((100%/5)*2);
+}
+
+.width3 {
+    width: calc((100%/5)*3);
+}
+
+.width4 {
+    width: calc((100%/5)*4);
+}
+
+.width5 {
+    width: calc((100%/5)*5);
+}
+
+.xpos0 {
+    left: 0;
+}
+
+.xpos1 {
+    left: calc((100%/5)*1);
+}
+
+.xpos2 {
+    left: calc((100%/5)*2);
+}
+
+.xpos3 {
+    left: calc((100%/5)*3);
+}
+
+.xpos4 {
+    left: calc((100%/5)*4);
+}
+
+
+.profile-hover {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 99;
+    border: 0 solid #333;
+    background: #429adb;
+    width: 100%;
+    text-align: center;
+    color: white;
+}
+
+.prog:hover + div {
+    display: block;
+}
+
+
+
+
+
+#tail {
+    position: absolute;
+    float: left;
+    top: -10px;
+    border-top: 2px dashed red;
+    width: 80%;
+}
