@@ -11,6 +11,7 @@ using stitalizator01.Models;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.Bot.Connector;
+using System.Web.UI.WebControls;
 
 namespace stitalizator01.Controllers
 {
@@ -155,6 +156,8 @@ namespace stitalizator01.Controllers
             ViewBag.periodDescription = curPeriod.PeriodDescription;
             return PartialView(bets);
         }
+
+
         public ActionResult WhiteBoardPdf(int periodId = 0)
         {
             Period curPeriod = new Period();
@@ -603,5 +606,73 @@ namespace stitalizator01.Controllers
 
             return score;
         }
+
+        public void trainModel()
+        {
+            var bets = db.Bets.ToList();
+            var progs = db.Programs.Where(p=> p.IsBet).ToList();
+            var users = db.Users.Where(u => u.UserName != "Admin" && u.UserName != "Виктория").ToList();
+            DataTable dt = new DataTable();            
+            DataRow drow;
+            DataColumn col1 = new DataColumn("Prog Name", typeof(string));
+            DataColumn col2 = new DataColumn("Channel Name", typeof(string));
+            DataColumn col3 = new DataColumn("Date", typeof(DateTime));
+            DataColumn col4 = new DataColumn("DoW", typeof(int));
+            DataColumn col5 = new DataColumn("TimeStart", typeof(int)); //seconds from 00:00:00
+            DataColumn col6 = new DataColumn("Category1", typeof(string));
+            DataColumn col7 = new DataColumn("Category2", typeof(string));
+            DataColumn col8 = new DataColumn("user1bet", typeof(Single));
+            DataColumn col9 = new DataColumn("user2bet", typeof(Single));
+            DataColumn col10 = new DataColumn("user3bet", typeof(Single));
+            DataColumn col11 = new DataColumn("user4bet", typeof(Single));
+            DataColumn col12 = new DataColumn("user5bet", typeof(Single));
+            DataColumn col13 = new DataColumn("user6bet", typeof(Single));
+            DataColumn col14 = new DataColumn("user7bet", typeof(Single));
+            DataColumn col15 = new DataColumn("user8bet", typeof(Single));
+            DataColumn col16 = new DataColumn("user9bet", typeof(Single));
+            DataColumn col17 = new DataColumn("user10bet", typeof(Single));
+            DataColumn col18 = new DataColumn("Result", typeof(Single));
+
+
+            dt.Columns.Add(col1);
+            dt.Columns.Add(col2);
+            dt.Columns.Add(col3);
+            dt.Columns.Add(col4);
+            dt.Columns.Add(col5);
+            dt.Columns.Add(col6);
+            dt.Columns.Add(col7);
+            foreach (ApplicationUser user in users)
+            {
+                DataColumn col = new DataColumn();
+                col.ColumnName = user.UserName;
+                col.DataType = typeof(Single);
+                dt.Columns.Add(col);
+            }                      
+            dt.Columns.Add(col18);
+
+            foreach (Program prog in progs)
+            {
+                drow = dt.NewRow();
+                drow[0] = prog.ProgTitle;
+                drow[1] = prog.ChannelCode;
+                drow[2] = prog.TvDate.Date;
+                drow[3] = (int)prog.TvDate.DayOfWeek;
+                drow[4] = prog.TimeStart.Hour * 60 * 60 + prog.TimeStart.Minute * 60 + prog.TimeStart.Second;
+                drow[5] = (prog.Cat1!=null) ? prog.Cat1.Id.ToString() : "null";
+                drow[6] = (prog.Cat2 != null) ? prog.Cat2.Id.ToString() : "null";
+                int i = 0;
+                foreach (ApplicationUser user in users)
+                {
+                    i++;
+                    drow[6 + i] = bets.Where(b => b.ApplicationUser.Id == user.Id && b.Program.ProgramID == prog.ProgramID).FirstOrDefault();                    
+                }
+                drow[7 + i] = prog.ShareStiPlus;
+            }
+            GridView GridView1 = new GridView();
+            GridView1.DataSource = dt;
+            GridView1.DataBind();
+            int x = 0;
+        }
+
     }
 }

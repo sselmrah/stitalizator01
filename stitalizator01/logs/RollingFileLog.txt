@@ -202,47 +202,11 @@
 21.05.2018 15:10:00 [Global.asax] INFO - 30 minutes elapsed.
 21.05.2018 15:13:18 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
 21.05.2018 15:24:20 [Global.asax] INFO - Application Started
-13.08.2018 08:49:01 [Global.asax] INFO - Application Started
-13.08.2018 09:19:01 [Global.asax] INFO - 30 minutes elapsed.
-13.08.2018 09:25:32 [Global.asax] INFO - Application Started
-13.08.2018 09:55:32 [Global.asax] INFO - 30 minutes elapsed.
-13.08.2018 10:25:33 [Global.asax] INFO - 30 minutes elapsed.
-13.08.2018 10:45:22 [Global.asax] INFO - Application Started
-13.08.2018 10:51:27 [Global.asax] INFO - Application Started
-13.08.2018 11:21:27 [Global.asax] INFO - 30 minutes elapsed.
-13.08.2018 11:25:30 [Global.asax] INFO - Application Started
-13.08.2018 11:40:28 [Global.asax] INFO - Application Started
-13.08.2018 12:03:18 [Global.asax] INFO - Application Started
-13.08.2018 12:56:57 [Global.asax] INFO - Application Started
-13.08.2018 12:57:00 [HomeController.cs] INFO - User admin has opened Index page
-13.08.2018 13:26:58 [Global.asax] INFO - 30 minutes elapsed.
-13.08.2018 13:56:58 [Global.asax] INFO - 30 minutes elapsed.
-13.08.2018 14:28:07 [HomeController.cs] INFO - User admin has opened Index page
-13.08.2018 14:31:30 [Global.asax] INFO - 30 minutes elapsed.
-13.08.2018 15:01:54 [Global.asax] INFO - 30 minutes elapsed.
-14.08.2018 07:23:51 [Global.asax] INFO - 30 minutes elapsed.
-14.08.2018 18:48:45 [Global.asax] INFO - 30 minutes elapsed.
-14.08.2018 19:19:06 [Global.asax] INFO - 30 minutes elapsed.
-14.08.2018 19:49:06 [Global.asax] INFO - 30 minutes elapsed.
-14.08.2018 20:19:06 [Global.asax] INFO - 30 minutes elapsed.
-14.08.2018 20:49:06 [Global.asax] INFO - 30 minutes elapsed.
-14.08.2018 21:19:07 [Global.asax] INFO - 30 minutes elapsed.
-14.08.2018 21:49:07 [Global.asax] INFO - 30 minutes elapsed.
-14.08.2018 22:19:07 [Global.asax] INFO - 30 minutes elapsed.
-14.08.2018 22:49:07 [Global.asax] INFO - 30 minutes elapsed.
-14.08.2018 23:19:07 [Global.asax] INFO - 30 minutes elapsed.
-14.08.2018 23:49:08 [Global.asax] INFO - 30 minutes elapsed.
-15.08.2018 00:19:08 [Global.asax] INFO - 30 minutes elapsed.
-15.08.2018 00:49:08 [Global.asax] INFO - 30 minutes elapsed.
-15.08.2018 01:19:08 [Global.asax] INFO - 30 minutes elapsed.
-15.08.2018 01:49:08 [Global.asax] INFO - 30 minutes elapsed.
-15.08.2018 02:19:09 [Global.asax] INFO - 30 minutes elapsed.
-15.08.2018 02:49:09 [Global.asax] INFO - 30 minutes elapsed.
-15.08.2018 03:19:09 [Global.asax] INFO - 30 minutes elapsed.
-15.08.2018 03:49:09 [Global.asax] INFO - 30 minutes elapsed.
-15.08.2018 04:19:09 [Global.asax] INFO - 30 minutes elapsed.
-15.08.2018 04:49:10 [Global.asax] INFO - 30 minutes elapsed.
-15.08.2018 05:19:10 [Global.asax] INFO - 30 minutes elapsed.
-15.08.2018 05:49:10 [Global.asax] INFO - 30 minutes elapsed.
-15.08.2018 06:19:10 [Global.asax] INFO - 30 minutes elapsed.
-15.08.2018 06:49:16 [Global.asax] INFO - 30 minutes elapsed.
+22.05.2018 12:57:48 [Global.asax] INFO - Application Started
+22.05.2018 12:58:16 [HomeController.cs] INFO - User admin has opened Index page
+25.05.2018 13:56:11 [Global.asax] INFO - Application Started
+25.05.2018 13:56:44 [HomeController.cs] INFO - User admin has opened Index page
+25.05.2018 13:57:50 [Global.asax] INFO - Application Started
+25.05.2018 13:57:59 [HomeController.cs] INFO - User admin has opened Index page
+25.05.2018 14:00:52 [Global.asax] INFO - Application Started
+25.05.2018 14:02:08 [HomeController.cs] INFO - User admin has opened Index page
