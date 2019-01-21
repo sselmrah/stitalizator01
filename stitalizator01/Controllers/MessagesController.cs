@@ -16,10 +16,11 @@ using System.Globalization;
 using System.Web;
 using System.Web.Mvc;
 using System.Data.Entity;
+using System.Threading;
 
 namespace stitalizator01.Controllers
 {
-    [BotAuthentication]
+    //[BotAuthentication(MicrosoftAppId = "ed8d437a-c850-4738-a15f-534457ad8716", MicrosoftAppPassword = "jYAUUmDx1zWwfv3L1BpmOeR")]
     public class MessagesController : ApiController
     {
         /// <summary>
@@ -29,6 +30,24 @@ namespace stitalizator01.Controllers
         /// 
         ApplicationDbContext db = MvcApplication.db;
         private static readonly log4net.ILog logM = log4net.LogManager.GetLogger("MessagesController.cs");
+        string x = "";
+
+
+        public static async Task<bool> AuthenticateBotRequest(HttpRequestMessage req, Activity activity, CancellationToken token)
+        {
+            var credProvider = new SettingsCredentialProvider();
+
+            var authenticator = new BotAuthenticator(credProvider, JwtConfig.ToBotFromChannelOpenIdMetadataUrl, disableEmulatorTokens: false);
+
+
+            var authenticated = await authenticator.TryAuthenticateAsync(req, new[] { activity }, token);
+
+            if (authenticated)
+            {
+                MicrosoftAppCredentials.TrustServiceUrl(activity.ServiceUrl);
+            }
+            return authenticated;
+        }
 
         public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
         {

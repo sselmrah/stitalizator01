@@ -15,7 +15,7 @@ using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InlineQueryResults;
-using Telegram.Bot.Types.InputMessageContents;
+//using Telegram.Bot.Types.InputMessageContents;
 using Telegram.Bot.Types.ReplyMarkups;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
@@ -104,7 +104,7 @@ namespace stitalizator01
                             */
 
 
-                            if (message.Type == Telegram.Bot.Types.Enums.MessageType.TextMessage)
+                            if (message.Type == Telegram.Bot.Types.Enums.MessageType.Text)
                             {
                                 if (message.Text == "/register")
                                 {
@@ -121,10 +121,11 @@ namespace stitalizator01
                                 else if (message.Text == "/saysomething")
                                 {
                                     // в ответ на команду /saysomething выводим сообщение
-                                    ReplyKeyboardHide rkh = new ReplyKeyboardHide();
+                                    //ReplyKeyboardHide rkh = new ReplyKeyboardHide();
 
-                                    await Bot.SendTextMessageAsync(message.Chat.Id, "тест",
-                                           replyToMessageId: message.MessageId, replyMarkup: rkh);
+                                    //await Bot.SendTextMessageAsync(message.Chat.Id, "тест",
+                                    //       replyToMessageId: message.MessageId, replyMarkup: rkh);
+                                    await Bot.SendTextMessageAsync(message.Chat.Id, "something!", replyToMessageId: message.MessageId);
                                 }
                                 else if (message.Text == "/mybets")
                                 {
@@ -214,11 +215,11 @@ namespace stitalizator01
 
         public InlineKeyboardMarkup createKeabordFromBets(List<Bet> bets, bool includeLink = false)
         {
-            InlineKeyboardMarkup kb = new InlineKeyboardMarkup();
+            
 
             List<InlineKeyboardButton> buttons = new List<InlineKeyboardButton>();
             List<InlineKeyboardButton[]> rows = new List<InlineKeyboardButton[]>();
-
+            InlineKeyboardMarkup kb = new InlineKeyboardMarkup(buttons);
             foreach (Bet b in bets)
             {
                 InlineKeyboardButton curButton = new InlineKeyboardButton();
@@ -232,7 +233,8 @@ namespace stitalizator01
             }
             if (includeLink)
             {
-                InlineKeyboardButton curButton = new InlineKeyboardButton(text: "Перейти на сайт");
+                InlineKeyboardButton curButton = new InlineKeyboardButton();
+                curButton.Text = "Перейти на сайт";
                 curButton.Url = "https://stitalizator.azurewebsites.net";
                 InlineKeyboardButton[] row = new InlineKeyboardButton[1];
                 row[0] = curButton;
@@ -240,7 +242,7 @@ namespace stitalizator01
             }
 
 
-            kb.InlineKeyboard = rows.ToArray();
+            //kb.InlineKeyboard = rows.ToArray();
 
             return kb;
         }
