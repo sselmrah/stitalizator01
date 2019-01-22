@@ -92,47 +92,47 @@ namespace stitalizator01.Controllers
                             DateTime now = (DateTime.UtcNow + MvcApplication.utcMoscowShift).Date;
                             try
                             {
-                                List<Bet> allbets = db.Bets.Where(b => b.ApplicationUser.TelegramUserName == "amosendz" & b.Program.TvDate == now & b.BetSTIplus == 0 & !b.IsLocked).ToList();
-                                //manualTeleSend("amosendz", activity, allbets);
-                                ApplicationUser curUser = getUserFromActivity(activity);
-                                //var _connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                                if (curUser != null)
-                                {
-                                    Activity reply = activity.CreateReply("");
-                                    //DateTime curDt = DateTime.UtcNow + MvcApplication.utcMoscowShift;
-                                    //List<Bet> bets = getBetsByUserDay(curUser, curDt);
-                                    //TeleBot tb = new TeleBot();
-                                    //InlineKeyboardMarkup kb = tb.createKeabordFromBets(bets, true);
-                                    //string jsonKb = JsonConvert.SerializeObject(kb);
-                                    string text = "Ответ";
-                                    //if (bets.Count > 0)
-                                    //{
-                                    //    text = "Ставки на " + curDt.ToString("dd.MM.yyyy");
-                                    //}
-                                    //else
-                                    //{
-                                    //    text = "Открытых ставок на " + curDt.ToString("dd.MM.yyyy") + " нет";
-                                    //}
+                                //List<Bet> allbets = db.Bets.Where(b => b.ApplicationUser.TelegramUserName == "amosendz" & b.Program.TvDate == now & b.BetSTIplus == 0 & !b.IsLocked).ToList();
+                                ////manualTeleSend("amosendz", activity, allbets);
+                                //ApplicationUser curUser = getUserFromActivity(activity);
+                                ////var _connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                                //if (curUser != null)
+                                //{
+                                //    Activity reply = activity.CreateReply("");
+                                //    //DateTime curDt = DateTime.UtcNow + MvcApplication.utcMoscowShift;
+                                //    //List<Bet> bets = getBetsByUserDay(curUser, curDt);
+                                //    //TeleBot tb = new TeleBot();
+                                //    //InlineKeyboardMarkup kb = tb.createKeabordFromBets(bets, true);
+                                //    //string jsonKb = JsonConvert.SerializeObject(kb);
+                                //    string text = "Ответ";
+                                //    //if (bets.Count > 0)
+                                //    //{
+                                //    //    text = "Ставки на " + curDt.ToString("dd.MM.yyyy");
+                                //    //}
+                                //    //else
+                                //    //{
+                                //    //    text = "Открытых ставок на " + curDt.ToString("dd.MM.yyyy") + " нет";
+                                //    //}
 
-                                    reply.ChannelData = new TelegramChannelData()                                    
-                                    {
-                                        method = "sendMessage",
-                                        parameters = new TelegramParameters()
-                                        {
-                                            
-                                            text = text//,                                            
-                                            //parse_mode = "Markdown",
-                                            //reply_markup = jsonKb
-                                        }
-                                    };
-                                    connector.Conversations.ReplyToActivity(reply);
-                                }
+                                //    reply.ChannelData = new TelegramChannelData()                                    
+                                //    {
+                                //        method = "sendMessage",
+                                //        parameters = new TelegramParameters()
+                                //        {
 
+                                //            text = text//,                                            
+                                //            //parse_mode = "Markdown",
+                                //            //reply_markup = jsonKb
+                                //        }
+                                //    };
+                                //    connector.Conversations.ReplyToActivity(reply);
+                                //}
+                                sendBasicResponse(activity);
 
                             }
                             catch (Exception ex)
                             {
-                                logM.Error("Something went wrong during Telegram test.", ex);
+                                logM.Error("Something went wrong during simpler Telegram test.", ex);
                             }
                         }
                         else if (activity.Text.Length>=5)
@@ -273,6 +273,36 @@ namespace stitalizator01.Controllers
                     }
                 };
                 connector.Conversations.ReplyToActivity(reply);
+            }
+        }
+
+        private void sendBasicResponse(Activity activity)
+        {
+            ApplicationUser curUser = getUserFromActivity(activity);
+            var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+            if (curUser != null)
+            {
+                Activity reply = activity.CreateReply("Simpler Text");                
+                TeleBot tb = new TeleBot();
+                string text = "Simple text";
+
+                //reply.ChannelData = new TelegramChannelData()
+                //{
+                //    method = "sendMessage",
+                //    parameters = new TelegramParameters()
+                //    {
+                //        text = text
+                //    }
+                //};
+                
+                try
+                {
+                    connector.Conversations.ReplyToActivity(reply);
+                }
+                catch (Exception ex)
+                {
+                    logM.Error("Inner problem of simpler Telegram test.", ex);
+                }
             }
         }
 
