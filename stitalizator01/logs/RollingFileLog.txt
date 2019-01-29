@@ -346,3 +346,38 @@
 22.01.2019 11:49:18 [HomeController.cs] INFO - User admin has opened Index page
 22.01.2019 11:50:38 [HomeController.cs] INFO - User admin has opened Index page
 22.01.2019 11:51:38 [HomeController.cs] INFO - User admin has opened Index page
+25.01.2019 13:17:10 [Global.asax] INFO - Application Started
+25.01.2019 13:18:08 [HomeController.cs] INFO - User admin has opened Index page
+25.01.2019 13:18:57 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+25.01.2019 13:19:14 [ProgramsController.cs] INFO - User admin has updated schedule for 25.01.2019
+25.01.2019 13:19:14 [ProgramsController.cs] INFO - User admin has opened Programs/ProgsByDate page for 25.01.2019
+25.01.2019 13:19:14 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+25.01.2019 13:19:15 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+25.01.2019 13:20:26 [Global.asax] INFO - Application Started
+25.01.2019 13:20:27 [HomeController.cs] INFO - User admin has opened Index page
+25.01.2019 13:25:35 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+25.01.2019 13:31:32 [HomeController.cs] INFO - User admin has opened Index page
+25.01.2019 13:50:27 [Global.asax] INFO - 30 minutes elapsed.
+25.01.2019 14:20:27 [Global.asax] INFO - 30 minutes elapsed.
+25.01.2019 14:26:54 [Global.asax] INFO - Application Started
+25.01.2019 14:26:55 [HomeController.cs] INFO - User admin has opened Index page
+25.01.2019 14:27:45 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+25.01.2019 14:45:02 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+25.01.2019 14:48:02 [Global.asax] INFO - Application Started
+25.01.2019 14:48:03 [HomeController.cs] INFO - User admin has opened Index page
+25.01.2019 14:50:58 [Global.asax] INFO - Application Started
+25.01.2019 14:50:59 [HomeController.cs] INFO - User admin has opened Index page
+25.01.2019 14:52:59 [Global.asax] INFO - Application Started
+25.01.2019 14:53:00 [HomeController.cs] INFO - User admin has opened Index page
+25.01.2019 15:01:17 [Global.asax] INFO - Application Started
+25.01.2019 15:01:18 [HomeController.cs] INFO - User admin has opened Index page
+25.01.2019 15:07:15 [Global.asax] INFO - Application Started
+25.01.2019 15:07:16 [HomeController.cs] INFO - User admin has opened Index page
+25.01.2019 15:11:24 [ProgramsController.cs] INFO - User admin has opened Programs/Index page
+25.01.2019 15:12:53 [Global.asax] INFO - Application Started
+29.01.2019 11:09:11 [Global.asax] INFO - Application Started
+29.01.2019 11:11:36 [Global.asax] INFO - Application Started
+29.01.2019 11:15:18 [Global.asax] INFO - Application Started
+29.01.2019 11:17:03 [Global.asax] INFO - Application Started
+29.01.2019 11:18:46 [Global.asax] INFO - Application Started
+29.01.2019 11:31:38 [Global.asax] INFO - Application Started

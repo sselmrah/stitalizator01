@@ -37,6 +37,7 @@ namespace stitalizator01
         private Regex exp = new Regex("^(?=.*\\d)\\d*[\\.\\,]?\\d*$");
         private long secondsElapsed = 0;
 
+
         public async void StartBot()
         {
             try
@@ -219,7 +220,7 @@ namespace stitalizator01
 
             List<InlineKeyboardButton> buttons = new List<InlineKeyboardButton>();
             List<InlineKeyboardButton[]> rows = new List<InlineKeyboardButton[]>();
-            InlineKeyboardMarkup kb = new InlineKeyboardMarkup(buttons);
+
             foreach (Bet b in bets)
             {
                 InlineKeyboardButton curButton = new InlineKeyboardButton();
@@ -241,7 +242,7 @@ namespace stitalizator01
                 rows.Add(row);
             }
 
-
+            InlineKeyboardMarkup kb = new InlineKeyboardMarkup(rows.ToArray());
             //kb.InlineKeyboard = rows.ToArray();
 
             return kb;
@@ -283,7 +284,6 @@ namespace stitalizator01
                 }
 
                 InlineKeyboardMarkup kb = createKeabordFromBets(bets2send, true);
-
                 if (timeToRemind)
                 {
                     await Bot.SendTextMessageAsync(chatId: user.TelegramChatId, text: text, replyMarkup: kb);

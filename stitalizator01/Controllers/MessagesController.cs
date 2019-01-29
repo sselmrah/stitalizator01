@@ -52,6 +52,7 @@ namespace stitalizator01.Controllers
         public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
         {
             var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             //MvcApplication.db.Users.Where(u => u.)
             /*
             ConversationStarter cs = new ConversationStarter();
@@ -127,7 +128,11 @@ namespace stitalizator01.Controllers
                                 //    };
                                 //    connector.Conversations.ReplyToActivity(reply);
                                 //}
-                                sendBasicResponse(activity);
+                                MicrosoftAppCredentials.TrustServiceUrl(activity.ServiceUrl);
+                                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                                Activity reply = activity.CreateReply("Test reply");
+                                connector.Conversations.ReplyToActivity(reply);
+                                //sendBasicResponse(activity);
 
                             }
                             catch (Exception ex)
@@ -150,6 +155,22 @@ namespace stitalizator01.Controllers
                     else if (activity.ChannelId=="skype")
                     {
 
+                    }
+                    else
+                    {
+                        
+                        try
+                        {
+                            MicrosoftAppCredentials.TrustServiceUrl(activity.ServiceUrl);
+                            Activity reply = activity.CreateReply("Simpler Text");
+                            connector.Conversations.ReplyToActivity(reply);
+                        }
+                        catch (Exception ex)
+                        {
+                            string xx = ex.Message;
+                        }
+                        //string x = reply.Text;
+                        //connector.Conversations.ReplyToActivity(reply);
                     }
                 }
             }
@@ -243,9 +264,11 @@ namespace stitalizator01.Controllers
         private void sendUserBetsTelegram(Activity activity)
         {
             ApplicationUser curUser = getUserFromActivity(activity);
+
             var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
             if (curUser != null)
             {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 Activity reply = activity.CreateReply("");
                 DateTime curDt = DateTime.UtcNow + MvcApplication.utcMoscowShift;
                 List<Bet> bets = getBetsByUserDay(curUser, curDt);
@@ -427,7 +450,7 @@ namespace stitalizator01.Controllers
                         MicrosoftAppCredentials.TrustServiceUrl(cs.ServiceUrl, DateTime.UtcNow.AddDays(7));
                         var account = new MicrosoftAppCredentials("ed8d437a-c850-4738-a15f-534457ad8716", "jYAUUmDx1zWwfv3L1BpmOeR");
                         var connector = new ConnectorClient(new Uri(cs.ServiceUrl),account);
-
+                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
                         Activity activity = new Activity();
                         activity.From = botAccount;

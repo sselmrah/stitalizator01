@@ -95,7 +95,7 @@ namespace stitalizator01
                             log.Info("User " + cs.ApplicationUser.TelegramUserName + " bets \"total/soon\": "+ userBets.Count().ToString()+"/"+burningBetsCount.ToString());
 
                             //if (userBets.Where(b => b.Program.TimeStart <= later).Count() > 0)
-                            if (burningBetsCount > 0)
+                            if (burningBetsCount > 0 )
                             {
                                 //if (cs.LastTimeUsed <= now - TimeSpan.FromHours(3))
                                 //{
@@ -112,6 +112,7 @@ namespace stitalizator01
                                 //db.SaveChanges(); //Добавлено
                                 //}
                             }
+
 
                             
                         }
